@@ -1,0 +1,61 @@
+  // 하위역량(PO) 비교 데이터 생성
+  const getDepartmentPOComparisonData = () => {
+    const selectedDeptData = collegeHeatmapData.find(dept => dept.college === selectedDepartment);
+    if (!selectedDeptData) return [];
+    
+    // 전체 평균 계산
+    const calculatePOAverage = (field1, field2) => {
+      const avg = collegeHeatmapData.reduce((sum, dept) => {
+        return sum + (field2 ? (dept[field1] + dept[field2]) / 2 : dept[field1]);
+      }, 0) / collegeHeatmapData.length;
+      return Math.round(avg * 10) / 10;
+    };
+    
+    return [
+      { 
+        competency: '창의적 문제해결', 
+        선택학과: Math.round((selectedDeptData.기획 + selectedDeptData.실행) / 2 * 10) / 10,
+        전체평균: calculatePOAverage('기획', '실행')
+      },
+      { 
+        competency: '융복합적 사고', 
+        선택학과: Math.round((selectedDeptData.화합 + selectedDeptData.통섭) / 2 * 10) / 10,
+        전체평균: calculatePOAverage('화합', '통섭')
+      },
+      { 
+        competency: '전문지식', 
+        선택학과: Math.round((selectedDeptData.전공지식 + selectedDeptData.전공기술) / 2 * 10) / 10,
+        전체평균: calculatePOAverage('전공지식', '전공기술')
+      },
+      { 
+        competency: '미래혁신', 
+        선택학과: Math.round((selectedDeptData.정보화 + selectedDeptData.신기술활용) / 2 * 10) / 10,
+        전체평균: calculatePOAverage('정보화', '신기술활용')
+      },
+      { 
+        competency: '리더십', 
+        선택학과: Math.round((selectedDeptData.공감 + selectedDeptData.판단) / 2 * 10) / 10,
+        전체평균: calculatePOAverage('공감', '판단')
+      },
+      { 
+        competency: '공동체 의식', 
+        선택학과: Math.round((selectedDeptData.사명감 + selectedDeptData.조직이해) / 2 * 10) / 10,
+        전체평균: calculatePOAverage('사명감', '조직이해')
+      },
+      { 
+        competency: '자기계발', 
+        선택학과: Math.round(selectedDeptData.도전성 * 10) / 10,
+        전체평균: calculatePOAverage('도전성', null)
+      },
+      { 
+        competency: '의사소통', 
+        선택학과: Math.round((selectedDeptData.경청 + selectedDeptData.협상) / 2 * 10) / 10,
+        전체평균: calculatePOAverage('경청', '협상')
+      },
+      { 
+        competency: '글로컬 시민', 
+        선택학과: Math.round((selectedDeptData.외국어 + selectedDeptData.세계시민) / 2 * 10) / 10,
+        전체평균: calculatePOAverage('외국어', '세계시민')
+      },
+    ];
+  };
