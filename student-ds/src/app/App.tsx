@@ -4,85 +4,86 @@ import { Home, FileText, Bell, User, Plus, ChevronRight, ChevronDown, Award, Tar
 import logoImage from 'figma:asset/a5f360b8c95401cf229a69f0c0d2de04cefbe043.png';
 import Login from './Login';
 import { checkAutoLogin, clearAuthTokens, AuthTokens } from './utils/auth';
+import ChatModal from './components/chatbot/ChatModal';
 
-// STAR ë ˆì´ë” ì°¨íŠ¸ ë°ì´í„°
+// STAR ? ˆ?´?” ì°¨íŠ¸ ?°?´?„°
 const radarData = [
   { subject: 'S (ì°½ì˜)', myScore: 85, deptAvg: 72, totalAvg: 68, fullMark: 100 },
-  { subject: 'T (ì‹¤ë¬´)', myScore: 78, deptAvg: 75, totalAvg: 70, fullMark: 100 },
-  { subject: 'A (ì¸ì„±)', myScore: 92, deptAvg: 80, totalAvg: 75, fullMark: 100 },
-  { subject: 'R (ì†Œí†µ)', myScore: 70, deptAvg: 68, totalAvg: 65, fullMark: 100 },
+  { subject: 'T (?‹¤ë¬?)', myScore: 78, deptAvg: 75, totalAvg: 70, fullMark: 100 },
+  { subject: 'A (?¸?„±)', myScore: 92, deptAvg: 80, totalAvg: 75, fullMark: 100 },
+  { subject: 'R (?†Œ?†µ)', myScore: 70, deptAvg: 68, totalAvg: 65, fullMark: 100 },
 ];
 
-// í•˜ìœ„ì—­ëŸ‰(PO) ë ˆì´ë” ì°¨íŠ¸ ë°ì´í„°
+// ?•˜?œ„?—­?Ÿ‰(PO) ? ˆ?´?” ì°¨íŠ¸ ?°?´?„°
 const radarDataPO = [
-  { subject: 'ì°½ì˜ì  ë¬¸ì œí•´ê²°', myScore: 87, deptAvg: 74, totalAvg: 70, fullMark: 100 },
-  { subject: 'ìœµë³µí•©ì  ì‚¬ê³ ', myScore: 83, deptAvg: 70, totalAvg: 66, fullMark: 100 },
-  { subject: 'ì „ë¬¸ì§€ì‹', myScore: 82, deptAvg: 78, totalAvg: 73, fullMark: 100 },
-  { subject: 'ë¯¸ë˜í˜ì‹ ', myScore: 75, deptAvg: 73, totalAvg: 68, fullMark: 100 },
-  { subject: 'ë¦¬ë”ì‹­', myScore: 77, deptAvg: 74, totalAvg: 69, fullMark: 100 },
-  { subject: 'ê³µë™ì²´ì˜ì‹', myScore: 90, deptAvg: 82, totalAvg: 77, fullMark: 100 },
-  { subject: 'ìê¸°ê³„ë°œ', myScore: 94, deptAvg: 78, totalAvg: 73, fullMark: 100 },
-  { subject: 'ì˜ì‚¬ì†Œí†µ', myScore: 72, deptAvg: 70, totalAvg: 67, fullMark: 100 },
-  { subject: 'ê¸€ë¡œì»¬ ì‹œë¯¼', myScore: 68, deptAvg: 66, totalAvg: 63, fullMark: 100 },
+  { subject: 'ì°½ì˜?  ë¬¸ì œ?•´ê²?', myScore: 87, deptAvg: 74, totalAvg: 70, fullMark: 100 },
+  { subject: '?œµë³µí•©?  ?‚¬ê³?', myScore: 83, deptAvg: 70, totalAvg: 66, fullMark: 100 },
+  { subject: '? „ë¬¸ì???‹', myScore: 82, deptAvg: 78, totalAvg: 73, fullMark: 100 },
+  { subject: 'ë¯¸ë˜?˜?‹ ', myScore: 75, deptAvg: 73, totalAvg: 68, fullMark: 100 },
+  { subject: 'ë¦¬ë”?‹­', myScore: 77, deptAvg: 74, totalAvg: 69, fullMark: 100 },
+  { subject: 'ê³µë™ì²´ì˜?‹', myScore: 90, deptAvg: 82, totalAvg: 77, fullMark: 100 },
+  { subject: '?ê¸°ê³„ë°?', myScore: 94, deptAvg: 78, totalAvg: 73, fullMark: 100 },
+  { subject: '?˜?‚¬?†Œ?†µ', myScore: 72, deptAvg: 70, totalAvg: 67, fullMark: 100 },
+  { subject: 'ê¸?ë¡œì»¬ ?‹œë¯?', myScore: 68, deptAvg: 66, totalAvg: 63, fullMark: 100 },
 ];
 
-// ì—­ëŸ‰ ìƒì„¸ ë°ì´í„°
+// ?—­?Ÿ‰ ?ƒ?„¸ ?°?´?„°
 const starDetails = {
-  S: { name: 'ì°½ì˜', score: 85, grade: 'ìš°ìˆ˜', skills: ['ê¸°íš', 'ì‹¤í–‰', 'í™”í•©', 'í†µì„­'], color: '#E94E3C' },
-  T: { name: 'ì‹¤ë¬´', score: 78, grade: 'ë³´í†µ', skills: ['ì „ê³µì§€ì‹', 'ì „ê³µê¸°ìˆ ', 'ì •ë³´í™”', 'ì‹ ê¸°ìˆ í™œìš©', 'ê³µê°', 'íŒë‹¨'], color: '#F7941D' },
-  A: { name: 'ì¸ì„±', score: 92, grade: 'ë§ˆìŠ¤í„°', skills: ['ì‚¬ëª…ê°', 'ì¡°ì§ì´í•´', 'ë„ì „ì„±', 'ìê¸°í•™ìŠµ'], color: '#C13584' },
-  R: { name: 'ì†Œí†µ', score: 70, grade: 'ë³´í†µ', skills: ['ê²½ì²­', 'í˜‘ìƒ', 'ì™¸êµ­ì–´', 'ì„¸ê³„ì‹œë¯¼'], color: '#E94E3C' },
+  S: { name: 'ì°½ì˜', score: 85, grade: '?š°?ˆ˜', skills: ['ê¸°íš', '?‹¤?–‰', '?™”?•©', '?†µ?„­'], color: '#E94E3C' },
+  T: { name: '?‹¤ë¬?', score: 78, grade: 'ë³´í†µ', skills: ['? „ê³µì???‹', '? „ê³µê¸°?ˆ ', '? •ë³´í™”', '?‹ ê¸°ìˆ ?™œ?š©', 'ê³µê°', '?Œ?‹¨'], color: '#F7941D' },
+  A: { name: '?¸?„±', score: 92, grade: 'ë§ˆìŠ¤?„°', skills: ['?‚¬ëª…ê°', 'ì¡°ì§?´?•´', '?„? „?„±', '?ê¸°í•™?Šµ'], color: '#C13584' },
+  R: { name: '?†Œ?†µ', score: 70, grade: 'ë³´í†µ', skills: ['ê²½ì²­', '?˜‘?ƒ', '?™¸êµ??–´', '?„¸ê³„ì‹œë¯?'], color: '#E94E3C' },
 };
 
-// í•˜ìœ„ì—­ëŸ‰(PO) ìƒì„¸ ë°ì´í„°
+// ?•˜?œ„?—­?Ÿ‰(PO) ?ƒ?„¸ ?°?´?„°
 const poDetails = {
-  'ì°½ì˜ì  ë¬¸ì œí•´ê²°': { name: 'ì°½ì˜ì  ë¬¸ì œí•´ê²°', score: 87, grade: 'ìš°ìˆ˜', category: 'S', skills: ['ë¬¸ì œë¶„ì„', 'í•´ê²°ë°©ì•ˆ ë„ì¶œ', 'ì°½ì˜ì  ì ‘ê·¼'], color: '#E94E3C' },
-  'ìœµë³µí•©ì  ì‚¬ê³ ': { name: 'ìœµë³µí•©ì  ì‚¬ê³ ', score: 83, grade: 'ìš°ìˆ˜', category: 'S', skills: ['ë‹¤í•™ì œì  ì ‘ê·¼', 'í†µí•©ì  ì‚¬ê³ ', 'ì‹œë„ˆì§€ ì°½ì¶œ'], color: '#E94E3C' },
-  'ì „ë¬¸ì§€ì‹': { name: 'ì „ë¬¸ì§€ì‹', score: 82, grade: 'ìš°ìˆ˜', category: 'T', skills: ['ì „ê³µì´ë¡ ', 'ì‹¤ë¬´ì ìš©', 'ì§€ì‹ì²´ê³„'], color: '#F7941D' },
-  'ë¯¸ë˜í˜ì‹ ': { name: 'ë¯¸ë˜í˜ì‹ ', score: 75, grade: 'ë³´í†µ', category: 'T', skills: ['ì‹ ê¸°ìˆ  í™œìš©', 'íŠ¸ë Œë“œ íŒŒì•…', 'í˜ì‹  ë§ˆì¸ë“œ'], color: '#F7941D' },
-  'ë¦¬ë”ì‹­': { name: 'ë¦¬ë”ì‹­', score: 77, grade: 'ë³´í†µ', category: 'T', skills: ['íŒ€ ê´€ë¦¬', 'ì˜ì‚¬ê²°ì •', 'ë™ê¸°ë¶€ì—¬'], color: '#F7941D' },
-  'ê³µë™ì²´ì˜ì‹': { name: 'ê³µë™ì²´ì˜ì‹', score: 90, grade: 'ë§ˆìŠ¤í„°', category: 'A', skills: ['í˜‘ë ¥', 'ë°°ë ¤', 'ì‚¬íšŒì  ì±…ì„'], color: '#C13584' },
-  'ìê¸°ê³„ë°œ': { name: 'ìê¸°ê³„ë°œ', score: 94, grade: 'ë§ˆìŠ¤í„°', category: 'A', skills: ['ìê¸°ì£¼ë„í•™ìŠµ', 'ëª©í‘œì„¤ì •', 'ì„±ì°°'], color: '#C13584' },
-  'ì˜ì‚¬ì†Œí†µ': { name: 'ì˜ì‚¬ì†Œí†µ', score: 72, grade: 'ë³´í†µ', category: 'R', skills: ['ê²½ì²­', 'í‘œí˜„', 'ê³µê°'], color: '#E94E3C' },
-  'ê¸€ë¡œì»¬ ì‹œë¯¼': { name: 'ê¸€ë¡œì»¬ ì‹œë¯¼', score: 68, grade: 'ë³´í†µ', category: 'R', skills: ['ë‹¤ë¬¸í™” ì´í•´', 'ê¸€ë¡œë²Œ ë§ˆì¸ë“œ', 'ì§€ì—­ì‚¬íšŒ ì°¸ì—¬'], color: '#E94E3C' },
+  'ì°½ì˜?  ë¬¸ì œ?•´ê²?': { name: 'ì°½ì˜?  ë¬¸ì œ?•´ê²?', score: 87, grade: '?š°?ˆ˜', category: 'S', skills: ['ë¬¸ì œë¶„ì„', '?•´ê²°ë°©?•ˆ ?„ì¶?', 'ì°½ì˜?  ? ‘ê·?'], color: '#E94E3C' },
+  '?œµë³µí•©?  ?‚¬ê³?': { name: '?œµë³µí•©?  ?‚¬ê³?', score: 83, grade: '?š°?ˆ˜', category: 'S', skills: ['?‹¤?•™? œ?  ? ‘ê·?', '?†µ?•©?  ?‚¬ê³?', '?‹œ?„ˆì§? ì°½ì¶œ'], color: '#E94E3C' },
+  '? „ë¬¸ì???‹': { name: '? „ë¬¸ì???‹', score: 82, grade: '?š°?ˆ˜', category: 'T', skills: ['? „ê³µì´ë¡?', '?‹¤ë¬´ì ?š©', 'ì§??‹ì²´ê³„'], color: '#F7941D' },
+  'ë¯¸ë˜?˜?‹ ': { name: 'ë¯¸ë˜?˜?‹ ', score: 75, grade: 'ë³´í†µ', category: 'T', skills: ['?‹ ê¸°ìˆ  ?™œ?š©', '?Š¸? Œ?“œ ?ŒŒ?•…', '?˜?‹  ë§ˆì¸?“œ'], color: '#F7941D' },
+  'ë¦¬ë”?‹­': { name: 'ë¦¬ë”?‹­', score: 77, grade: 'ë³´í†µ', category: 'T', skills: ['??? ê´?ë¦?', '?˜?‚¬ê²°ì •', '?™ê¸°ë???—¬'], color: '#F7941D' },
+  'ê³µë™ì²´ì˜?‹': { name: 'ê³µë™ì²´ì˜?‹', score: 90, grade: 'ë§ˆìŠ¤?„°', category: 'A', skills: ['?˜‘? ¥', 'ë°°ë ¤', '?‚¬?šŒ?  ì±…ì„'], color: '#C13584' },
+  '?ê¸°ê³„ë°?': { name: '?ê¸°ê³„ë°?', score: 94, grade: 'ë§ˆìŠ¤?„°', category: 'A', skills: ['?ê¸°ì£¼?„?•™?Šµ', 'ëª©í‘œ?„¤? •', '?„±ì°?'], color: '#C13584' },
+  '?˜?‚¬?†Œ?†µ': { name: '?˜?‚¬?†Œ?†µ', score: 72, grade: 'ë³´í†µ', category: 'R', skills: ['ê²½ì²­', '?‘œ?˜„', 'ê³µê°'], color: '#E94E3C' },
+  'ê¸?ë¡œì»¬ ?‹œë¯?': { name: 'ê¸?ë¡œì»¬ ?‹œë¯?', score: 68, grade: 'ë³´í†µ', category: 'R', skills: ['?‹¤ë¬¸í™” ?´?•´', 'ê¸?ë¡œë²Œ ë§ˆì¸?“œ', 'ì§??—­?‚¬?šŒ ì°¸ì—¬'], color: '#E94E3C' },
 };
 
 // ë¯¼ì› ì¹´í…Œê³ ë¦¬
 const complaintCategories = [
-  { id: 1, icon: Building, name: 'ì‹œì„¤ ë° í™˜ê²½', items: ['ê°•ì˜ì‹¤', 'ê³µìš©ì‹œì„¤', 'ì²­ê²°', 'ì•ˆì „'], color: '#E94E3C' },
-  { id: 2, icon: GraduationCap, name: 'í•™ìƒ ì¥í•™', items: ['ì¥í•™ ê¸°ì¤€', 'ì‹ ì²­', 'ì‹¬ì‚¬', 'ì§€ê¸‰ ì˜¤ë¥˜'], color: '#4A90E2' },
-  { id: 3, icon: Heart, name: 'í•™ìƒ ë³µì§€', items: ['ìƒí™œ ì‹œì„¤', 'í•™ìŠµê³µê°„', 'ê±´ê°•', 'êµí†µ'], color: '#C13584' },
-  { id: 4, icon: BookOpen, name: 'ìˆ˜ì—… ë° í•™ì‚¬', items: ['ê°•ì˜ ìš´ì˜', 'ì„±ì ', 'íœ´ë³µí•™', 'ì‹œìŠ¤í…œ ì˜¤ë¥˜'], color: '#F7941D' },
+  { id: 1, icon: Building, name: '?‹œ?„¤ ë°? ?™˜ê²?', items: ['ê°•ì˜?‹¤', 'ê³µìš©?‹œ?„¤', 'ì²?ê²?', '?•ˆ? „'], color: '#E94E3C' },
+  { id: 2, icon: GraduationCap, name: '?•™?ƒ ?¥?•™', items: ['?¥?•™ ê¸°ì??', '?‹ ì²?', '?‹¬?‚¬', 'ì§?ê¸? ?˜¤ë¥?'], color: '#4A90E2' },
+  { id: 3, icon: Heart, name: '?•™?ƒ ë³µì??', items: ['?ƒ?™œ ?‹œ?„¤', '?•™?Šµê³µê°„', 'ê±´ê°•', 'êµí†µ'], color: '#C13584' },
+  { id: 4, icon: BookOpen, name: '?ˆ˜?—… ë°? ?•™?‚¬', items: ['ê°•ì˜ ?š´?˜', '?„±? ', '?œ´ë³µí•™', '?‹œ?Š¤?…œ ?˜¤ë¥?'], color: '#F7941D' },
 ];
 
-// ë¯¼ì› ëª©ë¡ ë°ì´í„°
+// ë¯¼ì› ëª©ë¡ ?°?´?„°
 const complaints = [
   { 
     id: 1, 
-    title: 'ë„ì„œê´€ ëƒ‰ë°© ë¬¸ì œ', 
-    status: 'ì²˜ë¦¬ì¤‘', 
+    title: '?„?„œê´? ?ƒ‰ë°? ë¬¸ì œ', 
+    status: 'ì²˜ë¦¬ì¤?', 
     date: '2025.01.15', 
-    category: 'ì‹œì„¤ ë° í™˜ê²½', 
-    content: 'ì¤‘ì•™ë„ì„œê´€ 3ì¸µ ì—´ëŒì‹¤ì˜ ëƒ‰ë°© ì‹œìŠ¤í…œì´ ì œëŒ€ë¡œ ì‘ë™í•˜ì§€ ì•Šì•„ ì‹¤ë‚´ ì˜¨ë„ê°€ ë„ˆë¬´ ë†’ìŠµë‹ˆë‹¤. í•™ìŠµí•˜ê¸° ì–´ë ¤ìš´ í™˜ê²½ì´ë‹ˆ ë¹ ë¥¸ ì¡°ì¹˜ ë¶€íƒë“œë¦½ë‹ˆë‹¤.',
+    category: '?‹œ?„¤ ë°? ?™˜ê²?', 
+    content: 'ì¤‘ì•™?„?„œê´? 3ì¸? ?—´?Œ?‹¤?˜ ?ƒ‰ë°? ?‹œ?Š¤?…œ?´ ? œ???ë¡? ?‘?™?•˜ì§? ?•Š?•„ ?‹¤?‚´ ?˜¨?„ê°? ?„ˆë¬? ?†’?Šµ?‹ˆ?‹¤. ?•™?Šµ?•˜ê¸? ?–´? ¤?š´ ?™˜ê²½ì´?‹ˆ ë¹ ë¥¸ ì¡°ì¹˜ ë¶??ƒ?“œë¦½ë‹ˆ?‹¤.',
     currentStep: 3, 
-    department: 'ì‹œì„¤ê´€ë¦¬íŒ€', 
-    assignee: 'ê¹€ë¯¼ìˆ˜', 
+    department: '?‹œ?„¤ê´?ë¦¬í??', 
+    assignee: 'ê¹?ë¯¼ìˆ˜', 
     isRead: true, 
     isRated: false, 
     rating: undefined 
   },
   { 
     id: 2, 
-    title: 'ì¥í•™ê¸ˆ ì§€ê¸‰ ì¼ì • ë¬¸ì˜', 
-    status: 'ì™„ë£Œ', 
+    title: '?¥?•™ê¸? ì§?ê¸? ?¼? • ë¬¸ì˜', 
+    status: '?™„ë£?', 
     date: '2025.01.14', 
-    category: 'í•™ìƒ ì¥í•™',
-    content: '2025í•™ë…„ë„ 1í•™ê¸° ì¥í•™ê¸ˆ ì§€ê¸‰ ì¼ì •ì´ ê¶ê¸ˆí•©ë‹ˆë‹¤. ì •í™•í•œ ì§€ê¸‰ì¼ê³¼ í™•ì¸ ë°©ë²•ì„ ì•Œë ¤ì£¼ì„¸ìš”.',
-    adminResponse: '2025í•™ë…„ë„ 1í•™ê¸° ì¥í•™ê¸ˆì€ 2ì›” 28ì¼ì— ì¼ê´„ ì§€ê¸‰ ì˜ˆì •ì…ë‹ˆë‹¤. ì¥í•™ê¸ˆ ì¢…ë¥˜ì— ë”°ë¼ ì§€ê¸‰ì¼ì´ ë‹¤ë¥¼ ìˆ˜ ìˆìœ¼ë‹ˆ í•™ìƒí¬í„¸ì—ì„œ í™•ì¸í•˜ì‹œê¸° ë°”ëë‹ˆë‹¤.',
+    category: '?•™?ƒ ?¥?•™',
+    content: '2025?•™?…„?„ 1?•™ê¸? ?¥?•™ê¸? ì§?ê¸? ?¼? •?´ ê¶ê¸ˆ?•©?‹ˆ?‹¤. ? •?™•?•œ ì§?ê¸‰ì¼ê³? ?™•?¸ ë°©ë²•?„ ?•Œ? ¤ì£¼ì„¸?š”.',
+    adminResponse: '2025?•™?…„?„ 1?•™ê¸? ?¥?•™ê¸ˆì?? 2?›” 28?¼?— ?¼ê´? ì§?ê¸? ?˜ˆ? •?…?‹ˆ?‹¤. ?¥?•™ê¸? ì¢…ë¥˜?— ?”°?¼ ì§?ê¸‰ì¼?´ ?‹¤ë¥? ?ˆ˜ ?ˆ?œ¼?‹ˆ ?•™?ƒ?¬?„¸?—?„œ ?™•?¸?•˜?‹œê¸? ë°”ë?‹ˆ?‹¤.',
     responseDate: '2025.01.15',
     attachments: [
-      { id: 1, name: 'ì¥í•™ê¸ˆ_ì§€ê¸‰_ì¼ì •í‘œ.pdf', size: '245KB', url: '#' },
-      { id: 2, name: '2025-1í•™ê¸°_ì¥í•™ì•ˆë‚´.pdf', size: '1.2MB', url: '#' }
+      { id: 1, name: '?¥?•™ê¸?_ì§?ê¸?_?¼? •?‘œ.pdf', size: '245KB', url: '#' },
+      { id: 2, name: '2025-1?•™ê¸?_?¥?•™?•ˆ?‚´.pdf', size: '1.2MB', url: '#' }
     ],
     isRead: false,
     isRated: false,
@@ -90,11 +91,11 @@ const complaints = [
   },
   { 
     id: 3, 
-    title: 'ì„±ì  ì •ì • ìš”ì²­', 
-    status: 'ì ‘ìˆ˜', 
+    title: '?„±?  ? •? • ?š”ì²?', 
+    status: '? ‘?ˆ˜', 
     date: '2025.01.13', 
-    category: 'ìˆ˜ì—… ë° í•™ì‚¬', 
-    content: 'ë°ì´í„°êµ¬ì¡°ë¡  ê³¼ëª©ì˜ ì¤‘ê°„ê³ ì‚¬ ì ìˆ˜ê°€ ì‹¤ì œ ì ìˆ˜ì™€ ë‹¤ë¥´ê²Œ ì…ë ¥ëœ ê²ƒ ê°™ìŠµë‹ˆë‹¤. í™•ì¸ í›„ ì •ì • ë¶€íƒë“œë¦½ë‹ˆë‹¤.',
+    category: '?ˆ˜?—… ë°? ?•™?‚¬', 
+    content: '?°?´?„°êµ¬ì¡°ë¡? ê³¼ëª©?˜ ì¤‘ê°„ê³ ì‚¬ ? ?ˆ˜ê°? ?‹¤? œ ? ?ˆ˜??? ?‹¤ë¥´ê²Œ ?…? ¥?œ ê²? ê°™ìŠµ?‹ˆ?‹¤. ?™•?¸ ?›„ ? •? • ë¶??ƒ?“œë¦½ë‹ˆ?‹¤.',
     currentStep: 1, 
     isRead: true, 
     isRated: false, 
@@ -102,31 +103,31 @@ const complaints = [
   },
   { 
     id: 4, 
-    title: 'ê¸°ìˆ™ì‚¬ ì‹œì„¤ ë³´ìˆ˜', 
-    status: 'ì²˜ë¦¬ì¤‘', 
+    title: 'ê¸°ìˆ™?‚¬ ?‹œ?„¤ ë³´ìˆ˜', 
+    status: 'ì²˜ë¦¬ì¤?', 
     date: '2025.01.12', 
-    category: 'í•™ìƒ ë³µì§€', 
-    content: 'ì œ2ìƒí™œê´€ 301í˜¸ í™”ì¥ì‹¤ ìƒ¤ì›Œê¸°ì—ì„œ ì˜¨ìˆ˜ê°€ ë‚˜ì˜¤ì§€ ì•ŠìŠµë‹ˆë‹¤. ê²¨ìš¸ì² ì´ë¼ ë§¤ìš° ë¶ˆí¸í•œ ìƒí™©ì…ë‹ˆë‹¤.',
+    category: '?•™?ƒ ë³µì??', 
+    content: '? œ2?ƒ?™œê´? 301?˜¸ ?™”?¥?‹¤ ?ƒ¤?›Œê¸°ì—?„œ ?˜¨?ˆ˜ê°? ?‚˜?˜¤ì§? ?•Š?Šµ?‹ˆ?‹¤. ê²¨ìš¸ì² ì´?¼ ë§¤ìš° ë¶ˆí¸?•œ ?ƒ?™©?…?‹ˆ?‹¤.',
     currentStep: 2, 
-    department: 'ìƒí™œê´€ë¦¬íŒ€', 
-    assignee: 'ì´ì§€ì€', 
+    department: '?ƒ?™œê´?ë¦¬í??', 
+    assignee: '?´ì§????', 
     isRead: false, 
     isRated: false, 
     rating: undefined 
   },
   { 
     id: 5, 
-    title: 'ê°•ì˜ì‹¤ í”„ë¡œì í„° ê³ ì¥', 
-    status: 'ì™„ë£Œ', 
+    title: 'ê°•ì˜?‹¤ ?”„ë¡œì ?„° ê³ ì¥', 
+    status: '?™„ë£?', 
     date: '2025.01.11', 
-    category: 'ì‹œì„¤ ë° í™˜ê²½',
-    content: 'ê³µí•™ê´€ 301í˜¸ ê°•ì˜ì‹¤ í”„ë¡œì í„°ê°€ ì¼œì§€ì§€ ì•ŠìŠµë‹ˆë‹¤. ë‹¤ìŒ ì£¼ ë°œí‘œ ìˆ˜ì—…ì´ ìˆì–´ ë¹ ë¥¸ ìˆ˜ë¦¬ê°€ í•„ìš”í•©ë‹ˆë‹¤.',
-    adminResponse: '301í˜¸ ê°•ì˜ì‹¤ í”„ë¡œì í„°ë¥¼ ìƒˆ ì œí’ˆìœ¼ë¡œ êµì²´ ì™„ë£Œí•˜ì˜€ìŠµë‹ˆë‹¤. ì¶”ê°€ë¡œ HDMI ì¼€ì´ë¸”ê³¼ ë¦¬ëª¨ì»¨ë„ í•¨ê»˜ êµì²´í•˜ì˜€ìœ¼ë‹ˆ ë¶ˆí¸ ì—†ì´ ì‚¬ìš©í•˜ì‹¤ ìˆ˜ ìˆìŠµë‹ˆë‹¤.',
+    category: '?‹œ?„¤ ë°? ?™˜ê²?',
+    content: 'ê³µí•™ê´? 301?˜¸ ê°•ì˜?‹¤ ?”„ë¡œì ?„°ê°? ì¼œì??ì§? ?•Š?Šµ?‹ˆ?‹¤. ?‹¤?Œ ì£? ë°œí‘œ ?ˆ˜?—…?´ ?ˆ?–´ ë¹ ë¥¸ ?ˆ˜ë¦¬ê?? ?•„?š”?•©?‹ˆ?‹¤.',
+    adminResponse: '301?˜¸ ê°•ì˜?‹¤ ?”„ë¡œì ?„°ë¥? ?ƒˆ ? œ?’ˆ?œ¼ë¡? êµì²´ ?™„ë£Œí•˜????Šµ?‹ˆ?‹¤. ì¶”ê??ë¡? HDMI ì¼??´ë¸”ê³¼ ë¦¬ëª¨ì»¨ë„ ?•¨ê»? êµì²´?•˜????œ¼?‹ˆ ë¶ˆí¸ ?—†?´ ?‚¬?š©?•˜?‹¤ ?ˆ˜ ?ˆ?Šµ?‹ˆ?‹¤.',
     responseDate: '2025.01.12',
     attachments: [
-      { id: 1, name: 'êµì²´_ì™„ë£Œ_ì‚¬ì§„1.jpg', size: '2.3MB', url: '#' },
-      { id: 2, name: 'êµì²´_ì™„ë£Œ_ì‚¬ì§„2.jpg', size: '1.8MB', url: '#' },
-      { id: 3, name: 'ì¡°ì¹˜_ë³´ê³ ì„œ.pdf', size: '456KB', url: '#' }
+      { id: 1, name: 'êµì²´_?™„ë£?_?‚¬ì§?1.jpg', size: '2.3MB', url: '#' },
+      { id: 2, name: 'êµì²´_?™„ë£?_?‚¬ì§?2.jpg', size: '1.8MB', url: '#' },
+      { id: 3, name: 'ì¡°ì¹˜_ë³´ê³ ?„œ.pdf', size: '456KB', url: '#' }
     ],
     isRead: false,
     isRated: false,
@@ -134,115 +135,64 @@ const complaints = [
   },
 ];
 
-// ì•Œë¦¼ ë°ì´í„°
+// ?•Œë¦? ?°?´?„°
 const notifications = [
-  { id: 1, title: 'ë¯¼ì› ì²˜ë¦¬ ì™„ë£Œ', message: 'ì¥í•™ê¸ˆ ì§€ê¸‰ ì¼ì • ë¬¸ì˜ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.', time: '10ë¶„ ì „', read: false },
-  { id: 2, title: 'ìƒˆ ê³µì§€ì‚¬í•­', message: '2025í•™ë…„ë„ 1í•™ê¸° ìˆ˜ê°•ì‹ ì²­ ì•ˆë‚´', time: '1ì‹œê°„ ì „', read: false },
-  { id: 3, title: 'ë¯¼ì› ìƒíƒœ ë³€ê²½', message: 'ë„ì„œê´€ ëƒ‰ë°© ë¬¸ì œê°€ ì²˜ë¦¬ì¤‘ìœ¼ë¡œ ë³€ê²½ë˜ì—ˆìŠµë‹ˆë‹¤.', time: '3ì‹œê°„ ì „', read: true },
-  { id: 4, title: 'ì—­ëŸ‰ í‰ê°€ ì™„ë£Œ', message: 'S(ì°½ì˜) ì—­ëŸ‰ ì ìˆ˜ê°€ ì—…ë°ì´íŠ¸ë˜ì—ˆìŠµë‹ˆë‹¤.', time: '1ì¼ ì „', read: true },
+  { id: 1, title: 'ë¯¼ì› ì²˜ë¦¬ ?™„ë£?', message: '?¥?•™ê¸? ì§?ê¸? ?¼? • ë¬¸ì˜ê°? ?™„ë£Œë˜?—ˆ?Šµ?‹ˆ?‹¤.', time: '10ë¶? ? „', read: false },
+  { id: 2, title: '?ƒˆ ê³µì???‚¬?•­', message: '2025?•™?…„?„ 1?•™ê¸? ?ˆ˜ê°•ì‹ ì²? ?•ˆ?‚´', time: '1?‹œê°? ? „', read: false },
+  { id: 3, title: 'ë¯¼ì› ?ƒ?ƒœ ë³?ê²?', message: '?„?„œê´? ?ƒ‰ë°? ë¬¸ì œê°? ì²˜ë¦¬ì¤‘ìœ¼ë¡? ë³?ê²½ë˜?—ˆ?Šµ?‹ˆ?‹¤.', time: '3?‹œê°? ? „', read: true },
+  { id: 4, title: '?—­?Ÿ‰ ?‰ê°? ?™„ë£?', message: 'S(ì°½ì˜) ?—­?Ÿ‰ ? ?ˆ˜ê°? ?—…?°?´?Š¸?˜?—ˆ?Šµ?‹ˆ?‹¤.', time: '1?¼ ? „', read: true },
 ];
 
-// FAQ ë°ì´í„°
+// FAQ ?°?´?„°
 const faqData = [
-  { id: 1, question: 'ì¥í•™ê¸ˆ ì‹ ì²­ê¸°ê°„ì€ ì–¸ì œì¸ê°€ìš”?', answer: 'ë§¤ í•™ê¸° ì‹œì‘ 2ì£¼ ì „ë¶€í„° 1ì£¼ê°„ ì‹ ì²­ ê°€ëŠ¥í•©ë‹ˆë‹¤.' },
-  { id: 2, question: 'íœ´í•™ ì‹ ì²­ì€ ì–´ë–»ê²Œ í•˜ë‚˜ìš”?', answer: 'í•™ìƒí¬í„¸ > í•™ì  > íœ´í•™ì‹ ì²­ì—ì„œ ê°€ëŠ¥í•©ë‹ˆë‹¤.' },
-  { id: 3, question: 'ì„±ì  ì •ì • ê¸°ê°„ì€ ì–¸ì œì¸ê°€ìš”?', answer: 'ì„±ì  ê³µê°œ í›„ 1ì£¼ì¼ ì´ë‚´ì…ë‹ˆë‹¤.' },
-  { id: 4, question: 'ê¸°ìˆ™ì‚¬ ì‹ ì²­ ë°©ë²•ì´ ê¶ê¸ˆí•´ìš”', answer: 'í•™ìƒí¬í„¸ > ìƒí™œ > ê¸°ìˆ™ì‚¬ ì‹ ì²­ì—ì„œ ê°€ëŠ¥í•©ë‹ˆë‹¤.' },
-  { id: 5, question: 'ì¦ëª…ì„œ ë°œê¸‰ì€ ì–´ë””ì„œ í•˜ë‚˜ìš”?', answer: 'ë¬´ì¸ë°œê¸‰ê¸° ë˜ëŠ” í•™ìƒí¬í„¸ì—ì„œ ê°€ëŠ¥í•©ë‹ˆë‹¤.' },
+  { id: 1, question: '?¥?•™ê¸? ?‹ ì²?ê¸°ê°„??? ?–¸? œ?¸ê°??š”?', answer: 'ë§? ?•™ê¸? ?‹œ?‘ 2ì£? ? „ë¶??„° 1ì£¼ê°„ ?‹ ì²? ê°??Š¥?•©?‹ˆ?‹¤.' },
+  { id: 2, question: '?œ´?•™ ?‹ ì²???? ?–´?–»ê²? ?•˜?‚˜?š”?', answer: '?•™?ƒ?¬?„¸ > ?•™?  > ?œ´?•™?‹ ì²??—?„œ ê°??Š¥?•©?‹ˆ?‹¤.' },
+  { id: 3, question: '?„±?  ? •? • ê¸°ê°„??? ?–¸? œ?¸ê°??š”?', answer: '?„±?  ê³µê°œ ?›„ 1ì£¼ì¼ ?´?‚´?…?‹ˆ?‹¤.' },
+  { id: 4, question: 'ê¸°ìˆ™?‚¬ ?‹ ì²? ë°©ë²•?´ ê¶ê¸ˆ?•´?š”', answer: '?•™?ƒ?¬?„¸ > ?ƒ?™œ > ê¸°ìˆ™?‚¬ ?‹ ì²??—?„œ ê°??Š¥?•©?‹ˆ?‹¤.' },
+  { id: 5, question: 'ì¦ëª…?„œ ë°œê¸‰??? ?–´?””?„œ ?•˜?‚˜?š”?', answer: 'ë¬´ì¸ë°œê¸‰ê¸? ?˜?Š” ?•™?ƒ?¬?„¸?—?„œ ê°??Š¥?•©?‹ˆ?‹¤.' },
 ];
 
-// Evidence ë°ì´í„°
+// Evidence ?°?´?„°
 const evidenceData = [
-  { course: 'ì°½ì˜ì  ë¬¸ì œí•´ê²°', task: 'íŒ€ í”„ë¡œì íŠ¸ ë°œí‘œ', score: 'A+', competency: 'S', semester: '2024-2í•™ê¸°', date: '2024.12.10' },
-  { course: 'ë°ì´í„°ë¶„ì„ì‹¤ë¬´', task: 'ê¸°ë§ í”„ë¡œì íŠ¸', score: 'A', competency: 'T', semester: '2024-2í•™ê¸°', date: '2024.12.08' },
-  { course: 'ë¦¬ë”ì‹­ê³¼ ì†Œí†µ', task: 'í† ë¡  ì°¸ì—¬', score: 'A+', competency: 'R', semester: '2024-2í•™ê¸°', date: '2024.11.25' },
-  { course: 'ì§ì—…ìœ¤ë¦¬', task: 'ì‚¬ë¡€ë¶„ì„ ë³´ê³ ì„œ', score: 'A', competency: 'A', semester: '2024-2í•™ê¸°', date: '2024.11.20' },
-  { course: 'ì•Œê³ ë¦¬ì¦˜', task: 'ì¤‘ê°„ í”„ë¡œì íŠ¸', score: 'A+', competency: 'T', semester: '2024-1í•™ê¸°', date: '2024.05.15' },
-  { course: 'ì¡°ì§í–‰ë™ë¡ ', task: 'íŒ€ ê³¼ì œ', score: 'B+', competency: 'A', semester: '2024-1í•™ê¸°', date: '2024.05.10' },
-  { course: 'ì°½ì—…ê³¼ í˜ì‹ ', task: 'ë¹„ì¦ˆë‹ˆìŠ¤ ëª¨ë¸ ê°œë°œ', score: 'A', competency: 'S', semester: '2024-1í•™ê¸°', date: '2024.04.20' },
-  { course: 'í”„ë ˆì  í…Œì´ì…˜ ìŠ¤í‚¬', task: 'ë°œí‘œ í‰ê°€', score: 'A+', competency: 'R', semester: '2024-1í•™ê¸°', date: '2024.04.15' },
-  { course: 'ë””ìì¸ì”½í‚¹', task: 'í”„ë¡œí† íƒ€ì… ì œì‘', score: 'A', competency: 'S', semester: '2023-2í•™ê¸°', date: '2023.12.05' },
-  { course: 'ë°ì´í„°ë² ì´ìŠ¤', task: 'ì‹œìŠ¤í…œ ì„¤ê³„', score: 'B+', competency: 'T', semester: '2023-2í•™ê¸°', date: '2023.11.30' },
-  { course: 'ë´‰ì‚¬í™œë™ë¡ ', task: 'ì§€ì—­ì‚¬íšŒ ë´‰ì‚¬', score: 'A+', competency: 'A', semester: '2023-2í•™ê¸°', date: '2023.11.10' },
-  { course: 'ì˜ì–´íšŒí™”', task: 'í† ë¡  ë° ë°œí‘œ', score: 'A', competency: 'R', semester: '2023-2í•™ê¸°', date: '2023.10.25' },
+  { course: 'ì°½ì˜?  ë¬¸ì œ?•´ê²?', task: '??? ?”„ë¡œì ?Š¸ ë°œí‘œ', score: 'A+', competency: 'S', semester: '2024-2?•™ê¸?', date: '2024.12.10' },
+  { course: '?°?´?„°ë¶„ì„?‹¤ë¬?', task: 'ê¸°ë§ ?”„ë¡œì ?Š¸', score: 'A', competency: 'T', semester: '2024-2?•™ê¸?', date: '2024.12.08' },
+  { course: 'ë¦¬ë”?‹­ê³? ?†Œ?†µ', task: '?† ë¡? ì°¸ì—¬', score: 'A+', competency: 'R', semester: '2024-2?•™ê¸?', date: '2024.11.25' },
+  { course: 'ì§ì—…?œ¤ë¦?', task: '?‚¬ë¡?ë¶„ì„ ë³´ê³ ?„œ', score: 'A', competency: 'A', semester: '2024-2?•™ê¸?', date: '2024.11.20' },
+  { course: '?•Œê³ ë¦¬ì¦?', task: 'ì¤‘ê°„ ?”„ë¡œì ?Š¸', score: 'A+', competency: 'T', semester: '2024-1?•™ê¸?', date: '2024.05.15' },
+  { course: 'ì¡°ì§?–‰?™ë¡?', task: '??? ê³¼ì œ', score: 'B+', competency: 'A', semester: '2024-1?•™ê¸?', date: '2024.05.10' },
+  { course: 'ì°½ì—…ê³? ?˜?‹ ', task: 'ë¹„ì¦ˆ?‹ˆ?Š¤ ëª¨ë¸ ê°œë°œ', score: 'A', competency: 'S', semester: '2024-1?•™ê¸?', date: '2024.04.20' },
+  { course: '?”„? ˆ?  ?…Œ?´?…˜ ?Š¤?‚¬', task: 'ë°œí‘œ ?‰ê°?', score: 'A+', competency: 'R', semester: '2024-1?•™ê¸?', date: '2024.04.15' },
+  { course: '?””??¸?”½?‚¹', task: '?”„ë¡œí† ????… ? œ?‘', score: 'A', competency: 'S', semester: '2023-2?•™ê¸?', date: '2023.12.05' },
+  { course: '?°?´?„°ë² ì´?Š¤', task: '?‹œ?Š¤?…œ ?„¤ê³?', score: 'B+', competency: 'T', semester: '2023-2?•™ê¸?', date: '2023.11.30' },
+  { course: 'ë´‰ì‚¬?™œ?™ë¡?', task: 'ì§??—­?‚¬?šŒ ë´‰ì‚¬', score: 'A+', competency: 'A', semester: '2023-2?•™ê¸?', date: '2023.11.10' },
+  { course: '?˜?–´?šŒ?™”', task: '?† ë¡? ë°? ë°œí‘œ', score: 'A', competency: 'R', semester: '2023-2?•™ê¸?', date: '2023.10.25' },
 ];
-
-// ìë™ ì‘ë‹µ í•¨ìˆ˜ë“¤
-const getScholarshipAnswer = (scholarshipType: string, semester: string, inquiryType: string): string => {
-  const answers: Record<string, string> = {
-    'ì‹ ì²­ ê¸°ê°„': `${scholarshipType}ì˜ ${semester} ì‹ ì²­ ê¸°ê°„ì€ í•™ê¸° ì‹œì‘ 2ì£¼ ì „ë¶€í„° 1ì£¼ê°„ì…ë‹ˆë‹¤. í•™ìƒí¬í„¸ì—ì„œ ì‹ ì²­í•˜ì‹¤ ìˆ˜ ìˆìœ¼ë©°, ìì„¸í•œ ì¼ì •ì€ í•™ìƒì²˜ ê³µì§€ì‚¬í•­ì„ í™•ì¸í•´ì£¼ì„¸ìš”.`,
-    'ì„ ë°œ ê¸°ì¤€': `${scholarshipType} ì„ ë°œ ê¸°ì¤€ì€ ë‹¤ìŒê³¼ ê°™ìŠµë‹ˆë‹¤:\nâ€¢ ì§ì „í•™ê¸° í‰ì  3.0 ì´ìƒ\nâ€¢ ì´ìˆ˜í•™ì  12í•™ì  ì´ìƒ\nâ€¢ ê°€ì • ê²½ì œ ìˆ˜ì¤€ (êµ­ê°€ì¥í•™ê¸ˆì˜ ê²½ìš°)\nìì„¸í•œ ê¸°ì¤€ì€ í•™ìƒì²˜(02-1234-5678)ë¡œ ë¬¸ì˜í•˜ì‹œê¸° ë°”ëë‹ˆë‹¤.`,
-    'ì§€ê¸‰ ì¼ì •': `${semester} ${scholarshipType} ì§€ê¸‰ ì¼ì •ì€ í•™ê¸° ê°œì‹œ í›„ 1ê°œì›” ì´ë‚´ì…ë‹ˆë‹¤. ì •í™•í•œ ì§€ê¸‰ì¼ì€ í•™ìƒí¬í„¸ ë§ˆì´í˜ì´ì§€ì—ì„œ í™•ì¸í•˜ì‹¤ ìˆ˜ ìˆìŠµë‹ˆë‹¤.`,
-    'ê¸°íƒ€ ë¬¸ì˜': `${scholarshipType}ì— ëŒ€í•œ ì¶”ê°€ ë¬¸ì˜ëŠ” í•™ìƒì²˜ ì¥í•™ë‹´ë‹¹(scholarship@university.ac.kr / 02-1234-5678)ìœ¼ë¡œ ì—°ë½ ì£¼ì‹œê¸° ë°”ëë‹ˆë‹¤. ìƒë‹´ ì‹œê°„ì€ í‰ì¼ 09:00~18:00ì…ë‹ˆë‹¤.`
-  };
-  return answers[inquiryType] || 'ë¬¸ì˜í•˜ì‹  ë‚´ìš©ì— ëŒ€í•œ ë‹µë³€ì„ ì¤€ë¹„ ì¤‘ì…ë‹ˆë‹¤. í•™ìƒì²˜ë¡œ ì§ì ‘ ë¬¸ì˜í•´ì£¼ì„¸ìš”.';
-};
-
-const getWelfareAnswer = (welfareType: string, welfareInquiry: string): string => {
-  const answers: Record<string, Record<string, string>> = {
-    'ê¸°ìˆ™ì‚¬': {
-      'ì´ìš© ì‹œê°„': 'ê¸°ìˆ™ì‚¬ ì¶œì…ì€ 24ì‹œê°„ ê°€ëŠ¥í•˜ë©°, ì™¸ë°• ì‹œì—ëŠ” ì‚¬ì „ ì‹ ì²­ì´ í•„ìš”í•©ë‹ˆë‹¤. ë¬¸ì˜: ìƒí™œê´€ë¦¬íŒ€(02-1234-5679)',
-      'ì‹ ì²­ ë°©ë²•': 'ê¸°ìˆ™ì‚¬ ì‹ ì²­ì€ ë§¤ í•™ê¸° í•™ìƒí¬í„¸ > ìƒí™œ > ê¸°ìˆ™ì‚¬ ì‹ ì²­ ë©”ë‰´ì—ì„œ ê°€ëŠ¥í•©ë‹ˆë‹¤. ì‹ ì²­ ê¸°ê°„ì€ ë°©í•™ ì¤‘ 2ì£¼ê°„ì…ë‹ˆë‹¤.',
-      'ì‹œì„¤ ë¬¸ì˜': 'ê¸°ìˆ™ì‚¬ ì‹œì„¤ ë¬¸ì˜ ë° ê³ ì¥ ì‹ ê³ ëŠ” ìƒí™œê´€ë¦¬íŒ€(02-1234-5679)ìœ¼ë¡œ ì—°ë½ ì£¼ì‹œê¸° ë°”ëë‹ˆë‹¤.',
-      'ê¸°íƒ€': 'ê¸°íƒ€ ê¸°ìˆ™ì‚¬ ê´€ë ¨ ë¬¸ì˜ëŠ” ìƒí™œê´€ë¦¬íŒ€(dorm@university.ac.kr)ìœ¼ë¡œ ì—°ë½í•´ì£¼ì„¸ìš”.'
-    },
-    'í•™ìƒì‹ë‹¹': {
-      'ì´ìš© ì‹œê°„': 'í•™ìƒì‹ë‹¹ ìš´ì˜ ì‹œê°„:\nâ€¢ ì¡°ì‹: 08:00~09:30\nâ€¢ ì¤‘ì‹: 11:30~13:30\nâ€¢ ì„ì‹: 17:30~19:00',
-      'ì‹ ì²­ ë°©ë²•': 'í•™ìƒì‹ë‹¹ì€ ë³„ë„ ì‹ ì²­ ì—†ì´ ì´ìš© ê°€ëŠ¥í•©ë‹ˆë‹¤. ì‹ê¶Œì€ í˜„ì¥ì—ì„œ êµ¬ë§¤í•˜ê±°ë‚˜ í•™ìƒì¦ìœ¼ë¡œ ê²°ì œí•˜ì‹¤ ìˆ˜ ìˆìŠµë‹ˆë‹¤.',
-      'ì‹œì„¤ ë¬¸ì˜': 'ì‹ë‹¹ ì‹œì„¤ ë° ë©”ë‰´ ë¬¸ì˜ëŠ” ë³µì§€íŒ€(02-1234-5680)ìœ¼ë¡œ ì—°ë½í•´ì£¼ì„¸ìš”.',
-      'ê¸°íƒ€': 'ê¸°íƒ€ í•™ìƒì‹ë‹¹ ê´€ë ¨ ë¬¸ì˜ëŠ” ë³µì§€íŒ€(welfare@university.ac.kr)ìœ¼ë¡œ ì—°ë½í•´ì£¼ì„¸ìš”.'
-    },
-    'ë³´ê±´ì„¼í„°': {
-      'ì´ìš© ì‹œê°„': 'ë³´ê±´ì„¼í„° ìš´ì˜ ì‹œê°„:\nâ€¢ í‰ì¼: 09:00~18:00\nâ€¢ ì ì‹¬ì‹œê°„: 12:00~13:00\nâ€¢ ì‘ê¸‰ìƒí™© ì‹œ 24ì‹œê°„ ì—°ë½ ê°€ëŠ¥',
-      'ì‹ ì²­ ë°©ë²•': 'ë³´ê±´ì„¼í„° ì´ìš©ì€ ë°©ë¬¸ ì ‘ìˆ˜ ë˜ëŠ” ì „í™” ì˜ˆì•½(02-1234-5681) ê°€ëŠ¥í•©ë‹ˆë‹¤.',
-      'ì‹œì„¤ ë¬¸ì˜': 'ë³´ê±´ì„¼í„° ì‹œì„¤ ë° ì§„ë£Œ ë¬¸ì˜: 02-1234-5681',
-      'ê¸°íƒ€': 'ê¸°íƒ€ ê±´ê°• ê´€ë ¨ ë¬¸ì˜ëŠ” ë³´ê±´ì„¼í„°(health@university.ac.kr)ë¡œ ì—°ë½í•´ì£¼ì„¸ìš”.'
-    },
-    'ìƒë‹´ì„¼í„°': {
-      'ì´ìš© ì‹œê°„': 'í•™ìƒìƒë‹´ì„¼í„° ìš´ì˜ ì‹œê°„:\nâ€¢ í‰ì¼: 09:00~18:00\nâ€¢ ìƒë‹´ ì˜ˆì•½ì œ ìš´ì˜\nâ€¢ ë¹„ëŒ€ë©´ ìƒë‹´ ê°€ëŠ¥',
-      'ì‹ ì²­ ë°©ë²•': 'ìƒë‹´ ì‹ ì²­ì€ í•™ìƒí¬í„¸ ë˜ëŠ” ì „í™”(02-1234-5682)ë¡œ ì˜ˆì•½í•˜ì‹¤ ìˆ˜ ìˆìŠµë‹ˆë‹¤. ëª¨ë“  ìƒë‹´ ë‚´ìš©ì€ ë¹„ë°€ì´ ë³´ì¥ë©ë‹ˆë‹¤.',
-      'ì‹œì„¤ ë¬¸ì˜': 'ìƒë‹´ì„¼í„° ìœ„ì¹˜ ë° í”„ë¡œê·¸ë¨ ë¬¸ì˜: 02-1234-5682',
-      'ê¸°íƒ€': 'ê¸°íƒ€ ìƒë‹´ ê´€ë ¨ ë¬¸ì˜ëŠ” í•™ìƒìƒë‹´ì„¼í„°(counsel@university.ac.kr)ë¡œ ì—°ë½í•´ì£¼ì„¸ìš”.'
-    }
-  };
-  return answers[welfareType]?.[welfareInquiry] || 'ë¬¸ì˜í•˜ì‹  ë‚´ìš©ì— ëŒ€í•œ ë‹µë³€ì„ ì¤€ë¹„ ì¤‘ì…ë‹ˆë‹¤. í•™ìƒë³µì§€íŒ€ìœ¼ë¡œ ì§ì ‘ ë¬¸ì˜í•´ì£¼ì„¸ìš”.';
-};
-
-const getAcademicAnswer = (academicType: string, detail: string): string => {
-  const answers: Record<string, string> = {
-    'ì„±ì  ë¬¸ì˜': `${detail} ê³¼ëª©ì˜ ì„±ì  ë¬¸ì˜ëŠ” ë‹¤ìŒê³¼ ê°™ì´ ì§„í–‰ë©ë‹ˆë‹¤:\n1. ì„±ì  ê³µê°œ í›„ 1ì£¼ì¼ ì´ë‚´ ì •ì • ì‹ ì²­ ê°€ëŠ¥\n2. í•™ìƒí¬í„¸ > í•™ì‚¬ > ì„±ì ì •ì •ì‹ ì²­\n3. ë‹´ë‹¹ êµìˆ˜ í™•ì¸ í›„ ì²˜ë¦¬\në¬¸ì˜: êµí•™íŒ€(02-1234-5683)`,
-    'ìˆ˜ê°•ì‹ ì²­': `ìˆ˜ê°•ì‹ ì²­ ê´€ë ¨ ì•ˆë‚´:\nâ€¢ ìˆ˜ê°•ì‹ ì²­ ê¸°ê°„: í•™ê¸° ì‹œì‘ 2ì£¼ ì „\nâ€¢ ì •ì • ê¸°ê°„: ê°œê°• í›„ 1ì£¼\nâ€¢ í¬ê¸° ê¸°ê°„: ì¤‘ê°„ê³ ì‚¬ ì´í›„ 1ì£¼\nìì„¸í•œ ì¼ì •ì€ í•™ìƒí¬í„¸ í•™ì‚¬ì¼ì •ì„ í™•ì¸í•´ì£¼ì„¸ìš”.\në¬¸ì˜: êµí•™íŒ€(02-1234-5683)`,
-    'íœ´/ë³µí•™': `íœ´í•™ ë° ë³µí•™ ì‹ ì²­ ì•ˆë‚´:\nâ€¢ íœ´í•™: í•™ê¸° ì‹œì‘ ì „ ë˜ëŠ” ê°œê°• í›„ 2ì£¼ ì´ë‚´\nâ€¢ ë³µí•™: ë³µí•™ í•™ê¸° ì‹œì‘ 1ê°œì›” ì „\nâ€¢ ì‹ ì²­: í•™ìƒí¬í„¸ > í•™ì  > íœ´í•™/ë³µí•™ ì‹ ì²­\në¬¸ì˜: êµí•™íŒ€(02-1234-5683)`,
-    'ì¡¸ì—…ìš”ê±´': `ì¡¸ì—…ìš”ê±´ í™•ì¸:\nâ€¢ ì´ ì´ìˆ˜í•™ì : 130í•™ì  ì´ìƒ\nâ€¢ ì „ê³µí•™ì : 60í•™ì  ì´ìƒ\nâ€¢ êµì–‘í•™ì : 30í•™ì  ì´ìƒ\nâ€¢ STAR ì—­ëŸ‰ ê¸°ì¤€ ì¶©ì¡±\nìì„¸í•œ ì¡¸ì—…ìš”ê±´ì€ í•™ìƒí¬í„¸ > í•™ì‚¬ > ì¡¸ì—…ìš”ê±´ì¡°íšŒì—ì„œ í™•ì¸í•˜ì‹¤ ìˆ˜ ìˆìŠµë‹ˆë‹¤.\në¬¸ì˜: êµí•™íŒ€(academic@university.ac.kr)`
-  };
-  return answers[academicType] || 'ë¬¸ì˜í•˜ì‹  ë‚´ìš©ì— ëŒ€í•œ ë‹µë³€ì„ ì¤€ë¹„ ì¤‘ì…ë‹ˆë‹¤. êµí•™íŒ€ìœ¼ë¡œ ì§ì ‘ ë¬¸ì˜í•´ì£¼ì„¸ìš”.';
-};
 
 export default function StudentDashboard() {
-  // ì¸ì¦ ìƒíƒœ ê´€ë¦¬
+  // ?¸ì¦? ?ƒ?ƒœ ê´?ë¦?
   const [authTokens, setAuthTokens] = useState<AuthTokens | null>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
-  // ìë™ ë¡œê·¸ì¸ ì²´í¬
+  // ??™ ë¡œê·¸?¸ ì²´í¬
   useEffect(() => {
     const tokens = checkAutoLogin();
     setAuthTokens(tokens);
     setIsCheckingAuth(false);
   }, []);
 
-  // ë¡œê·¸ì¸ í•¸ë“¤ëŸ¬
+  // ë¡œê·¸?¸ ?•¸?“¤?Ÿ¬
   const handleLoginSuccess = (tokens: AuthTokens) => {
     setAuthTokens(tokens);
   };
 
-  // ë¡œê·¸ì•„ì›ƒ í•¸ë“¤ëŸ¬
+  // ë¡œê·¸?•„?›ƒ ?•¸?“¤?Ÿ¬
   const handleLogout = () => {
     clearAuthTokens();
     setAuthTokens(null);
   };
 
   const [activeTab, setActiveTab] = useState('home');
-  const [radarToggle, setRadarToggle] = useState<'core' | 'po'>('core'); // ë ˆì´ë” í† ê¸€: í•µì‹¬ì—­ëŸ‰ vs í•˜ìœ„ì—­ëŸ‰
+  const [radarToggle, setRadarToggle] = useState<'core' | 'po'>('core'); // ? ˆ?´?” ?† ê¸?: ?•µ?‹¬?—­?Ÿ‰ vs ?•˜?œ„?—­?Ÿ‰
   const [selectedStar, setSelectedStar] = useState<string | null>(null);
   const [selectedPO, setSelectedPO] = useState<string | null>(null);
   const [showComplaintModal, setShowComplaintModal] = useState(false);
@@ -251,10 +201,10 @@ export default function StudentDashboard() {
   const [showFAQ, setShowFAQ] = useState(false);
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
   const [showEvidenceModal, setShowEvidenceModal] = useState(false);
-  const [evidenceFilter, setEvidenceFilter] = useState<string>('ì „ì²´');
-  const [evidenceSort, setEvidenceSort] = useState<string>('ìµœì‹ ìˆœ');
+  const [evidenceFilter, setEvidenceFilter] = useState<string>('? „ì²?');
+  const [evidenceSort, setEvidenceSort] = useState<string>('ìµœì‹ ?ˆœ');
   const [showComplaintListModal, setShowComplaintListModal] = useState(false);
-  const [complaintStatusFilter, setComplaintStatusFilter] = useState<string>('ì „ì²´');
+  const [complaintStatusFilter, setComplaintStatusFilter] = useState<string>('? „ì²?');
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showNotificationSettingsModal, setShowNotificationSettingsModal] = useState(false);
@@ -276,13 +226,13 @@ export default function StudentDashboard() {
   const [ratingComment, setRatingComment] = useState('');
   const [complaintDetailModal, setComplaintDetailModal] = useState<any>(null);
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [periodFilter, setPeriodFilter] = useState('ì „ì²´');
+  const [periodFilter, setPeriodFilter] = useState('? „ì²?');
   const filterScrollRef = useRef<HTMLDivElement>(null);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
-  const [downloadPeriod, setDownloadPeriod] = useState('ì „ì²´');
+  const [downloadPeriod, setDownloadPeriod] = useState('? „ì²?');
   const [downloadFormat, setDownloadFormat] = useState('PDF');
   
-  // ë¯¼ì› ì‘ì„± í¼ state
+  // ë¯¼ì› ?‘?„± ?¼ state
   const [complaintTitle, setComplaintTitle] = useState('');
   const [complaintContent, setComplaintContent] = useState('');
   const [attachedFiles, setAttachedFiles] = useState<Array<{
@@ -293,48 +243,16 @@ export default function StudentDashboard() {
   }>>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  // ì±„íŒ… ëª¨ë‹¬ state (ëª¨ë“  ì¹´í…Œê³ ë¦¬)
+  // ì±„íŒ… ëª¨ë‹¬ state
   const [showChatModal, setShowChatModal] = useState(false);
-  const [chatStep, setChatStep] = useState(0);
-  const [chatAnswers, setChatAnswers] = useState<{
-    facilityType?: string;
-    building?: string;
-    floor?: string;
-    problemType?: string;
-    detail?: string;
-    // í•™ìƒ ì¥í•™
-    scholarshipType?: string;
-    semester?: string;
-    inquiryType?: string;
-    // í•™ìƒ ë³µì§€
-    welfareType?: string;
-    welfareInquiry?: string;
-    // ìˆ˜ì—… ë° í•™ì‚¬
-    academicType?: string;
-    courseName?: string;
-  }>({});
-  const [chatHistory, setChatHistory] = useState<Array<{
-    type: 'bot' | 'user';
-    message: string;
-  }>>([]);
-  const [userInput, setUserInput] = useState('');
-  const chatScrollRef = useRef<HTMLDivElement>(null);
-  const [showFileInfo, setShowFileInfo] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState<string>(''); // í˜„ì¬ ì±„íŒ… ì¹´í…Œê³ ë¦¬ ì¶”ì 
-  
-  // ì‘ì„± ì˜µì…˜ state
+  const [currentCategory, setCurrentCategory] = useState<string>(''); // ?˜„?¬ ì±„íŒ… ì¹´í…Œê³ ë¦¬ ì¶”ì 
+
+  // ?‘?„± ?˜µ?…˜ state
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isPrivate, setIsPrivate] = useState(true);
   const [agreeNotification, setAgreeNotification] = useState(false);
 
-  // ì±„íŒ… ìë™ ìŠ¤í¬ë¡¤
-  useEffect(() => {
-    if (chatScrollRef.current) {
-      chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
-    }
-  }, [chatHistory]);
-
-  // ìë™ ì €ì¥ (30ì´ˆë§ˆë‹¤)
+  // ??™ ????¥ (30ì´ˆë§ˆ?‹¤)
   useEffect(() => {
     const autoSaveInterval = setInterval(() => {
       if (complaintTitle || complaintContent) {
@@ -343,14 +261,14 @@ export default function StudentDashboard() {
           content: complaintContent,
           timestamp: new Date().toISOString()
         }));
-        console.log('âœ… ìë™ ì €ì¥ ì™„ë£Œ');
+        console.log('?œ… ??™ ????¥ ?™„ë£?');
       }
-    }, 30000); // 30ì´ˆ
+    }, 30000); // 30ì´?
 
     return () => clearInterval(autoSaveInterval);
   }, [complaintTitle, complaintContent]);
 
-  // íŒŒì¼ ì„ íƒ ì²˜ë¦¬
+  // ?ŒŒ?¼ ?„ ?ƒ ì²˜ë¦¬
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
@@ -358,20 +276,20 @@ export default function StudentDashboard() {
     const newFiles = Array.from(files).slice(0, 5 - attachedFiles.length);
     
     newFiles.forEach(file => {
-      // íŒŒì¼ í¬ê¸° ì²´í¬ (10MB)
+      // ?ŒŒ?¼ ?¬ê¸? ì²´í¬ (10MB)
       if (file.size > 10 * 1024 * 1024) {
-        alert(`${file.name}ì€(ëŠ”) 10MBë¥¼ ì´ˆê³¼í•©ë‹ˆë‹¤.`);
+        alert(`${file.name}???(?Š”) 10MBë¥? ì´ˆê³¼?•©?‹ˆ?‹¤.`);
         return;
       }
 
-      // íŒŒì¼ í˜•ì‹ ì²´í¬
+      // ?ŒŒ?¼ ?˜•?‹ ì²´í¬
       const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
       if (!validTypes.includes(file.type)) {
-        alert(`${file.name}ì€(ëŠ”) ì§€ì›í•˜ì§€ ì•ŠëŠ” í˜•ì‹ì…ë‹ˆë‹¤.`);
+        alert(`${file.name}???(?Š”) ì§??›?•˜ì§? ?•Š?Š” ?˜•?‹?…?‹ˆ?‹¤.`);
         return;
       }
 
-      // ë¯¸ë¦¬ë³´ê¸° ìƒì„±
+      // ë¯¸ë¦¬ë³´ê¸° ?ƒ?„±
       const reader = new FileReader();
       reader.onload = (event) => {
         setAttachedFiles(prev => [...prev, {
@@ -384,59 +302,59 @@ export default function StudentDashboard() {
       reader.readAsDataURL(file);
     });
 
-    // input ì´ˆê¸°í™”
+    // input ì´ˆê¸°?™”
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
-  // íŒŒì¼ ì‚­ì œ
+  // ?ŒŒ?¼ ?‚­? œ
   const removeFile = (id: string) => {
     setAttachedFiles(prev => prev.filter(f => f.id !== id));
   };
 
-  // ì´ë¯¸ì§€ íšŒì „
+  // ?´ë¯¸ì?? ?šŒ? „
   const rotateImage = (id: string) => {
     setAttachedFiles(prev => prev.map(f => 
       f.id === id ? { ...f, rotation: (f.rotation + 90) % 360 } : f
     ));
   };
 
-  // ìƒíƒœë³„ ìƒ‰ìƒ
+  // ?ƒ?ƒœë³? ?ƒ‰?ƒ
   const statusColor: Record<string, string> = {
-    'ì ‘ìˆ˜': 'bg-blue-100 text-blue-600',
-    'ì²˜ë¦¬ì¤‘': 'bg-orange-100 text-orange-600',
-    'ì™„ë£Œ': 'bg-green-100 text-green-600',
+    '? ‘?ˆ˜': 'bg-blue-100 text-blue-600',
+    'ì²˜ë¦¬ì¤?': 'bg-orange-100 text-orange-600',
+    '?™„ë£?': 'bg-green-100 text-green-600',
     'ë°˜ë ¤': 'bg-red-100 text-red-600',
   };
 
-  // ë“±ê¸‰ë³„ ë°°ì§€
+  // ?“±ê¸‰ë³„ ë°°ì??
   const gradeBadge: Record<string, { bg: string; icon: JSX.Element }> = {
-    'ë§ˆìŠ¤í„°': { bg: 'bg-[#FAAF40]', icon: <Trophy className="w-3 h-3" /> },
-    'ìš°ìˆ˜': { bg: 'bg-[#EE3E42]', icon: <Star className="w-3 h-3" /> },
+    'ë§ˆìŠ¤?„°': { bg: 'bg-[#FAAF40]', icon: <Trophy className="w-3 h-3" /> },
+    '?š°?ˆ˜': { bg: 'bg-[#EE3E42]', icon: <Star className="w-3 h-3" /> },
     'ë³´í†µ': { bg: 'bg-[#e2e8f0]', icon: <Check className="w-3 h-3" /> },
-    'ë…¸ë ¥ìš”ë§': { bg: 'bg-[#C5006F]', icon: <TrendingUp className="w-3 h-3" /> },
+    '?…¸? ¥?š”ë§?': { bg: 'bg-[#C5006F]', icon: <TrendingUp className="w-3 h-3" /> },
   };
 
-  // ë¯¼ì› í†µê³„
+  // ë¯¼ì› ?†µê³?
   const complaintStats = {
-    ì ‘ìˆ˜: complaints.filter(c => c.status === 'ì ‘ìˆ˜').length,
-    ì²˜ë¦¬ì¤‘: complaints.filter(c => c.status === 'ì²˜ë¦¬ì¤‘').length,
-    ì™„ë£Œ: complaints.filter(c => c.status === 'ì™„ë£Œ').length,
+    ? ‘?ˆ˜: complaints.filter(c => c.status === '? ‘?ˆ˜').length,
+    ì²˜ë¦¬ì¤?: complaints.filter(c => c.status === 'ì²˜ë¦¬ì¤?').length,
+    ?™„ë£?: complaints.filter(c => c.status === '?™„ë£?').length,
   };
-  const completionRate = Math.round((complaintStats.ì™„ë£Œ / complaints.length) * 100);
+  const completionRate = Math.round((complaintStats.?™„ë£? / complaints.length) * 100);
 
-  // ë¯¼ì› í•„í„°ë§
+  // ë¯¼ì› ?•„?„°ë§?
   const getFilteredComplaints = () => {
     let filtered = complaints;
 
-    // 1. ìƒíƒœ í•„í„°ë§
-    if (complaintStatusFilter !== 'ì „ì²´') {
+    // 1. ?ƒ?ƒœ ?•„?„°ë§?
+    if (complaintStatusFilter !== '? „ì²?') {
       filtered = filtered.filter(c => c.status === complaintStatusFilter);
     }
 
-    // 2. ê¸°ê°„ í•„í„°ë§
-    if (periodFilter !== 'ì „ì²´') {
+    // 2. ê¸°ê°„ ?•„?„°ë§?
+    if (periodFilter !== '? „ì²?') {
       const now = new Date();
       const monthsAgo = periodFilter === '1ê°œì›”' ? 1 : periodFilter === '3ê°œì›”' ? 3 : 6;
       const filterDate = new Date(now.setMonth(now.getMonth() - monthsAgo));
@@ -447,7 +365,7 @@ export default function StudentDashboard() {
       });
     }
 
-    // 3. í‚¤ì›Œë“œ í•„í„°ë§
+    // 3. ?‚¤?›Œ?“œ ?•„?„°ë§?
     if (searchKeyword.trim()) {
       const keyword = searchKeyword.toLowerCase();
       filtered = filtered.filter(c => 
@@ -459,20 +377,20 @@ export default function StudentDashboard() {
     return filtered;
   };
 
-  // ë¯¼ì› ëª©ë¡ ëª¨ë‹¬ ë‹«ê¸° (Xë²„íŠ¼)
+  // ë¯¼ì› ëª©ë¡ ëª¨ë‹¬ ?‹«ê¸? (Xë²„íŠ¼)
   const handleCloseComplaintListModal = () => {
     setShowComplaintListModal(false);
     setSearchKeyword('');
-    setPeriodFilter('ì „ì²´');
+    setPeriodFilter('? „ì²?');
   };
 
-  // "í‰ê°€í•˜ê¸°" ë²„íŠ¼ í´ë¦­
+  // "?‰ê°??•˜ê¸?" ë²„íŠ¼ ?´ë¦?
   const handleRateComplaint = (complaintId: number) => {
     setRatingComplaintId(complaintId);
     setShowRatingModal(true);
   };
 
-  // ë§Œì¡±ë„ í‰ê°€ ì œì¶œ
+  // ë§Œì¡±?„ ?‰ê°? ? œì¶?
   const handleRatingSubmit = () => {
     if (ratingComplaintId && selectedRating > 0) {
       setComplaintRatedStatus({...complaintRatedStatus, [ratingComplaintId]: true});
@@ -482,14 +400,14 @@ export default function StudentDashboard() {
       setRatingComplaintId(null);
       setSelectedRating(0);
       setRatingComment('');
-      alert('í‰ê°€í•´ ì£¼ì…”ì„œ ê°ì‚¬í•©ë‹ˆë‹¤!');
+      alert('?‰ê°??•´ ì£¼ì…”?„œ ê°ì‚¬?•©?‹ˆ?‹¤!');
     }
   };
 
-  // í™ˆ í™”ë©´
+  // ?™ˆ ?™”ë©?
   const HomeScreen = () => (
     <div className="pb-4">
-      {/* í—¤ë” */}
+      {/* ?—¤?” */}
       <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4 rounded-[0px]">
         <div className="flex items-center justify-between mb-4">
           <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1">
@@ -514,18 +432,18 @@ export default function StudentDashboard() {
           </div>
         </div>
         
-        {/* ì¸ì‚¬ë§ + ì¢…í•© ì ìˆ˜ ì¹´ë“œ */}
+        {/* ?¸?‚¬ë§? + ì¢…í•© ? ?ˆ˜ ì¹´ë“œ */}
         <div className="bg-white/20 backdrop-blur rounded-2xl p-4 mt-2">
           <div className="flex items-center justify-between gap-4">
-            {/* ì¢Œì¸¡: ì¸ì‚¬ë§ */}
+            {/* ì¢Œì¸¡: ?¸?‚¬ë§? */}
             <div>
-              <p className="text-sm opacity-90">ì•ˆë…•í•˜ì„¸ìš”</p>
-              <p className="font-bold text-lg text-[24px]">ê¹€ìˆ˜ì„± ë‹˜</p>
+              <p className="text-sm opacity-90">?•ˆ?…•?•˜?„¸?š”</p>
+              <p className="font-bold text-lg text-[24px]">ê¹??ˆ˜?„± ?‹˜</p>
             </div>
             
-            {/* ìš°ì¸¡: ì¢…í•© ì—­ëŸ‰ ì ìˆ˜ */}
+            {/* ?š°ì¸?: ì¢…í•© ?—­?Ÿ‰ ? ?ˆ˜ */}
             <div className="text-right">
-              <p className="text-sm opacity-90 mb-1">ì¢…í•© ì—­ëŸ‰ ì ìˆ˜</p>
+              <p className="text-sm opacity-90 mb-1">ì¢…í•© ?—­?Ÿ‰ ? ?ˆ˜</p>
               <div className="flex items-end gap-2 justify-end">
                 <span className="text-4xl font-bold text-[32px]">81.3</span>
                 <span className="text-lg mb-1 text-[16px]">/ 100</span>
@@ -535,13 +453,13 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      {/* STAR ë ˆì´ë” ì°¨íŠ¸ */}
+      {/* STAR ? ˆ?´?” ì°¨íŠ¸ */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-gray-800">ì¢…í•© í˜„í™© ë ˆì´ë”</h3>
+          <h3 className="font-bold text-gray-800">ì¢…í•© ?˜„?™© ? ˆ?´?”</h3>
         </div>
 
-        {/* í† ê¸€ ë²„íŠ¼ */}
+        {/* ?† ê¸? ë²„íŠ¼ */}
         <div className="flex gap-2 mb-4">
           <button
             onClick={() => setRadarToggle('core')}
@@ -551,7 +469,7 @@ export default function StudentDashboard() {
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            SÂ·TÂ·AÂ·R í•µì‹¬ì—­ëŸ‰
+            SÂ·TÂ·AÂ·R ?•µ?‹¬?—­?Ÿ‰
           </button>
           <button
             onClick={() => setRadarToggle('po')}
@@ -561,7 +479,7 @@ export default function StudentDashboard() {
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            í•˜ìœ„ì—­ëŸ‰(PO)
+            ?•˜?œ„?—­?Ÿ‰(PO)
           </button>
         </div>
 
@@ -571,35 +489,35 @@ export default function StudentDashboard() {
               <PolarGrid stroke="#e5e7eb" />
               <PolarAngleAxis dataKey="subject" tick={{ fontSize: radarToggle === 'po' ? 10 : 12, fill: '#374151' }} />
               <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 10 }} axisLine={false} />
-              {/* ë¨¼ì € ì±„ìƒ‰ ì˜ì—­ ë Œë”ë§ (ë’¤ì— ë°°ì¹˜) */}
-              <Radar name="ë‚´ ì ìˆ˜" dataKey="myScore" stroke="#FFA500" fill="#FFA500" fillOpacity={0.15} strokeWidth={2} />
-              {/* ê·¸ ë‹¤ìŒ ë¼ì¸ë“¤ ë Œë”ë§ (ìœ„ì— ë°°ì¹˜) */}
-              <Radar name="í•™ê³¼ í‰ê· " dataKey="deptAvg" stroke="#FF6B35" fill="none" strokeWidth={2} />
-              <Radar name="ì „ì²´ í‰ê· " dataKey="totalAvg" stroke="#C13584" fill="none" strokeWidth={2} />
+              {/* ë¨¼ì?? ì±„ìƒ‰ ?˜?—­ ? Œ?”ë§? (?’¤?— ë°°ì¹˜) */}
+              <Radar name="?‚´ ? ?ˆ˜" dataKey="myScore" stroke="#FFA500" fill="#FFA500" fillOpacity={0.15} strokeWidth={2} />
+              {/* ê·? ?‹¤?Œ ?¼?¸?“¤ ? Œ?”ë§? (?œ„?— ë°°ì¹˜) */}
+              <Radar name="?•™ê³? ?‰ê·?" dataKey="deptAvg" stroke="#FF6B35" fill="none" strokeWidth={2} />
+              <Radar name="? „ì²? ?‰ê·?" dataKey="totalAvg" stroke="#C13584" fill="none" strokeWidth={2} />
             </RadarChart>
           </ResponsiveContainer>
         </div>
 
-        {/* ì»¤ìŠ¤í…€ ë²”ë¡€ */}
+        {/* ì»¤ìŠ¤??? ë²”ë?? */}
         <div className="flex items-center justify-center gap-4 mt-2">
           <div className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-[#FFA500]"></div>
-            <span className="text-xs text-gray-600">ë‚´ ì ìˆ˜</span>
+            <span className="text-xs text-gray-600">?‚´ ? ?ˆ˜</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-[#FF6B35]"></div>
-            <span className="text-xs text-gray-600">í•™ê³¼ í‰ê· </span>
+            <span className="text-xs text-gray-600">?•™ê³? ?‰ê·?</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-[#C13584]"></div>
-            <span className="text-xs text-gray-600">ì „ì²´ í‰ê· </span>
+            <span className="text-xs text-gray-600">? „ì²? ?‰ê·?</span>
           </div>
         </div>
       </div>
 
-      {/* ì—­ëŸ‰ ë“±ê¸‰ Badge */}
+      {/* ?—­?Ÿ‰ ?“±ê¸? Badge */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
-        <h3 className="font-bold text-gray-800 mb-3">ì—­ëŸ‰ ë“±ê¸‰</h3>
+        <h3 className="font-bold text-gray-800 mb-3">?—­?Ÿ‰ ?“±ê¸?</h3>
         
         {radarToggle === 'core' ? (
           <div className="grid grid-cols-2 gap-3">
@@ -610,7 +528,7 @@ export default function StudentDashboard() {
                 className="bg-gray-50 rounded-2xl shadow p-4 cursor-pointer hover:shadow-lg transition-all"
               >
                 <div className="flex items-center justify-center gap-6">
-                  {/* ì™¼ìª½ í”„ë ˆì„: S + ì°½ì˜ */}
+                  {/* ?™¼ìª? ?”„? ˆ?„: S + ì°½ì˜ */}
                   <div className="flex flex-col items-center justify-center gap-1">
                     <div className="w-10 h-10 flex items-center justify-center font-bold text-2xl"
                          style={{ color: '#0f172a' }}>
@@ -619,9 +537,9 @@ export default function StudentDashboard() {
                     <p className="text-sm text-gray-600">{value.name}</p>
                   </div>
                   
-                  {/* ì˜¤ë¥¸ìª½ í”„ë ˆì„: 85ì  + ìš°ìˆ˜ */}
+                  {/* ?˜¤ë¥¸ìª½ ?”„? ˆ?„: 85?  + ?š°?ˆ˜ */}
                   <div className="flex flex-col items-center justify-center gap-2">
-                    <p className="text-2xl font-bold" style={{ color: '#0f172a' }}>{value.score}ì </p>
+                    <p className="text-2xl font-bold" style={{ color: '#0f172a' }}>{value.score}? </p>
                     <div className={`${gradeBadge[value.grade].bg} ${value.grade === 'ë³´í†µ' ? 'text-[#0f172a]' : 'text-white'} text-[10px] px-2 py-0.5 rounded-full inline-flex items-center gap-1 whitespace-nowrap`}>
                       <span>{gradeBadge[value.grade].icon}</span>
                       <span className="text-[12px]">{value.grade}</span>
@@ -648,7 +566,7 @@ export default function StudentDashboard() {
                     <p className="text-sm font-medium text-gray-800">{value.name}</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <p className="text-lg font-bold text-gray-800">{value.score}ì </p>
+                    <p className="text-lg font-bold text-gray-800">{value.score}? </p>
                     <div className={`${gradeBadge[value.grade].bg} ${value.grade === 'ë³´í†µ' ? 'text-[#0f172a]' : 'text-white'} text-[10px] px-2 py-1.5 rounded-full inline-flex items-center justify-center gap-1 whitespace-nowrap min-w-[60px]`}>
                       <span>{gradeBadge[value.grade].icon}</span>
                       <span className="text-[11px]">{value.grade}</span>
@@ -661,39 +579,39 @@ export default function StudentDashboard() {
         )}
       </div>
 
-      {/* í‘œì¤€ì§ë¬´ ì í•©ë„ */}
+      {/* ?‘œì¤?ì§ë¬´ ? ?•©?„ */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
-        <h3 className="font-bold text-gray-800 mb-3">í‘œì¤€ì§ë¬´ ì í•©ë„</h3>
+        <h3 className="font-bold text-gray-800 mb-3">?‘œì¤?ì§ë¬´ ? ?•©?„</h3>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-gray-600">í•™ê³¼ ì·¨ì—…ì í‰ê·  ëŒ€ë¹„</span>
+          <span className="text-gray-600">?•™ê³? ì·¨ì—…? ?‰ê·? ???ë¹?</span>
           <span className="text-2xl font-bold text-orange-500">78%</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-3">
           <div className="bg-gradient-to-r from-orange-400 to-red-500 h-3 rounded-full" style={{ width: '78%' }}></div>
         </div>
-        <p className="text-xs text-gray-500 mt-2 mb-4">â€» ë‚˜ì˜ ì´ìˆ˜ ì—­ëŸ‰ê³¼ í•™ê³¼ ì¡¸ì—…ìƒ(ì·¨ì—…ì) í‰ê·  ì—­ëŸ‰ ì¼ì¹˜ë„</p>
+        <p className="text-xs text-gray-500 mt-2 mb-4">??? ?‚˜?˜ ?´?ˆ˜ ?—­?Ÿ‰ê³? ?•™ê³? ì¡¸ì—…?ƒ(ì·¨ì—…?) ?‰ê·? ?—­?Ÿ‰ ?¼ì¹˜ë„</p>
         
-        {/* ì¶”ì²œ ì§ë¬´ ì í•©ë„ */}
+        {/* ì¶”ì²œ ì§ë¬´ ? ?•©?„ */}
         <div className="pt-4 border-t border-gray-100">
           <h4 className="font-bold text-gray-800 mb-3">ì¶”ì²œ ì§ë¬´</h4>
           <div className="space-y-3">
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
               <div>
-                <div className="text-sm text-gray-600 mb-1">ì†Œí”„íŠ¸ì›¨ì–´ ê°œë°œì</div>
+                <div className="text-sm text-gray-600 mb-1">?†Œ?”„?Š¸?›¨?–´ ê°œë°œ?</div>
                 <div className="text-2xl font-bold text-gray-600">92%</div>
               </div>
-              <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">ì í•©</div>
+              <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">? ?•©</div>
             </div>
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200/20">
               <div>
-                <div className="text-sm text-gray-600 mb-1">ë°ì´í„° ë¶„ì„ê°€</div>
+                <div className="text-sm text-gray-600 mb-1">?°?´?„° ë¶„ì„ê°?</div>
                 <div className="text-2xl font-bold text-gray-500">85%</div>
               </div>
-              <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">ì í•©</div>
+              <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">? ?•©</div>
             </div>
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200/20">
               <div>
-                <div className="text-sm text-gray-600 mb-1">IT ì»¨ì„¤í„´íŠ¸</div>
+                <div className="text-sm text-gray-600 mb-1">IT ì»¨ì„¤?„´?Š¸</div>
                 <div className="text-2xl font-bold text-gray-500">78%</div>
               </div>
               <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">ë³´í†µ</div>
@@ -702,15 +620,15 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      {/* Evidence íŠ¸ë˜í‚¹ */}
+      {/* Evidence ?Š¸?˜?‚¹ */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4 mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-gray-800">Evidence íŠ¸ë˜í‚¹</h3>
+          <h3 className="font-bold text-gray-800">Evidence ?Š¸?˜?‚¹</h3>
           <button 
             onClick={() => setShowEvidenceModal(true)}
             className="text-sm text-pink-500 font-medium"
           >
-            ì „ì²´ ë³´ê¸°
+            ? „ì²? ë³´ê¸°
           </button>
         </div>
         <div className="space-y-2">
@@ -732,7 +650,7 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      {/* í–‰ë™ì§€í‘œ ëª¨ë‹¬ (í•µì‹¬ì—­ëŸ‰) */}
+      {/* ?–‰?™ì§??‘œ ëª¨ë‹¬ (?•µ?‹¬?—­?Ÿ‰) */}
       {selectedStar && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto animate-slide-up">
@@ -743,8 +661,8 @@ export default function StudentDashboard() {
                   {selectedStar}
                 </div>
                 <div>
-                  <h3 className="font-bold text-xl">{starDetails[selectedStar as keyof typeof starDetails].name} ì—­ëŸ‰</h3>
-                  <p className="text-gray-500">í–‰ë™ì§€í‘œ ë‹¬ì„±ë„</p>
+                  <h3 className="font-bold text-xl">{starDetails[selectedStar as keyof typeof starDetails].name} ?—­?Ÿ‰</h3>
+                  <p className="text-gray-500">?–‰?™ì§??‘œ ?‹¬?„±?„</p>
                 </div>
               </div>
               <button onClick={() => setSelectedStar(null)} className="p-2">
@@ -773,7 +691,7 @@ export default function StudentDashboard() {
         </div>
       )}
 
-      {/* í–‰ë™ì§€í‘œ ëª¨ë‹¬ (í•˜ìœ„ì—­ëŸ‰ PO) */}
+      {/* ?–‰?™ì§??‘œ ëª¨ë‹¬ (?•˜?œ„?—­?Ÿ‰ PO) */}
       {selectedPO && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto animate-slide-up">
@@ -785,7 +703,7 @@ export default function StudentDashboard() {
                 </div>
                 <div>
                   <h3 className="font-bold text-xl">{poDetails[selectedPO as keyof typeof poDetails].name}</h3>
-                  <p className="text-gray-500">í–‰ë™ì§€í‘œ ë‹¬ì„±ë„</p>
+                  <p className="text-gray-500">?–‰?™ì§??‘œ ?‹¬?„±?„</p>
                 </div>
               </div>
               <button onClick={() => setSelectedPO(null)} className="p-2">
@@ -816,10 +734,10 @@ export default function StudentDashboard() {
     </div>
   );
 
-  // ë¯¼ì› í™”ë©´
+  // ë¯¼ì› ?™”ë©?
   const ComplaintScreen = () => (
     <div className="pb-4">
-      {/* í—¤ë” */}
+      {/* ?—¤?” */}
       <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1">
@@ -843,13 +761,13 @@ export default function StudentDashboard() {
             </button>
           </div>
         </div>
-        <h2 className="font-bold text-xl">ë¯¼ì› ì„¼í„°</h2>
-        <p className="text-sm opacity-90 mb-3">ë¬¸ì˜ì‚¬í•­ì„ í¸ë¦¬í•˜ê²Œ ì ‘ìˆ˜í•˜ì„¸ìš”</p>
+        <h2 className="font-bold text-xl">ë¯¼ì› ?„¼?„°</h2>
+        <p className="text-sm opacity-90 mb-3">ë¬¸ì˜?‚¬?•­?„ ?¸ë¦¬í•˜ê²? ? ‘?ˆ˜?•˜?„¸?š”</p>
         
-        {/* ì²˜ë¦¬ìœ¨ ì¹´ë“œ - í—¤ë” ë‚´ë¶€ */}
+        {/* ì²˜ë¦¬?œ¨ ì¹´ë“œ - ?—¤?” ?‚´ë¶? */}
         <div className="bg-white/30 backdrop-blur-md rounded-2xl p-4">
           <div className="flex items-center gap-3 text-sm">
-            <span className="text-white font-medium whitespace-nowrap">ì²˜ë¦¬ìœ¨</span>
+            <span className="text-white font-medium whitespace-nowrap">ì²˜ë¦¬?œ¨</span>
             <div className="flex-1 bg-white/30 rounded-full h-2">
               <div className="bg-white h-2 rounded-full" 
                    style={{ width: `${completionRate}%` }}></div>
@@ -859,41 +777,41 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      {/* ë¯¼ì› í˜„í™©íŒ */}
+      {/* ë¯¼ì› ?˜„?™©?Œ */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-gray-800">ë‚´ ë¯¼ì› í˜„í™©</h3>
+          <h3 className="font-bold text-gray-800">?‚´ ë¯¼ì› ?˜„?™©</h3>
         </div>
         <div className="grid grid-cols-3 gap-2">
           <button 
             onClick={() => {
-              setComplaintStatusFilter('ì ‘ìˆ˜');
+              setComplaintStatusFilter('? ‘?ˆ˜');
               setShowComplaintListModal(true);
             }}
             className="text-center p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all"
           >
-            <p className="text-2xl font-bold text-blue-600">{complaintStats.ì ‘ìˆ˜}</p>
-            <p className="text-xs text-gray-600">ì ‘ìˆ˜</p>
+            <p className="text-2xl font-bold text-blue-600">{complaintStats.? ‘?ˆ˜}</p>
+            <p className="text-xs text-gray-600">? ‘?ˆ˜</p>
           </button>
           <button 
             onClick={() => {
-              setComplaintStatusFilter('ì²˜ë¦¬ì¤‘');
+              setComplaintStatusFilter('ì²˜ë¦¬ì¤?');
               setShowComplaintListModal(true);
             }}
             className="text-center p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all"
           >
-            <p className="text-2xl font-bold text-orange-600">{complaintStats.ì²˜ë¦¬ì¤‘}</p>
-            <p className="text-xs text-gray-600">ì²˜ë¦¬ì¤‘</p>
+            <p className="text-2xl font-bold text-orange-600">{complaintStats.ì²˜ë¦¬ì¤?}</p>
+            <p className="text-xs text-gray-600">ì²˜ë¦¬ì¤?</p>
           </button>
           <button 
             onClick={() => {
-              setComplaintStatusFilter('ì™„ë£Œ');
+              setComplaintStatusFilter('?™„ë£?');
               setShowComplaintListModal(true);
             }}
             className="text-center p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all"
           >
-            <p className="text-2xl font-bold text-green-600">{complaintStats.ì™„ë£Œ}</p>
-            <p className="text-xs text-gray-600">ì™„ë£Œ</p>
+            <p className="text-2xl font-bold text-green-600">{complaintStats.?™„ë£?}</p>
+            <p className="text-xs text-gray-600">?™„ë£?</p>
           </button>
         </div>
       </div>
@@ -908,31 +826,31 @@ export default function StudentDashboard() {
               onClick={() => {
                 setSelectedCategory(cat);
                 setCurrentCategory(cat.name);
-                // ëª¨ë“  ì¹´í…Œê³ ë¦¬ë¥¼ ì±„íŒ… ëª¨ë‹¬ë¡œ ì²˜ë¦¬
+                // ëª¨ë“  ì¹´í…Œê³ ë¦¬ë¥? ì±„íŒ… ëª¨ë‹¬ë¡? ì²˜ë¦¬
                 setShowChatModal(true);
                 setChatStep(0);
                 setChatAnswers({});
                 
-                // ì¹´í…Œê³ ë¦¬ë³„ ì´ˆê¸° ë©”ì‹œì§€
-                if (cat.name === 'ì‹œì„¤ ë° í™˜ê²½') {
+                // ì¹´í…Œê³ ë¦¬ë³? ì´ˆê¸° ë©”ì‹œì§?
+                if (cat.name === '?‹œ?„¤ ë°? ?™˜ê²?') {
                   setChatHistory([
-                    { type: 'bot', message: 'ì•ˆë…•í•˜ì„¸ìš”! ì‹œì„¤ ë° í™˜ê²½ ê´€ë ¨ ë¬¸ì˜ë¥¼ ë„ì™€ë“œë¦¬ê² ìŠµë‹ˆë‹¤. ğŸ˜Š' },
-                    { type: 'bot', message: 'ì–´ë–¤ ì‹œì„¤ì— ë¬¸ì œê°€ ìˆë‚˜ìš”?' }
+                    { type: 'bot', message: '?•ˆ?…•?•˜?„¸?š”! ?‹œ?„¤ ë°? ?™˜ê²? ê´?? ¨ ë¬¸ì˜ë¥? ?„????“œë¦¬ê² ?Šµ?‹ˆ?‹¤. ?Ÿ˜?' },
+                    { type: 'bot', message: '?–´?–¤ ?‹œ?„¤?— ë¬¸ì œê°? ?ˆ?‚˜?š”?' }
                   ]);
-                } else if (cat.name === 'í•™ìƒ ì¥í•™') {
+                } else if (cat.name === '?•™?ƒ ?¥?•™') {
                   setChatHistory([
-                    { type: 'bot', message: 'ì•ˆë…•í•˜ì„¸ìš”! í•™ìƒ ì¥í•™ ê´€ë ¨ ë¬¸ì˜ë¥¼ ë„ì™€ë“œë¦¬ê² ìŠµë‹ˆë‹¤. ğŸ’°' },
-                    { type: 'bot', message: 'ì–´ë–¤ ì¥í•™ê¸ˆì— ëŒ€í•´ ë¬¸ì˜í•˜ì‹œë‚˜ìš”?' }
+                    { type: 'bot', message: '?•ˆ?…•?•˜?„¸?š”! ?•™?ƒ ?¥?•™ ê´?? ¨ ë¬¸ì˜ë¥? ?„????“œë¦¬ê² ?Šµ?‹ˆ?‹¤. ?Ÿ’?' },
+                    { type: 'bot', message: '?–´?–¤ ?¥?•™ê¸ˆì— ????•´ ë¬¸ì˜?•˜?‹œ?‚˜?š”?' }
                   ]);
-                } else if (cat.name === 'í•™ìƒ ë³µì§€') {
+                } else if (cat.name === '?•™?ƒ ë³µì??') {
                   setChatHistory([
-                    { type: 'bot', message: 'ì•ˆë…•í•˜ì„¸ìš”! í•™ìƒ ë³µì§€ ê´€ë ¨ ë¬¸ì˜ë¥¼ ë„ì™€ë“œë¦¬ê² ìŠµë‹ˆë‹¤. ğŸ¥' },
-                    { type: 'bot', message: 'ì–´ë–¤ ë³µì§€ ì‹œì„¤ì— ëŒ€í•´ ë¬¸ì˜í•˜ì‹œë‚˜ìš”?' }
+                    { type: 'bot', message: '?•ˆ?…•?•˜?„¸?š”! ?•™?ƒ ë³µì?? ê´?? ¨ ë¬¸ì˜ë¥? ?„????“œë¦¬ê² ?Šµ?‹ˆ?‹¤. ?Ÿ?' },
+                    { type: 'bot', message: '?–´?–¤ ë³µì?? ?‹œ?„¤?— ????•´ ë¬¸ì˜?•˜?‹œ?‚˜?š”?' }
                   ]);
-                } else if (cat.name === 'ìˆ˜ì—… ë° í•™ì‚¬') {
+                } else if (cat.name === '?ˆ˜?—… ë°? ?•™?‚¬') {
                   setChatHistory([
-                    { type: 'bot', message: 'ì•ˆë…•í•˜ì„¸ìš”! ìˆ˜ì—… ë° í•™ì‚¬ ê´€ë ¨ ë¬¸ì˜ë¥¼ ë„ì™€ë“œë¦¬ê² ìŠµë‹ˆë‹¤. ğŸ“š' },
-                    { type: 'bot', message: 'ì–´ë–¤ ë‚´ìš©ì— ëŒ€í•´ ë¬¸ì˜í•˜ì‹œë‚˜ìš”?' }
+                    { type: 'bot', message: '?•ˆ?…•?•˜?„¸?š”! ?ˆ˜?—… ë°? ?•™?‚¬ ê´?? ¨ ë¬¸ì˜ë¥? ?„????“œë¦¬ê² ?Šµ?‹ˆ?‹¤. ?Ÿ“?' },
+                    { type: 'bot', message: '?–´?–¤ ?‚´?š©?— ????•´ ë¬¸ì˜?•˜?‹œ?‚˜?š”?' }
                   ]);
                 }
               }}
@@ -942,17 +860,17 @@ export default function StudentDashboard() {
                 <cat.icon className="w-6 h-6 text-gray-500" />
               </div>
               <p className="font-bold text-gray-800 mb-1">{cat.name}</p>
-              <p className="text-xs text-gray-500">{cat.items.length}ê°œ ì„¸ë¶€í•­ëª©</p>
+              <p className="text-xs text-gray-500">{cat.items.length}ê°? ?„¸ë¶??•­ëª?</p>
             </button>
           ))}
         </div>
       </div>
 
-      {/* ë¯¼ì› ì ‘ìˆ˜ ëª¨ë‹¬ */}
+      {/* ë¯¼ì› ? ‘?ˆ˜ ëª¨ë‹¬ */}
       {showComplaintModal && selectedCategory && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl max-h-[90vh] flex flex-col animate-slide-up">
-            {/* ê³ ì • ìƒë‹¨ ì˜ì—­ */}
+            {/* ê³ ì • ?ƒ?‹¨ ?˜?—­ */}
             <div className="p-6 pb-4 shrink-0">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -974,9 +892,9 @@ export default function StudentDashboard() {
                 </button>
               </div>
 
-              {/* ìƒì„¸ ì¹´í…Œê³ ë¦¬ ì„ íƒ */}
+              {/* ?ƒ?„¸ ì¹´í…Œê³ ë¦¬ ?„ ?ƒ */}
               <div className="mb-4">
-                <label className="text-sm font-medium text-gray-700 mb-2 block">ì„¸ë¶€ ì¹´í…Œê³ ë¦¬ ì„ íƒ</label>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">?„¸ë¶? ì¹´í…Œê³ ë¦¬ ?„ ?ƒ</label>
                 <div className="flex flex-wrap gap-2">
                   {selectedCategory.items.map((item: string, idx: number) => (
                     <button 
@@ -995,20 +913,20 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* ìŠ¤í¬ë¡¤ ê°€ëŠ¥í•œ ì¤‘ê°„ ì˜ì—­ */}
+            {/* ?Š¤?¬ë¡? ê°??Š¥?•œ ì¤‘ê°„ ?˜?—­ */}
             <div className="flex-1 overflow-y-auto px-6">
               <div className="space-y-4 pb-4">
-                {/* ì œëª© ì…ë ¥ */}
+                {/* ? œëª? ?…? ¥ */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium text-gray-700 font-bold">ì œëª©</label>
+                    <label className="text-sm font-medium text-gray-700 font-bold">? œëª?</label>
                     <span className="text-sm font-medium text-gray-500 text-[12px]">
                       {complaintTitle.length}/50
                     </span>
                   </div>
                   <input 
                     type="text"
-                    placeholder="ì œëª©ì„ ì…ë ¥í•˜ì„¸ìš” (ìµœëŒ€ 50ì)"
+                    placeholder="? œëª©ì„ ?…? ¥?•˜?„¸?š” (ìµœë?? 50?)"
                     maxLength={50}
                     value={complaintTitle}
                     onChange={(e) => setComplaintTitle(e.target.value)}
@@ -1016,16 +934,16 @@ export default function StudentDashboard() {
                   />
                 </div>
 
-                {/* ë¬¸ì˜ ë‚´ìš© */}
+                {/* ë¬¸ì˜ ?‚´?š© */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium text-gray-700 text-[14px] font-bold">ë‚´ìš©</label>
+                    <label className="text-sm font-medium text-gray-700 text-[14px] font-bold">?‚´?š©</label>
                     <span className="text-sm font-medium text-gray-500 text-[12px]">
                       {complaintContent.length}/100
                     </span>
                   </div>
                   <textarea 
-                    placeholder="ë¬¸ì˜í•˜ì‹¤ ë‚´ìš©ì„ ì‘ì„±í•´ ì£¼ì„¸ìš” (ìµœëŒ€ 100ì)"
+                    placeholder="ë¬¸ì˜?•˜?‹¤ ?‚´?š©?„ ?‘?„±?•´ ì£¼ì„¸?š” (ìµœë?? 100?)"
                     rows={6}
                     maxLength={100}
                     value={complaintContent}
@@ -1034,11 +952,11 @@ export default function StudentDashboard() {
                   />
                 </div>
 
-                {/* íŒŒì¼ ì²¨ë¶€ */}
+                {/* ?ŒŒ?¼ ì²¨ë?? */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-1">
-                      <label className="text-sm font-medium text-gray-700 font-bold">íŒŒì¼ ì²¨ë¶€</label>
+                      <label className="text-sm font-medium text-gray-700 font-bold">?ŒŒ?¼ ì²¨ë??</label>
                       <button
                         onClick={() => setShowFileInfo(!showFileInfo)}
                         className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -1052,17 +970,17 @@ export default function StudentDashboard() {
                     </span>
                   </div>
                   
-                  {/* íŒŒì¼ ì•ˆë‚´ íˆ´íŒ */}
+                  {/* ?ŒŒ?¼ ?•ˆ?‚´ ?ˆ´?Œ */}
                   {showFileInfo && (
                     <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                       <div className="flex items-start gap-2">
                         <Upload className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
                         <div className="text-xs text-blue-900 space-y-1">
-                          <p className="font-medium">ğŸ“ íŒŒì¼ ì²¨ë¶€ ì•ˆë‚´</p>
+                          <p className="font-medium">?Ÿ“? ?ŒŒ?¼ ì²¨ë?? ?•ˆ?‚´</p>
                           <ul className="space-y-0.5 ml-1">
-                            <li>â€¢ ìµœëŒ€ 5ê°œ íŒŒì¼</li>
-                            <li>â€¢ ê°œë‹¹ 10MB ì´í•˜</li>
-                            <li>â€¢ JPG, PNG, PDF, DOCX</li>
+                            <li>??? ìµœë?? 5ê°? ?ŒŒ?¼</li>
+                            <li>??? ê°œë‹¹ 10MB ?´?•˜</li>
+                            <li>??? JPG, PNG, PDF, DOCX</li>
                           </ul>
                         </div>
                       </div>
@@ -1085,16 +1003,16 @@ export default function StudentDashboard() {
                       className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Upload className="w-4 h-4" />
-                      <span className="text-sm font-medium">íŒŒì¼ ì„ íƒ</span>
+                      <span className="text-sm font-medium">?ŒŒ?¼ ?„ ?ƒ</span>
                     </button>
                   </div>
 
-                  {/* íŒŒì¼ ë¯¸ë¦¬ë³´ê¸° */}
+                  {/* ?ŒŒ?¼ ë¯¸ë¦¬ë³´ê¸° */}
                   {attachedFiles.length > 0 && (
                     <div className="mt-3 space-y-2">
                       {attachedFiles.map((fileItem) => (
                         <div key={fileItem.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                          {/* ì¸ë„¤ì¼ */}
+                          {/* ?¸?„¤?¼ */}
                           <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center shrink-0">
                             {fileItem.file.type.startsWith('image/') ? (
                               <img 
@@ -1108,7 +1026,7 @@ export default function StudentDashboard() {
                             )}
                           </div>
 
-                          {/* íŒŒì¼ ì •ë³´ */}
+                          {/* ?ŒŒ?¼ ? •ë³? */}
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-gray-800 truncate">
                               {fileItem.file.name}
@@ -1118,13 +1036,13 @@ export default function StudentDashboard() {
                             </p>
                           </div>
 
-                          {/* ì•¡ì…˜ ë²„íŠ¼ */}
+                          {/* ?•¡?…˜ ë²„íŠ¼ */}
                           <div className="flex items-center gap-1 shrink-0">
                             {fileItem.file.type.startsWith('image/') && (
                               <button 
                                 onClick={() => rotateImage(fileItem.id)}
                                 className="p-2 hover:bg-gray-200 rounded-lg transition-all"
-                                title="íšŒì „"
+                                title="?šŒ? „"
                               >
                                 <RotateCw className="w-4 h-4 text-gray-600" />
                               </button>
@@ -1132,7 +1050,7 @@ export default function StudentDashboard() {
                             <button 
                               onClick={() => removeFile(fileItem.id)}
                               className="p-2 hover:bg-red-50 rounded-lg transition-all"
-                              title="ì‚­ì œ"
+                              title="?‚­? œ"
                             >
                               <Trash className="w-4 h-4 text-red-600" />
                             </button>
@@ -1143,12 +1061,12 @@ export default function StudentDashboard() {
                   )}
                 </div>
 
-                {/* ì‘ì„± ì˜µì…˜ */}
-                {/* ì‘ì„± ì˜µì…˜ */}
+                {/* ?‘?„± ?˜µ?…˜ */}
+                {/* ?‘?„± ?˜µ?…˜ */}
                 <div className="bg-gray-50 rounded-xl p-4 mb-4">
-                  <h3 className="text-sm font-bold text-gray-800 mb-3">ì‘ì„±ì˜µì…˜</h3>
+                  <h3 className="text-sm font-bold text-gray-800 mb-3">?‘?„±?˜µ?…˜</h3>
                   
-                  {/* ìµëª… ì˜µì…˜ */}
+                  {/* ?µëª? ?˜µ?…˜ */}
                   <label className="flex items-start gap-3 mb-4 cursor-pointer">
                     <input 
                       type="checkbox" 
@@ -1157,12 +1075,12 @@ export default function StudentDashboard() {
                       className="w-5 h-5 accent-blue-500 mt-0.5 shrink-0" 
                     />
                     <span className="text-gray-700">
-                      <span className="font-medium text-[14px]">ìµëª…ìœ¼ë¡œ ì‘ì„±</span><br/>
-                      <span className="text-xs text-gray-500">ì‘ì„±ìëª… ìˆ¨ê¹€ (ê´€ë¦¬ìëŠ” ì‹ë³„ ê°€ëŠ¥)</span>
+                      <span className="font-medium text-[14px]">?µëª…ìœ¼ë¡? ?‘?„±</span><br/>
+                      <span className="text-xs text-gray-500">?‘?„±?ëª? ?ˆ¨ê¹? (ê´?ë¦¬ì?Š” ?‹ë³? ê°??Š¥)</span>
                     </span>
                   </label>
                   
-                  {/* ì•Œë¦¼ ë™ì˜ */}
+                  {/* ?•Œë¦? ?™?˜ */}
                   <label className="flex items-start gap-3 cursor-pointer">
                     <input 
                       type="checkbox" 
@@ -1171,18 +1089,18 @@ export default function StudentDashboard() {
                       className="w-5 h-5 accent-blue-500 mt-0.5 shrink-0" 
                     />
                     <span className="text-gray-700">
-                      <span className="font-medium text-[14px]">ì²˜ë¦¬ ê²°ê³¼ ì•Œë¦¼ ìˆ˜ì‹  ë™ì˜</span><br/>
-                      <span className="text-xs text-gray-500">Push, Emailë¡œ ê²°ê³¼ë¥¼ ë°›ìœ¼ì‹œë ¤ë©´ ë™ì˜í•´ì£¼ì„¸ìš”</span>
+                      <span className="font-medium text-[14px]">ì²˜ë¦¬ ê²°ê³¼ ?•Œë¦? ?ˆ˜?‹  ?™?˜</span><br/>
+                      <span className="text-xs text-gray-500">Push, Emailë¡? ê²°ê³¼ë¥? ë°›ìœ¼?‹œ? ¤ë©? ?™?˜?•´ì£¼ì„¸?š”</span>
                     </span>
                   </label>
                 </div>
 
-                {/* ê³µê°œ ì„¤ì • */}
+                {/* ê³µê°œ ?„¤? • */}
                 <div className="mb-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-gray-800 font-medium text-sm block mb-0.5">ë‚˜ë§Œ ë³´ê¸°</span>
-                      <span className="text-xs text-gray-500">ë‹¤ë¥¸ í•™ìƒì—ê²ŒëŠ” ë¹„ê³µê°œ ì²˜ë¦¬ (ê¸°ë³¸ê°’: ë¹„ê³µê°œ)</span>
+                      <span className="text-gray-800 font-medium text-sm block mb-0.5">?‚˜ë§? ë³´ê¸°</span>
+                      <span className="text-xs text-gray-500">?‹¤ë¥? ?•™?ƒ?—ê²ŒëŠ” ë¹„ê³µê°? ì²˜ë¦¬ (ê¸°ë³¸ê°?: ë¹„ê³µê°?)</span>
                     </div>
                     <button
                       type="button"
@@ -1202,11 +1120,11 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* ê³ ì • í•˜ë‹¨ ì˜ì—­ */}
+            {/* ê³ ì • ?•˜?‹¨ ?˜?—­ */}
             <div className="p-6 pt-4 shrink-0 border-t border-gray-100">
               <button 
                 onClick={() => {
-                  alert(`ë¯¼ì›ì´ ì ‘ìˆ˜ë˜ì—ˆìŠµë‹ˆë‹¤!\n\nì¹´í…Œê³ ë¦¬: ${selectedCategory.name}\nì œëª©: ${complaintTitle}\në‚´ìš©: ${complaintContent}\nì²¨ë¶€íŒŒì¼: ${attachedFiles.length}ê°œ`);
+                  alert(`ë¯¼ì›?´ ? ‘?ˆ˜?˜?—ˆ?Šµ?‹ˆ?‹¤!\n\nì¹´í…Œê³ ë¦¬: ${selectedCategory.name}\n? œëª?: ${complaintTitle}\n?‚´?š©: ${complaintContent}\nì²¨ë???ŒŒ?¼: ${attachedFiles.length}ê°?`);
                   setShowComplaintModal(false);
                   setSelectedCategory(null);
                   setComplaintTitle('');
@@ -1217,14 +1135,14 @@ export default function StudentDashboard() {
                 }}
                 className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all"
               >
-                ì œì¶œí•˜ê¸°
+                ? œì¶œí•˜ê¸?
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* í”Œë¡œíŒ… ë²„íŠ¼ */}
+      {/* ?”Œë¡œíŒ… ë²„íŠ¼ */}
       <button 
         onClick={() => {
           setSelectedCategory(complaintCategories[0]);
@@ -1240,7 +1158,7 @@ export default function StudentDashboard() {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-xl">ìì£¼ ì°¾ëŠ” ì§ˆë¬¸</h3>
+              <h3 className="font-bold text-xl">?ì£? ì°¾ëŠ” ì§ˆë¬¸</h3>
               <button onClick={() => setShowFAQ(false)}>
                 <X className="w-6 h-6 text-gray-400" />
               </button>
@@ -1266,12 +1184,12 @@ export default function StudentDashboard() {
             </div>
             
             <div className="mt-6 p-4 bg-orange-50 rounded-2xl">
-              <p className="text-sm text-orange-700">ì›í•˜ëŠ” ë‹µë³€ì„ ì°¾ì§€ ëª»í•˜ì…¨ë‚˜ìš”?</p>
+              <p className="text-sm text-orange-700">?›?•˜?Š” ?‹µë³??„ ì°¾ì?? ëª»í•˜?…¨?‚˜?š”?</p>
               <button 
                 onClick={() => { setShowFAQ(false); setShowComplaintModal(true); }}
                 className="mt-2 text-orange-600 font-medium text-sm"
               >
-                ì§ì ‘ ë¬¸ì˜í•˜ê¸° â†’
+                ì§ì ‘ ë¬¸ì˜?•˜ê¸? ?†’
               </button>
             </div>
           </div>
@@ -1280,7 +1198,7 @@ export default function StudentDashboard() {
     </div>
   );
 
-  // ì•Œë¦¼ í™”ë©´
+  // ?•Œë¦? ?™”ë©?
   const NotificationScreen = () => (
     <div className="pb-4">
       <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4">
@@ -1306,8 +1224,8 @@ export default function StudentDashboard() {
             </button>
           </div>
         </div>
-        <h2 className="font-bold text-xl">ì•Œë¦¼</h2>
-        <p className="text-sm opacity-90">ìƒˆë¡œìš´ ì†Œì‹ì„ í™•ì¸í•˜ì„¸ìš”</p>
+        <h2 className="font-bold text-xl">?•Œë¦?</h2>
+        <p className="text-sm opacity-90">?ƒˆë¡œìš´ ?†Œ?‹?„ ?™•?¸?•˜?„¸?š”</p>
       </div>
 
       <div className="mx-4 mt-4 space-y-3">
@@ -1332,7 +1250,7 @@ export default function StudentDashboard() {
     </div>
   );
 
-  // ë§ˆì´í˜ì´ì§€ í™”ë©´
+  // ë§ˆì´?˜?´ì§? ?™”ë©?
   const MyPageScreen = () => (
     <div className="pb-4">
       <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4 pb-16">
@@ -1358,19 +1276,19 @@ export default function StudentDashboard() {
             </button>
           </div>
         </div>
-        <h2 className="font-bold text-xl">ë§ˆì´í˜ì´ì§€</h2>
+        <h2 className="font-bold text-xl">ë§ˆì´?˜?´ì§?</h2>
       </div>
 
-      {/* í”„ë¡œí•„ ì¹´ë“œ */}
+      {/* ?”„ë¡œí•„ ì¹´ë“œ */}
       <div className="mx-4 -mt-10 bg-white rounded-2xl shadow-lg p-4">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-            {authTokens?.userName?.[0] || 'í•™'}
+            {authTokens?.userName?.[0] || '?•™'}
           </div>
           <div>
-            <p className="font-bold text-lg">{authTokens?.userName || 'ì‚¬ìš©ì'}</p>
+            <p className="font-bold text-lg">{authTokens?.userName || '?‚¬?š©?'}</p>
             <p className="text-gray-500 text-sm">
-              {authTokens?.userType === 'student' ? 'ì»´í“¨í„°ê³µí•™ê³¼ 3í•™ë…„' : 'ì»´í“¨í„°ê³µí•™ê³¼ êµìˆ˜'}
+              {authTokens?.userType === 'student' ? 'ì»´í“¨?„°ê³µí•™ê³? 3?•™?…„' : 'ì»´í“¨?„°ê³µí•™ê³? êµìˆ˜'}
             </p>
             <p className="text-gray-400 text-xs">{authTokens?.userId || '202012345'}</p>
           </div>
@@ -1385,7 +1303,7 @@ export default function StudentDashboard() {
         >
           <div className="flex items-center gap-3">
             <Settings className="w-5 h-5 text-gray-400" />
-            <span>ì•Œë¦¼ ì„¤ì •</span>
+            <span>?•Œë¦? ?„¤? •</span>
           </div>
           <ChevronRight className="w-5 h-5 text-gray-400" />
         </button>
@@ -1395,20 +1313,20 @@ export default function StudentDashboard() {
         >
           <div className="flex items-center gap-3">
             <Download className="w-5 h-5 text-gray-400" />
-            <span>ë¯¼ì› ì´ë ¥ ë‹¤ìš´ë¡œë“œ</span>
+            <span>ë¯¼ì› ?´? ¥ ?‹¤?š´ë¡œë“œ</span>
           </div>
           <ChevronRight className="w-5 h-5 text-gray-400" />
         </button>
         <button 
           onClick={() => {
-            setComplaintStatusFilter('ì „ì²´');
+            setComplaintStatusFilter('? „ì²?');
             setShowComplaintListModal(true);
           }}
           className="w-full p-4 flex items-center justify-between border-b border-gray-100 hover:bg-gray-50 transition-all"
         >
           <div className="flex items-center gap-3">
             <FileText className="w-5 h-5 text-gray-400" />
-            <span>ë‚´ê°€ ì“´ ë¯¼ì› ì „ì²´ë³´ê¸°</span>
+            <span>?‚´ê°? ?“´ ë¯¼ì› ? „ì²´ë³´ê¸?</span>
           </div>
           <ChevronRight className="w-5 h-5 text-gray-400" />
         </button>
@@ -1418,7 +1336,7 @@ export default function StudentDashboard() {
         >
           <div className="flex items-center gap-3">
             <User className="w-5 h-5 text-gray-400" />
-            <span>ë¡œê·¸ì¸ ì •ë³´ (SSO)</span>
+            <span>ë¡œê·¸?¸ ? •ë³? (SSO)</span>
           </div>
           <ChevronRight className="w-5 h-5 text-gray-400" />
         </button>
@@ -1429,24 +1347,24 @@ export default function StudentDashboard() {
         className="mx-4 mt-4 w-[calc(100%-2rem)] py-3 text-red-500 hover:text-red-600 transition-all flex items-center justify-center gap-2"
       >
         <LogOut className="w-5 h-5" />
-        ë¡œê·¸ì•„ì›ƒ
+        ë¡œê·¸?•„?›ƒ
       </button>
     </div>
   );
 
-  // Evidence í•„í„°ë§ ë° ì •ë ¬
+  // Evidence ?•„?„°ë§? ë°? ? •? ¬
   const getFilteredEvidence = () => {
     let filtered = evidenceData;
     
-    // í•„í„°ë§
-    if (evidenceFilter !== 'ì „ì²´') {
+    // ?•„?„°ë§?
+    if (evidenceFilter !== '? „ì²?') {
       filtered = filtered.filter(item => item.competency === evidenceFilter);
     }
     
-    // ì •ë ¬
-    if (evidenceSort === 'ìµœì‹ ìˆœ') {
+    // ? •? ¬
+    if (evidenceSort === 'ìµœì‹ ?ˆœ') {
       filtered = [...filtered].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    } else if (evidenceSort === 'ì ìˆ˜ìˆœ') {
+    } else if (evidenceSort === '? ?ˆ˜?ˆœ') {
       const scoreValue: Record<string, number> = { 'A+': 4.5, 'A': 4.0, 'B+': 3.5, 'B': 3.0 };
       filtered = [...filtered].sort((a, b) => (scoreValue[b.score] || 0) - (scoreValue[a.score] || 0));
     }
@@ -1454,7 +1372,7 @@ export default function StudentDashboard() {
     return filtered;
   };
 
-  // í•™ê¸°ë³„ ê·¸ë£¹í•‘
+  // ?•™ê¸°ë³„ ê·¸ë£¹?•‘
   const groupBySemester = (data: typeof evidenceData) => {
     const grouped: Record<string, typeof evidenceData> = {};
     data.forEach(item => {
@@ -1466,26 +1384,26 @@ export default function StudentDashboard() {
     return grouped;
   };
 
-  // ë¡œë”© ì¤‘ì¼ ë•Œ
+  // ë¡œë”© ì¤‘ì¼ ?•Œ
   if (isCheckingAuth) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 via-pink-50 to-orange-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">ë¡œë”© ì¤‘...</p>
+          <p className="text-gray-600">ë¡œë”© ì¤?...</p>
         </div>
       </div>
     );
   }
 
-  // ë¡œê·¸ì¸í•˜ì§€ ì•Šì€ ê²½ìš°
+  // ë¡œê·¸?¸?•˜ì§? ?•Š??? ê²½ìš°
   if (!authTokens) {
     return <Login onLoginSuccess={handleLoginSuccess} />;
   }
 
   return (
     <div className="min-h-screen bg-gray-100 max-w-md mx-auto relative overflow-hidden">
-      {/* ë©”ì¸ ì»¨í…ì¸  */}
+      {/* ë©”ì¸ ì»¨í…ì¸? */}
       <div className="pb-20">
         {activeTab === 'home' && <HomeScreen />}
         {activeTab === 'complaint' && <ComplaintScreen />}
@@ -1493,511 +1411,42 @@ export default function StudentDashboard() {
         {activeTab === 'mypage' && <MyPageScreen />}
       </div>
 
-      {/* ì±„íŒ… ëª¨ë‹¬ (ëª¨ë“  ì¹´í…Œê³ ë¦¬) */}
-      {showChatModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md h-[90vh] flex flex-col rounded-t-3xl animate-slide-up">
-            {/* í—¤ë” */}
-            <div className="shrink-0 p-4 border-b border-gray-200 bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white rounded-t-3xl">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                    <MessageCircle className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold">{currentCategory} ë¬¸ì˜</h3>
-                    <p className="text-xs opacity-90">ì±—ë´‡ ìƒë‹´</p>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => {
-                    // ì‹œì„¤ ë° í™˜ê²½ ì™¸ì—ëŠ” ì™„ë£Œ ìƒíƒœë¡œ ì €ì¥
-                    if (currentCategory !== 'ì‹œì„¤ ë° í™˜ê²½' && chatAnswers && Object.keys(chatAnswers).length > 0) {
-                      setSuccessMessage('ë¬¸ì˜ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤!');
-                      setSuccessType('complete');
-                      setShowSuccessModal(true);
-                    }
-                    setShowChatModal(false);
-                    setChatStep(0);
-                    setChatHistory([]);
-                    setChatAnswers({});
-                    setUserInput('');
-                    setCurrentCategory('');
-                  }}
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-            </div>
+      {/* ì±„íŒ… ëª¨ë‹¬ */}
+      <ChatModal
+        isOpen={showChatModal}
+        onClose={() => {
+          setShowChatModal(false);
+          setCurrentCategory('');
+        }}
+        category={currentCategory}
+        onSuccess={(message, type) => {
+          setSuccessMessage(message);
+          setSuccessType(type);
+          setShowSuccessModal(true);
+        }}
+      />
 
-            {/* ì±„íŒ… ì˜ì—­ */}
-            <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
-              {chatHistory.map((msg, idx) => (
-                <div 
-                  key={idx}
-                  className={`flex ${msg.type === 'bot' ? 'justify-start' : 'justify-end'}`}
-                >
-                  <div className={`max-w-[80%] ${
-                    msg.type === 'bot' 
-                      ? 'bg-gray-100 text-gray-800' 
-                      : 'bg-[#FEE500] text-gray-900'
-                  } rounded-2xl px-4 py-3`}>
-                    <p className="text-sm">{msg.message}</p>
-                  </div>
-                </div>
-              ))}
-
-              {/* ë²„íŠ¼ ì„ íƒì§€ */}
-              {chatStep === 0 && currentCategory === 'ì‹œì„¤ ë° í™˜ê²½' && (
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  {['ê°•ì˜ì‹¤', 'í™”ì¥ì‹¤', 'ì—˜ë¦¬ë² ì´í„°', 'ê¸°íƒ€ ì‹œì„¤'].map((option) => (
-                    <button
-                      key={option}
-                      onClick={() => {
-                        setChatAnswers({...chatAnswers, facilityType: option});
-                        setChatHistory([...chatHistory, 
-                          { type: 'user', message: option },
-                          { type: 'bot', message: 'ì–´ëŠ ê±´ë¬¼ì¸ê°€ìš”?' }
-                        ]);
-                        setChatStep(1);
-                      }}
-                      className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {chatStep === 0 && currentCategory === 'í•™ìƒ ì¥í•™' && (
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  {['ì„±ì ì¥í•™ê¸ˆ', 'ê·¼ë¡œì¥í•™ê¸ˆ', 'êµ­ê°€ì¥í•™ê¸ˆ', 'ê¸°íƒ€ ì¥í•™ê¸ˆ'].map((option) => (
-                    <button
-                      key={option}
-                      onClick={() => {
-                        setChatAnswers({...chatAnswers, scholarshipType: option});
-                        setChatHistory([...chatHistory, 
-                          { type: 'user', message: option },
-                          { type: 'bot', message: 'ì–´ëŠ í•™ê¸°ì— ëŒ€í•´ ë¬¸ì˜í•˜ì‹œë‚˜ìš”?' }
-                        ]);
-                        setChatStep(1);
-                      }}
-                      className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {chatStep === 0 && currentCategory === 'í•™ìƒ ë³µì§€' && (
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  {['ê¸°ìˆ™ì‚¬', 'í•™ìƒì‹ë‹¹', 'ë³´ê±´ì„¼í„°', 'ìƒë‹´ì„¼í„°'].map((option) => (
-                    <button
-                      key={option}
-                      onClick={() => {
-                        setChatAnswers({...chatAnswers, welfareType: option});
-                        setChatHistory([...chatHistory, 
-                          { type: 'user', message: option },
-                          { type: 'bot', message: 'ì–´ë–¤ ë‚´ìš©ì— ëŒ€í•´ ë¬¸ì˜í•˜ì‹œë‚˜ìš”?' }
-                        ]);
-                        setChatStep(1);
-                      }}
-                      className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {chatStep === 0 && currentCategory === 'ìˆ˜ì—… ë° í•™ì‚¬' && (
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  {['ì„±ì  ë¬¸ì˜', 'ìˆ˜ê°•ì‹ ì²­', 'íœ´/ë³µí•™', 'ì¡¸ì—…ìš”ê±´'].map((option) => (
-                    <button
-                      key={option}
-                      onClick={() => {
-                        setChatAnswers({...chatAnswers, academicType: option});
-                        setChatHistory([...chatHistory, 
-                          { type: 'user', message: option },
-                          { type: 'bot', message: option === 'ì„±ì  ë¬¸ì˜' ? 'ê³¼ëª©ëª…ì„ ì…ë ¥í•´ì£¼ì„¸ìš”' : 'ìì„¸í•œ ë‚´ìš©ì„ ë§ì”€í•´ì£¼ì„¸ìš”' }
-                        ]);
-                        setChatStep(1);
-                      }}
-                      className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {/* ì‹œì„¤ ë° í™˜ê²½ - Step 1 */}
-              {chatStep === 1 && currentCategory === 'ì‹œì„¤ ë° í™˜ê²½' && (
-                <div className="pt-2">
-                  <input
-                    type="text"
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter' && userInput.trim()) {
-                        setChatAnswers({...chatAnswers, building: userInput});
-                        setChatHistory([...chatHistory,
-                          { type: 'user', message: userInput },
-                          { type: 'bot', message: 'ëª‡ ì¸µì¸ê°€ìš”?' }
-                        ]);
-                        setUserInput('');
-                        setChatStep(2);
-                      }
-                    }}
-                    placeholder="ê±´ë¬¼ëª…ì„ ì…ë ¥í•˜ì„¸ìš” (ì˜ˆ: Aë™, ê³µí•™ê´€)"
-                    className="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-400"
-                  />
-                  <button
-                    onClick={() => {
-                      if (userInput.trim()) {
-                        setChatAnswers({...chatAnswers, building: userInput});
-                        setChatHistory([...chatHistory,
-                          { type: 'user', message: userInput },
-                          { type: 'bot', message: 'ëª‡ ì¸µì¸ê°€ìš”?' }
-                        ]);
-                        setUserInput('');
-                        setChatStep(2);
-                      }
-                    }}
-                    className="mt-2 w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
-                  >
-                    ë‹¤ìŒ
-                  </button>
-                </div>
-              )}
-
-              {/* í•™ìƒ ì¥í•™ - Step 1 */}
-              {chatStep === 1 && currentCategory === 'í•™ìƒ ì¥í•™' && (
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  {['2025-1í•™ê¸°', '2024-2í•™ê¸°', '2024-1í•™ê¸°', 'ê¸°íƒ€'].map((option) => (
-                    <button
-                      key={option}
-                      onClick={() => {
-                        setChatAnswers({...chatAnswers, semester: option});
-                        setChatHistory([...chatHistory,
-                          { type: 'user', message: option },
-                          { type: 'bot', message: 'ì–´ë–¤ ë‚´ìš©ì— ëŒ€í•´ ë¬¸ì˜í•˜ì‹œë‚˜ìš”?' }
-                        ]);
-                        setChatStep(2);
-                      }}
-                      className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {/* í•™ìƒ ë³µì§€ - Step 1 */}
-              {chatStep === 1 && currentCategory === 'í•™ìƒ ë³µì§€' && (
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  {['ì´ìš© ì‹œê°„', 'ì‹ ì²­ ë°©ë²•', 'ì‹œì„¤ ë¬¸ì˜', 'ê¸°íƒ€'].map((option) => (
-                    <button
-                      key={option}
-                      onClick={() => {
-                        setChatAnswers({...chatAnswers, welfareInquiry: option});
-                        const answer = getWelfareAnswer(chatAnswers.welfareType || '', option);
-                        setChatHistory([...chatHistory,
-                          { type: 'user', message: option },
-                          { type: 'bot', message: answer }
-                        ]);
-                        setChatStep(99); // ì™„ë£Œ ë‹¨ê³„
-                      }}
-                      className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {/* ìˆ˜ì—… ë° í•™ì‚¬ - Step 1 */}
-              {chatStep === 1 && currentCategory === 'ìˆ˜ì—… ë° í•™ì‚¬' && (
-                <div className="pt-2">
-                  {chatAnswers.academicType === 'ì„±ì  ë¬¸ì˜' ? (
-                    <>
-                      <input
-                        type="text"
-                        value={userInput}
-                        onChange={(e) => setUserInput(e.target.value)}
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter' && userInput.trim()) {
-                            setChatAnswers({...chatAnswers, courseName: userInput});
-                            const answer = getAcademicAnswer(chatAnswers.academicType || '', userInput);
-                            setChatHistory([...chatHistory,
-                              { type: 'user', message: userInput },
-                              { type: 'bot', message: answer }
-                            ]);
-                            setUserInput('');
-                            setChatStep(99);
-                          }
-                        }}
-                        placeholder="ê³¼ëª©ëª…ì„ ì…ë ¥í•˜ì„¸ìš” (ì˜ˆ: ë°ì´í„°êµ¬ì¡°ë¡ )"
-                        className="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-400"
-                      />
-                      <button
-                        onClick={() => {
-                          if (userInput.trim()) {
-                            setChatAnswers({...chatAnswers, courseName: userInput});
-                            const answer = getAcademicAnswer(chatAnswers.academicType || '', userInput);
-                            setChatHistory([...chatHistory,
-                              { type: 'user', message: userInput },
-                              { type: 'bot', message: answer }
-                            ]);
-                            setUserInput('');
-                            setChatStep(99);
-                          }
-                        }}
-                        className="mt-2 w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
-                      >
-                        í™•ì¸
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <textarea
-                        value={userInput}
-                        onChange={(e) => setUserInput(e.target.value)}
-                        placeholder="ìì„¸í•œ ë‚´ìš©ì„ ì…ë ¥í•´ì£¼ì„¸ìš”"
-                        rows={4}
-                        className="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-400 resize-none"
-                      />
-                      <button
-                        onClick={() => {
-                          if (userInput.trim()) {
-                            setChatAnswers({...chatAnswers, detail: userInput});
-                            const answer = getAcademicAnswer(chatAnswers.academicType || '', userInput);
-                            setChatHistory([...chatHistory,
-                              { type: 'user', message: userInput },
-                              { type: 'bot', message: answer }
-                            ]);
-                            setUserInput('');
-                            setChatStep(99);
-                          }
-                        }}
-                        className="mt-2 w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
-                      >
-                        í™•ì¸
-                      </button>
-                    </>
-                  )}
-                </div>
-              )}
-
-              {/* ì‹œì„¤ ë° í™˜ê²½ - Step 2 */}
-              {chatStep === 2 && currentCategory === 'ì‹œì„¤ ë° í™˜ê²½' && (
-                <div className="pt-2">
-                  <input
-                    type="text"
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter' && userInput.trim()) {
-                        setChatAnswers({...chatAnswers, floor: userInput});
-                        setChatHistory([...chatHistory,
-                          { type: 'user', message: userInput },
-                          { type: 'bot', message: 'ì–´ë–¤ ë¬¸ì œì¸ê°€ìš”?' }
-                        ]);
-                        setUserInput('');
-                        setChatStep(3);
-                      }
-                    }}
-                    placeholder="ì¸µìˆ˜ë¥¼ ì…ë ¥í•˜ì„¸ìš” (ì˜ˆ: 3ì¸µ)"
-                    className="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-400"
-                  />
-                  <button
-                    onClick={() => {
-                      if (userInput.trim()) {
-                        setChatAnswers({...chatAnswers, floor: userInput});
-                        setChatHistory([...chatHistory,
-                          { type: 'user', message: userInput },
-                          { type: 'bot', message: 'ì–´ë–¤ ë¬¸ì œì¸ê°€ìš”?' }
-                        ]);
-                        setUserInput('');
-                        setChatStep(3);
-                      }
-                    }}
-                    className="mt-2 w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
-                  >
-                    ë‹¤ìŒ
-                  </button>
-                </div>
-              )}
-
-              {/* í•™ìƒ ì¥í•™ - Step 2 */}
-              {chatStep === 2 && currentCategory === 'í•™ìƒ ì¥í•™' && (
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  {['ì‹ ì²­ ê¸°ê°„', 'ì„ ë°œ ê¸°ì¤€', 'ì§€ê¸‰ ì¼ì •', 'ê¸°íƒ€ ë¬¸ì˜'].map((option) => (
-                    <button
-                      key={option}
-                      onClick={() => {
-                        setChatAnswers({...chatAnswers, inquiryType: option});
-                        const answer = getScholarshipAnswer(
-                          chatAnswers.scholarshipType || '',
-                          chatAnswers.semester || '',
-                          option
-                        );
-                        setChatHistory([...chatHistory,
-                          { type: 'user', message: option },
-                          { type: 'bot', message: answer }
-                        ]);
-                        setChatStep(99); // ì™„ë£Œ ë‹¨ê³„
-                      }}
-                      className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {/* ì‹œì„¤ ë° í™˜ê²½ - Step 3 */}
-              {chatStep === 3 && currentCategory === 'ì‹œì„¤ ë° í™˜ê²½' && (
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  {['ê³ ì¥/íŒŒì†', 'ì²­ê²° ë¬¸ì œ', 'ì•ˆì „ ë¬¸ì œ', 'ê¸°íƒ€'].map((option) => (
-                    <button
-                      key={option}
-                      onClick={() => {
-                        setChatAnswers({...chatAnswers, problemType: option});
-                        setChatHistory([...chatHistory,
-                          { type: 'user', message: option },
-                          { type: 'bot', message: 'ìƒì„¸ ë‚´ìš©ì„ ë§ì”€í•´ì£¼ì„¸ìš”' }
-                        ]);
-                        setChatStep(4);
-                      }}
-                      className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {/* ì‹œì„¤ ë° í™˜ê²½ - Step 4 */}
-              {chatStep === 4 && currentCategory === 'ì‹œì„¤ ë° í™˜ê²½' && (
-                <div className="pt-2">
-                  <textarea
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    placeholder="ë¬¸ì œ ìƒí™©ì„ ìì„¸íˆ ì„¤ëª…í•´ì£¼ì„¸ìš”"
-                    rows={4}
-                    className="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-400 resize-none"
-                  />
-                  <button
-                    onClick={() => {
-                      if (userInput.trim()) {
-                        const finalAnswers = {...chatAnswers, detail: userInput};
-                        setChatAnswers(finalAnswers);
-                        setChatHistory([...chatHistory,
-                          { type: 'user', message: userInput },
-                          { type: 'bot', message: 'ì…ë ¥í•˜ì‹  ë‚´ìš©ì„ í™•ì¸í•´ì£¼ì„¸ìš” âœ…' },
-                          { type: 'bot', message: `
-ì‹œì„¤: ${finalAnswers.facilityType}
-ìœ„ì¹˜: ${finalAnswers.building} ${finalAnswers.floor}
-ë¬¸ì œ: ${finalAnswers.problemType}
-ìƒì„¸: ${finalAnswers.detail}
-                          `.trim() }
-                        ]);
-                        setUserInput('');
-                        setChatStep(5);
-                      }
-                    }}
-                    className="mt-2 w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
-                  >
-                    í™•ì¸
-                  </button>
-                </div>
-              )}
-
-              {/* ì‹œì„¤ ë° í™˜ê²½ - Step 5 (ì œì¶œ í™•ì¸) */}
-              {chatStep === 5 && currentCategory === 'ì‹œì„¤ ë° í™˜ê²½' && (
-                <div className="grid grid-cols-2 gap-3 pt-2">
-                  <button
-                    onClick={() => {
-                      setChatStep(0);
-                      setChatHistory([
-                        { type: 'bot', message: 'ì•ˆë…•í•˜ì„¸ìš”! ì‹œì„¤ ë° í™˜ê²½ ê´€ë ¨ ë¬¸ì˜ë¥¼ ë„ì™€ë“œë¦¬ê² ìŠµë‹ˆë‹¤. ğŸ˜Š' },
-                        { type: 'bot', message: 'ì–´ë–¤ ì‹œì„¤ì— ë¬¸ì œê°€ ìˆë‚˜ìš”?' }
-                      ]);
-                      setChatAnswers({});
-                      setUserInput('');
-                    }}
-                    className="py-3 px-4 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all"
-                  >
-                    ë‹¤ì‹œ ì‘ì„±
-                  </button>
-                  <button
-                    onClick={() => {
-                      setSuccessMessage('ë¯¼ì›ì´ ì ‘ìˆ˜ë˜ì—ˆìŠµë‹ˆë‹¤!\nì²˜ë¦¬ ê²°ê³¼ëŠ” ì•Œë¦¼ìœ¼ë¡œ ì•ˆë‚´ë“œë¦¬ê² ìŠµë‹ˆë‹¤.');
-                      setSuccessType('submit');
-                      setShowSuccessModal(true);
-                      setShowChatModal(false);
-                      setChatStep(0);
-                      setChatHistory([]);
-                      setChatAnswers({});
-                      setUserInput('');
-                      setCurrentCategory('');
-                    }}
-                    className="py-3 px-4 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
-                  >
-                    ì œì¶œí•˜ê¸°
-                  </button>
-                </div>
-              )}
-
-              {/* ë‹¤ë¥¸ ì¹´í…Œê³ ë¦¬ ì™„ë£Œ ë‹¨ê³„ (Step 99) */}
-              {chatStep === 99 && currentCategory !== 'ì‹œì„¤ ë° í™˜ê²½' && (
-                <div className="pt-2">
-                  <button
-                    onClick={() => {
-                      setSuccessMessage('ë¬¸ì˜ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤!');
-                      setSuccessType('complete');
-                      setShowSuccessModal(true);
-                      setShowChatModal(false);
-                      setChatStep(0);
-                      setChatHistory([]);
-                      setChatAnswers({});
-                      setUserInput('');
-                      setCurrentCategory('');
-                    }}
-                    className="w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
-                  >
-                    í™•ì¸
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ë¯¼ì› ë¦¬ìŠ¤íŠ¸ ëª¨ë‹¬ */}
+      {/* ë¯¼ì› ë¦¬ìŠ¤?Š¸ ëª¨ë‹¬ */}
       {showComplaintListModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl h-[85vh] flex flex-col">
-            {/* ê³ ì • ìƒë‹¨ ì˜ì—­ */}
+            {/* ê³ ì • ?ƒ?‹¨ ?˜?—­ */}
             <div className="shrink-0">
-              {/* í—¤ë” */}
+              {/* ?—¤?” */}
               <div className="flex items-center justify-between px-6 pt-6 pb-4">
-                <h3 className="font-bold text-xl">ë‚´ ë¯¼ì› ë‚´ì—­</h3>
+                <h3 className="font-bold text-xl">?‚´ ë¯¼ì› ?‚´?—­</h3>
                 <div className="flex items-center gap-3">
-                  <p className="text-sm text-gray-500">ì´ {getFilteredComplaints().length}ê±´</p>
+                  <p className="text-sm text-gray-500">ì´? {getFilteredComplaints().length}ê±?</p>
                   <button onClick={handleCloseComplaintListModal}>
                     <X className="w-6 h-6 text-gray-400" />
                   </button>
                 </div>
               </div>
 
-              {/* ìƒíƒœ í•„í„° íƒ­ (ì–¸ë”ë¼ì¸ ìŠ¤íƒ€ì¼) */}
+              {/* ?ƒ?ƒœ ?•„?„° ?ƒ­ (?–¸?”?¼?¸ ?Š¤????¼) */}
               <div className="flex border-b border-gray-200 px-6">
-                {['ì „ì²´', 'ì ‘ìˆ˜', 'ì²˜ë¦¬ì¤‘', 'ì™„ë£Œ'].map((status) => {
-                  const count = status === 'ì „ì²´' 
+                {['? „ì²?', '? ‘?ˆ˜', 'ì²˜ë¦¬ì¤?', '?™„ë£?'].map((status) => {
+                  const count = status === '? „ì²?' 
                     ? complaints.length 
                     : complaints.filter(c => c.status === status).length;
                   
@@ -2029,16 +1478,16 @@ export default function StudentDashboard() {
                 })}
               </div>
 
-              {/* ê²€ìƒ‰ì°½ + ê¸°ê°„ í•„í„° */}
+              {/* ê²??ƒ‰ì°? + ê¸°ê°„ ?•„?„° */}
               <div className="px-6 pt-4 pb-3">
-                {/* ê²€ìƒ‰ë°” */}
+                {/* ê²??ƒ‰ë°? */}
                 <div className="relative mb-3">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
                     value={searchKeyword}
                     onChange={(e) => setSearchKeyword(e.target.value)}
-                    placeholder="ë¯¼ì› ì œëª© ë˜ëŠ” ë‚´ìš© ê²€ìƒ‰..."
+                    placeholder="ë¯¼ì› ? œëª? ?˜?Š” ?‚´?š© ê²??ƒ‰..."
                     className="w-full pl-10 pr-4 py-3 bg-gray-50 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-red-500/20"
                   />
                   {searchKeyword && (
@@ -2051,9 +1500,9 @@ export default function StudentDashboard() {
                   )}
                 </div>
 
-                {/* ê¸°ê°„ í•„í„° */}
+                {/* ê¸°ê°„ ?•„?„° */}
                 <div className="flex gap-2">
-                  {['ì „ì²´', '1ê°œì›”', '3ê°œì›”', '6ê°œì›”'].map((period) => (
+                  {['? „ì²?', '1ê°œì›”', '3ê°œì›”', '6ê°œì›”'].map((period) => (
                     <button
                       key={period}
                       onClick={() => setPeriodFilter(period)}
@@ -2070,7 +1519,7 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* ìŠ¤í¬ë¡¤ ê°€ëŠ¥í•œ ì¤‘ê°„ ì˜ì—­ */}
+            {/* ?Š¤?¬ë¡? ê°??Š¥?•œ ì¤‘ê°„ ?˜?—­ */}
             <div className="flex-1 overflow-y-auto px-6 py-2">
               <div className="space-y-3 pb-4">
                 {getFilteredComplaints().length > 0 ? (
@@ -2094,8 +1543,8 @@ export default function StudentDashboard() {
                         )}
                       </div>
                       <div className="flex items-center gap-2">
-                        {/* ì™„ë£Œ ìƒíƒœì¼ ë•ŒëŠ” ë³„ì /í‰ê°€í•˜ê¸° í‘œì‹œ, ê·¸ ì™¸ì—ëŠ” ìƒíƒœ íƒœê·¸ í‘œì‹œ */}
-                        {complaint.status === 'ì™„ë£Œ' ? (
+                        {/* ?™„ë£? ?ƒ?ƒœ?¼ ?•Œ?Š” ë³„ì /?‰ê°??•˜ê¸? ?‘œ?‹œ, ê·? ?™¸?—?Š” ?ƒ?ƒœ ?ƒœê·? ?‘œ?‹œ */}
+                        {complaint.status === '?™„ë£?' ? (
                           <>
                             {complaintRatings[complaint.id] ? (
                               <div className="flex items-center gap-1 px-3 py-1 bg-yellow-50 rounded-full">
@@ -2110,7 +1559,7 @@ export default function StudentDashboard() {
                                 }}
                                 className="px-3 py-1 bg-yellow-50 text-yellow-600 rounded-full text-xs font-medium hover:bg-yellow-100 transition-colors"
                               >
-                                í‰ê°€í•˜ê¸°
+                                ?‰ê°??•˜ê¸?
                               </button>
                             )}
                           </>
@@ -2131,43 +1580,43 @@ export default function StudentDashboard() {
                 ) : (
                   <div className="flex flex-col items-center justify-center py-16">
                     <Search className="w-16 h-16 text-gray-300 mb-4" />
-                    <p className="text-gray-500 font-medium mb-1">ê²€ìƒ‰ ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤</p>
-                    <p className="text-sm text-gray-400">ë‹¤ë¥¸ ê²€ìƒ‰ì–´ë‚˜ í•„í„°ë¥¼ ì‹œë„í•´ë³´ì„¸ìš”</p>
+                    <p className="text-gray-500 font-medium mb-1">ê²??ƒ‰ ê²°ê³¼ê°? ?—†?Šµ?‹ˆ?‹¤</p>
+                    <p className="text-sm text-gray-400">?‹¤ë¥? ê²??ƒ‰?–´?‚˜ ?•„?„°ë¥? ?‹œ?„?•´ë³´ì„¸?š”</p>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* ê³ ì • í•˜ë‹¨ ì˜ì—­ */}
+            {/* ê³ ì • ?•˜?‹¨ ?˜?—­ */}
             <div className="p-6 pt-4 shrink-0 border-t border-gray-100">
               <button className="w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-bold flex items-center justify-center gap-2">
                 <Download className="w-5 h-5" />
-                ë¯¼ì› ë‚´ì—­ ë‹¤ìš´ë¡œë“œ
+                ë¯¼ì› ?‚´?—­ ?‹¤?š´ë¡œë“œ
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Evidence ì „ì²´ë³´ê¸° ëª¨ë‹¬ */}
+      {/* Evidence ? „ì²´ë³´ê¸? ëª¨ë‹¬ */}
       {showEvidenceModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl max-h-[85vh] flex flex-col">
-            {/* ê³ ì • ìƒë‹¨ ì˜ì—­ */}
+            {/* ê³ ì • ?ƒ?‹¨ ?˜?—­ */}
             <div className="p-6 pb-0 shrink-0">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="font-bold text-xl">Evidence ì „ì²´ ë‚´ì—­</h3>
-                  <p className="text-sm text-gray-500">ì´ {evidenceData.length}ê±´</p>
+                  <h3 className="font-bold text-xl">Evidence ? „ì²? ?‚´?—­</h3>
+                  <p className="text-sm text-gray-500">ì´? {evidenceData.length}ê±?</p>
                 </div>
                 <button onClick={() => setShowEvidenceModal(false)}>
                   <X className="w-6 h-6 text-gray-400" />
                 </button>
               </div>
 
-              {/* í•„í„° íƒ­ */}
+              {/* ?•„?„° ?ƒ­ */}
               <div className="flex items-center justify-between gap-3 mb-4">
-                {/* ì´ì „ ë²„íŠ¼ */}
+                {/* ?´? „ ë²„íŠ¼ */}
                 <button
                   onClick={() => {
                     if (filterScrollRef.current) {
@@ -2179,14 +1628,14 @@ export default function StudentDashboard() {
                   <ChevronRight className="w-5 h-5 text-gray-600 rotate-180" />
                 </button>
 
-                {/* ì¹´í…Œê³ ë¦¬ ìŠ¤í¬ë¡¤ ì˜ì—­ */}
+                {/* ì¹´í…Œê³ ë¦¬ ?Š¤?¬ë¡? ?˜?—­ */}
                 <div 
                   ref={filterScrollRef}
                   className="flex-1 overflow-x-auto scrollbar-hide"
                   style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
                   <div className="flex gap-2">
-                    {['ì „ì²´', 'S', 'T', 'A', 'R'].map((filter) => (
+                    {['? „ì²?', 'S', 'T', 'A', 'R'].map((filter) => (
                       <button
                         key={filter}
                         onClick={() => setEvidenceFilter(filter)}
@@ -2196,20 +1645,20 @@ export default function StudentDashboard() {
                             : 'bg-gray-100 text-gray-600'
                         }`}
                         style={
-                          evidenceFilter === filter && filter !== 'ì „ì²´'
+                          evidenceFilter === filter && filter !== '? „ì²?'
                             ? { backgroundColor: starDetails[filter as keyof typeof starDetails].color }
                             : evidenceFilter === filter
                             ? { background: 'linear-gradient(to right, #E94E3C, #F7941D)' }
                             : {}
                         }
                       >
-                        {filter === 'ì „ì²´' ? 'ì „ì²´' : `${filter} (${starDetails[filter as keyof typeof starDetails].name})`}
+                        {filter === '? „ì²?' ? '? „ì²?' : `${filter} (${starDetails[filter as keyof typeof starDetails].name})`}
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {/* ë‹¤ìŒ ë²„íŠ¼ */}
+                {/* ?‹¤?Œ ë²„íŠ¼ */}
                 <button
                   onClick={() => {
                     if (filterScrollRef.current) {
@@ -2222,10 +1671,10 @@ export default function StudentDashboard() {
                 </button>
               </div>
 
-              {/* ì •ë ¬ ì˜µì…˜ */}
+              {/* ? •? ¬ ?˜µ?…˜ */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex gap-2">
-                  {['ìµœì‹ ìˆœ', 'í•™ê¸°ë³„', 'ì ìˆ˜ìˆœ'].map((sort) => (
+                  {['ìµœì‹ ?ˆœ', '?•™ê¸°ë³„', '? ?ˆ˜?ˆœ'].map((sort) => (
                     <button
                       key={sort}
                       onClick={() => setEvidenceSort(sort)}
@@ -2242,17 +1691,17 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* ìŠ¤í¬ë¡¤ ê°€ëŠ¥í•œ ì¤‘ê°„ ì˜ì—­ */}
+            {/* ?Š¤?¬ë¡? ê°??Š¥?•œ ì¤‘ê°„ ?˜?—­ */}
             <div className="flex-1 overflow-y-auto px-6 py-2">
-              {/* í•™ê¸°ë³„ ê·¸ë£¹ */}
-              {evidenceSort === 'í•™ê¸°ë³„' ? (
+              {/* ?•™ê¸°ë³„ ê·¸ë£¹ */}
+              {evidenceSort === '?•™ê¸°ë³„' ? (
                 <div className="space-y-4">
                   {Object.entries(groupBySemester(getFilteredEvidence())).map(([semester, items]) => (
                     <div key={semester}>
                       <div className="flex items-center gap-2 mb-2">
                         <div className="w-1 h-4 bg-gradient-to-b from-red-500 to-orange-500 rounded-full"></div>
                         <h4 className="font-bold text-gray-800">{semester}</h4>
-                        <span className="text-xs text-gray-500">({items.length}ê±´)</span>
+                        <span className="text-xs text-gray-500">({items.length}ê±?)</span>
                       </div>
                       <div className="space-y-2">
                         {items.map((item, idx) => (
@@ -2301,23 +1750,23 @@ export default function StudentDashboard() {
               )}
             </div>
 
-            {/* ê³ ì • í•˜ë‹¨ ì˜ì—­ */}
+            {/* ê³ ì • ?•˜?‹¨ ?˜?—­ */}
             <div className="p-6 pt-4 shrink-0">
               <button className="w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-bold flex items-center justify-center gap-2">
                 <Download className="w-5 h-5" />
-                PDFë¡œ ë‹¤ìš´ë¡œë“œ
+                PDFë¡? ?‹¤?š´ë¡œë“œ
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ì„±ê³µ ëª¨ë‹¬ */}
+      {/* ?„±ê³? ëª¨ë‹¬ */}
       {showSuccessModal && (
         <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 animate-scale-up shadow-2xl">
             <div className="flex flex-col items-center text-center">
-              {/* ì•„ì´ì½˜ */}
+              {/* ?•„?´ì½? */}
               <div className="w-20 h-20 bg-gradient-to-br from-red-500 via-pink-500 to-orange-400 rounded-full flex items-center justify-center mb-4 shadow-lg">
                 {successType === 'complete' ? (
                   <CheckCircle className="w-10 h-10 text-white" />
@@ -2326,33 +1775,33 @@ export default function StudentDashboard() {
                 )}
               </div>
               
-              {/* ë©”ì‹œì§€ */}
+              {/* ë©”ì‹œì§? */}
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {successType === 'complete' ? 'ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤!' : 'ì ‘ìˆ˜ ì™„ë£Œ!'}
+                {successType === 'complete' ? '?™„ë£Œë˜?—ˆ?Šµ?‹ˆ?‹¤!' : '? ‘?ˆ˜ ?™„ë£?!'}
               </h3>
               <p className="text-gray-600 whitespace-pre-line mb-6">
                 {successMessage}
               </p>
               
-              {/* í™•ì¸ ë²„íŠ¼ */}
+              {/* ?™•?¸ ë²„íŠ¼ */}
               <button
                 onClick={() => setShowSuccessModal(false)}
                 className="w-full py-3 bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white rounded-xl font-bold hover:shadow-lg transition-all"
               >
-                í™•ì¸
+                ?™•?¸
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* í•˜ë‹¨ ë„¤ë¹„ê²Œì´ì…˜ */}
+      {/* ?•˜?‹¨ ?„¤ë¹„ê²Œ?´?…˜ */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 max-w-md mx-auto">
         <div className="flex items-center justify-around py-2">
           {[
-            { id: 'home', icon: Home, label: 'í™ˆ' },
+            { id: 'home', icon: Home, label: '?™ˆ' },
             { id: 'complaint', icon: FileText, label: 'ë¯¼ì›' },
-            { id: 'notification', icon: Bell, label: 'ì•Œë¦¼', badge: 2 },
+            { id: 'notification', icon: Bell, label: '?•Œë¦?', badge: 2 },
             { id: 'mypage', icon: User, label: 'MY' },
           ].map((tab) => (
             <button
@@ -2379,24 +1828,24 @@ export default function StudentDashboard() {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-xl">ë‚´ ì—­ëŸ‰ ë¦¬í¬íŠ¸ ê³µìœ </h3>
+              <h3 className="font-bold text-xl">?‚´ ?—­?Ÿ‰ ë¦¬í¬?Š¸ ê³µìœ </h3>
               <button onClick={() => setShowShareModal(false)}>
                 <X className="w-6 h-6 text-gray-400" />
               </button>
             </div>
 
-            <p className="text-sm text-gray-600 mb-6">ì—­ëŸ‰ ì ìˆ˜ì™€ ë¦¬í¬íŠ¸ë¥¼ ê³µìœ í•˜ì„¸ìš”</p>
+            <p className="text-sm text-gray-600 mb-6">?—­?Ÿ‰ ? ?ˆ˜??? ë¦¬í¬?Š¸ë¥? ê³µìœ ?•˜?„¸?š”</p>
 
             <div className="space-y-3">
               <button className="w-full py-4 bg-yellow-400 text-gray-800 rounded-xl font-bold flex items-center justify-center gap-3 hover:bg-yellow-500 transition-all">
                 <MessageCircle className="w-5 h-5" />
-                ì¹´ì¹´ì˜¤í†¡ìœ¼ë¡œ ê³µìœ 
+                ì¹´ì¹´?˜¤?†¡?œ¼ë¡? ê³µìœ 
               </button>
 
               <button 
                 onClick={() => {
-                  navigator.clipboard.writeText('https://student-dashboard.example.com/report/ê¹€ìˆ˜ì„±');
-                  alert('ë§í¬ê°€ ë³µì‚¬ë˜ì—ˆìŠµë‹ˆë‹¤!');
+                  navigator.clipboard.writeText('https://student-dashboard.example.com/report/ê¹??ˆ˜?„±');
+                  alert('ë§í¬ê°? ë³µì‚¬?˜?—ˆ?Šµ?‹ˆ?‹¤!');
                 }}
                 className="w-full py-4 bg-blue-50 text-blue-600 rounded-xl font-bold flex items-center justify-center gap-3 hover:bg-blue-100 transition-all"
               >
@@ -2406,46 +1855,46 @@ export default function StudentDashboard() {
 
               <button className="w-full py-4 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-bold flex items-center justify-center gap-3 hover:opacity-90 transition-all">
                 <Download className="w-5 h-5" />
-                PDFë¡œ ë‹¤ìš´ë¡œë“œ
+                PDFë¡? ?‹¤?š´ë¡œë“œ
               </button>
             </div>
 
             <div className="mt-6 p-4 bg-gray-50 rounded-xl">
               <p className="text-xs text-gray-500">
-                ğŸ’¡ ê³µìœ ëœ ë¦¬í¬íŠ¸ëŠ” 7ì¼ê°„ ìœ íš¨í•©ë‹ˆë‹¤
+                ?Ÿ’? ê³µìœ ?œ ë¦¬í¬?Š¸?Š” 7?¼ê°? ?œ ?š¨?•©?‹ˆ?‹¤
               </p>
             </div>
           </div>
         </div>
       )}
 
-      {/* ê²€ìƒ‰ ëª¨ë‹¬ */}
+      {/* ê²??ƒ‰ ëª¨ë‹¬ */}
       {showSearchModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl h-[85vh] flex flex-col">
-            {/* ê³ ì • ìƒë‹¨ ì˜ì—­ */}
+            {/* ê³ ì • ?ƒ?‹¨ ?˜?—­ */}
             <div className="p-6 pb-4 shrink-0">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-xl">í†µí•© ê²€ìƒ‰</h3>
+                <h3 className="font-bold text-xl">?†µ?•© ê²??ƒ‰</h3>
                 <button onClick={() => setShowSearchModal(false)}>
                   <X className="w-6 h-6 text-gray-400" />
                 </button>
               </div>
 
-              {/* ê²€ìƒ‰ì°½ */}
+              {/* ê²??ƒ‰ì°? */}
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input 
                   type="text"
-                  placeholder="Evidence, ë¯¼ì›, ì•Œë¦¼ ê²€ìƒ‰..."
+                  placeholder="Evidence, ë¯¼ì›, ?•Œë¦? ê²??ƒ‰..."
                   className="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500"
                   autoFocus
                 />
               </div>
 
-              {/* í•„í„° íƒ­ */}
+              {/* ?•„?„° ?ƒ­ */}
               <div className="flex gap-2 mt-4">
-                {['ì „ì²´', 'Evidence', 'ë¯¼ì›', 'ì•Œë¦¼'].map((filter) => (
+                {['? „ì²?', 'Evidence', 'ë¯¼ì›', '?•Œë¦?'].map((filter) => (
                   <button
                     key={filter}
                     className="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm hover:bg-pink-100 hover:text-pink-600 transition-all"
@@ -2456,14 +1905,14 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* ìŠ¤í¬ë¡¤ ê°€ëŠ¥í•œ ì¤‘ê°„ ì˜ì—­ */}
+            {/* ?Š¤?¬ë¡? ê°??Š¥?•œ ì¤‘ê°„ ?˜?—­ */}
             <div className="flex-1 overflow-y-auto px-6 py-2">
               <div className="space-y-4">
-                {/* ìµœê·¼ ê²€ìƒ‰ì–´ */}
+                {/* ìµœê·¼ ê²??ƒ‰?–´ */}
                 <div>
-                  <h4 className="font-bold text-gray-800 mb-3">ìµœê·¼ ê²€ìƒ‰ì–´</h4>
+                  <h4 className="font-bold text-gray-800 mb-3">ìµœê·¼ ê²??ƒ‰?–´</h4>
                   <div className="flex flex-wrap gap-2">
-                    {['ì°½ì˜ì  ë¬¸ì œí•´ê²°', 'ì¥í•™ê¸ˆ', 'ë„ì„œê´€ ëƒ‰ë°©', 'Sì—­ëŸ‰'].map((term, idx) => (
+                    {['ì°½ì˜?  ë¬¸ì œ?•´ê²?', '?¥?•™ê¸?', '?„?„œê´? ?ƒ‰ë°?', 'S?—­?Ÿ‰'].map((term, idx) => (
                       <button 
                         key={idx}
                         className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition-all"
@@ -2474,11 +1923,11 @@ export default function StudentDashboard() {
                   </div>
                 </div>
 
-                {/* ì¸ê¸° ê²€ìƒ‰ì–´ */}
+                {/* ?¸ê¸? ê²??ƒ‰?–´ */}
                 <div>
-                  <h4 className="font-bold text-gray-800 mb-3">ì¸ê¸° ê²€ìƒ‰ì–´</h4>
+                  <h4 className="font-bold text-gray-800 mb-3">?¸ê¸? ê²??ƒ‰?–´</h4>
                   <div className="space-y-2">
-                    {['ìˆ˜ê°•ì‹ ì²­', 'ì„±ì  ì •ì •', 'ì—­ëŸ‰ ì ìˆ˜', 'ë¯¼ì› ì œì¶œ'].map((term, idx) => (
+                    {['?ˆ˜ê°•ì‹ ì²?', '?„±?  ? •? •', '?—­?Ÿ‰ ? ?ˆ˜', 'ë¯¼ì› ? œì¶?'].map((term, idx) => (
                       <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all cursor-pointer">
                         <span className="text-pink-500 font-bold text-sm">{idx + 1}</span>
                         <span className="text-gray-800">{term}</span>
@@ -2494,40 +1943,40 @@ export default function StudentDashboard() {
                     <div className="p-4 bg-gradient-to-r from-pink-50 to-orange-50 rounded-xl">
                       <div className="flex items-center gap-2 mb-1">
                         <Trophy className="w-4 h-4 text-orange-500" />
-                        <span className="text-sm font-bold text-gray-800">S ì°½ì˜ ì—­ëŸ‰</span>
+                        <span className="text-sm font-bold text-gray-800">S ì°½ì˜ ?—­?Ÿ‰</span>
                       </div>
-                      <p className="text-xs text-gray-600">ìµœê·¼ ì—…ë°ì´íŠ¸ëœ ì—­ëŸ‰ ì ìˆ˜ë¥¼ í™•ì¸í•˜ì„¸ìš”</p>
+                      <p className="text-xs text-gray-600">ìµœê·¼ ?—…?°?´?Š¸?œ ?—­?Ÿ‰ ? ?ˆ˜ë¥? ?™•?¸?•˜?„¸?š”</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* ê³ ì • í•˜ë‹¨ ì˜ì—­ */}
+            {/* ê³ ì • ?•˜?‹¨ ?˜?—­ */}
             <div className="p-6 pt-4 shrink-0 border-t border-gray-100">
               <button className="w-full py-3 text-gray-500 text-sm">
-                ê²€ìƒ‰ ê¸°ë¡ ì „ì²´ ì‚­ì œ
+                ê²??ƒ‰ ê¸°ë¡ ? „ì²? ?‚­? œ
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ì•Œë¦¼ ì„¤ì • ëª¨ë‹¬ */}
+      {/* ?•Œë¦? ?„¤? • ëª¨ë‹¬ */}
       {showNotificationSettingsModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[70vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-xl">ì•Œë¦¼ ì„¤ì •</h3>
+              <h3 className="font-bold text-xl">?•Œë¦? ?„¤? •</h3>
               <button onClick={() => setShowNotificationSettingsModal(false)}>
                 <X className="w-6 h-6 text-gray-400" />
               </button>
             </div>
 
-            <p className="text-sm text-gray-600 mb-6">ë°›ê³  ì‹¶ì€ ì•Œë¦¼ ì±„ë„ì„ ì„ íƒí•˜ì„¸ìš”</p>
+            <p className="text-sm text-gray-600 mb-6">ë°›ê³  ?‹¶??? ?•Œë¦? ì±„ë„?„ ?„ ?ƒ?•˜?„¸?š”</p>
 
             <div className="space-y-4">
-              {/* PWA í‘¸ì‹œ */}
+              {/* PWA ?‘¸?‹œ */}
               <div className="bg-gray-50 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -2535,8 +1984,8 @@ export default function StudentDashboard() {
                       <Bell className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
-                      <p className="font-bold text-gray-800">PWA í‘¸ì‹œ</p>
-                      <p className="text-xs text-gray-500">ë¸Œë¼ìš°ì € ì•Œë¦¼</p>
+                      <p className="font-bold text-gray-800">PWA ?‘¸?‹œ</p>
+                      <p className="text-xs text-gray-500">ë¸Œë¼?š°??? ?•Œë¦?</p>
                     </div>
                   </div>
                   <button
@@ -2550,10 +1999,10 @@ export default function StudentDashboard() {
                     }`}></div>
                   </button>
                 </div>
-                <p className="text-xs text-gray-500">ì‹¤ì‹œê°„ìœ¼ë¡œ ì¤‘ìš”í•œ ì•Œë¦¼ì„ ë°›ì„ ìˆ˜ ìˆìŠµë‹ˆë‹¤</p>
+                <p className="text-xs text-gray-500">?‹¤?‹œê°„ìœ¼ë¡? ì¤‘ìš”?•œ ?•Œë¦¼ì„ ë°›ì„ ?ˆ˜ ?ˆ?Šµ?‹ˆ?‹¤</p>
               </div>
 
-              {/* ì¹´ì¹´ì˜¤í†¡ */}
+              {/* ì¹´ì¹´?˜¤?†¡ */}
               <div className="bg-gray-50 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -2561,8 +2010,8 @@ export default function StudentDashboard() {
                       <MessageCircle className="w-5 h-5 text-yellow-600" />
                     </div>
                     <div>
-                      <p className="font-bold text-gray-800">ì¹´ì¹´ì˜¤í†¡</p>
-                      <p className="text-xs text-gray-500">ì¹´ì¹´ì˜¤ ì•Œë¦¼í†¡</p>
+                      <p className="font-bold text-gray-800">ì¹´ì¹´?˜¤?†¡</p>
+                      <p className="text-xs text-gray-500">ì¹´ì¹´?˜¤ ?•Œë¦¼í†¡</p>
                     </div>
                   </div>
                   <button
@@ -2576,10 +2025,10 @@ export default function StudentDashboard() {
                     }`}></div>
                   </button>
                 </div>
-                <p className="text-xs text-gray-500">ì¹´ì¹´ì˜¤í†¡ìœ¼ë¡œ ì•Œë¦¼ì„ ë°›ì„ ìˆ˜ ìˆìŠµë‹ˆë‹¤</p>
+                <p className="text-xs text-gray-500">ì¹´ì¹´?˜¤?†¡?œ¼ë¡? ?•Œë¦¼ì„ ë°›ì„ ?ˆ˜ ?ˆ?Šµ?‹ˆ?‹¤</p>
               </div>
 
-              {/* ì´ë©”ì¼ */}
+              {/* ?´ë©”ì¼ */}
               <div className="bg-gray-50 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -2587,7 +2036,7 @@ export default function StudentDashboard() {
                       <Send className="w-5 h-5 text-pink-600" />
                     </div>
                     <div>
-                      <p className="font-bold text-gray-800">ì´ë©”ì¼</p>
+                      <p className="font-bold text-gray-800">?´ë©”ì¼</p>
                       <p className="text-xs text-gray-500">school@example.com</p>
                     </div>
                   </div>
@@ -2602,107 +2051,107 @@ export default function StudentDashboard() {
                     }`}></div>
                   </button>
                 </div>
-                <p className="text-xs text-gray-500">ì´ë©”ì¼ë¡œ ìƒì„¸í•œ ì•Œë¦¼ì„ ë°›ì„ ìˆ˜ ìˆìŠµë‹ˆë‹¤</p>
+                <p className="text-xs text-gray-500">?´ë©”ì¼ë¡? ?ƒ?„¸?•œ ?•Œë¦¼ì„ ë°›ì„ ?ˆ˜ ?ˆ?Šµ?‹ˆ?‹¤</p>
               </div>
             </div>
 
             <div className="mt-6 p-4 bg-blue-50 rounded-xl">
               <p className="text-sm text-blue-700">
-                ğŸ’¡ ì•Œë¦¼ ì±„ë„ì€ ì–¸ì œë“ ì§€ ë³€ê²½í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤
+                ?Ÿ’? ?•Œë¦? ì±„ë„??? ?–¸? œ?“ ì§? ë³?ê²½í•  ?ˆ˜ ?ˆ?Šµ?‹ˆ?‹¤
               </p>
             </div>
 
             <button
               onClick={() => {
                 setShowNotificationSettingsModal(false);
-                alert('ì•Œë¦¼ ì„¤ì •ì´ ì €ì¥ë˜ì—ˆìŠµë‹ˆë‹¤!');
+                alert('?•Œë¦? ?„¤? •?´ ????¥?˜?—ˆ?Šµ?‹ˆ?‹¤!');
               }}
               className="w-full mt-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-bold"
             >
-              ì €ì¥í•˜ê¸°
+              ????¥?•˜ê¸?
             </button>
           </div>
         </div>
       )}
 
-      {/* ë¡œê·¸ì¸ ì •ë³´ ëª¨ë‹¬ */}
+      {/* ë¡œê·¸?¸ ? •ë³? ëª¨ë‹¬ */}
       {showLoginInfoModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[70vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-xl">ë¡œê·¸ì¸ ì •ë³´</h3>
+              <h3 className="font-bold text-xl">ë¡œê·¸?¸ ? •ë³?</h3>
               <button onClick={() => setShowLoginInfoModal(false)}>
                 <X className="w-6 h-6 text-gray-400" />
               </button>
             </div>
 
             <div className="space-y-4">
-              {/* SSO ì—°ë™ ìƒíƒœ */}
+              {/* SSO ?—°?™ ?ƒ?ƒœ */}
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
                     <CheckCircle className="w-6 h-6 text-green-500" />
                   </div>
                   <div>
-                    <p className="font-bold text-gray-800">SSO ì—°ë™ ì™„ë£Œ</p>
-                    <p className="text-xs text-gray-500">í†µí•© ì¸ì¦ ì‹œìŠ¤í…œ</p>
+                    <p className="font-bold text-gray-800">SSO ?—°?™ ?™„ë£?</p>
+                    <p className="text-xs text-gray-500">?†µ?•© ?¸ì¦? ?‹œ?Š¤?…œ</p>
                   </div>
                 </div>
               </div>
 
-              {/* ê³„ì • ì •ë³´ */}
+              {/* ê³„ì • ? •ë³? */}
               <div className="bg-gray-50 rounded-xl p-4">
-                <h4 className="font-bold text-gray-800 mb-3">ê³„ì • ì •ë³´</h4>
+                <h4 className="font-bold text-gray-800 mb-3">ê³„ì • ? •ë³?</h4>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-500">
-                      {authTokens?.userType === 'student' ? 'í•™ë²ˆ' : 'êµë²ˆ'}
+                      {authTokens?.userType === 'student' ? '?•™ë²?' : 'êµë²ˆ'}
                     </span>
                     <span className="font-medium">{authTokens?.userId || '202012345'}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">ì´ë¦„</span>
-                    <span className="font-medium">{authTokens?.userName || 'ì‚¬ìš©ì'}</span>
+                    <span className="text-sm text-gray-500">?´ë¦?</span>
+                    <span className="font-medium">{authTokens?.userName || '?‚¬?š©?'}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">ì‚¬ìš©ì ìœ í˜•</span>
+                    <span className="text-sm text-gray-500">?‚¬?š©? ?œ ?˜•</span>
                     <span className="font-medium">
-                      {authTokens?.userType === 'student' ? 'í•™ìƒ' : 'êµìˆ˜'}
+                      {authTokens?.userType === 'student' ? '?•™?ƒ' : 'êµìˆ˜'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">ìë™ ë¡œê·¸ì¸</span>
+                    <span className="text-sm text-gray-500">??™ ë¡œê·¸?¸</span>
                     <span className="font-medium">
-                      {authTokens?.rememberMe ? 'ì‚¬ìš©' : 'ë¯¸ì‚¬ìš©'}
+                      {authTokens?.rememberMe ? '?‚¬?š©' : 'ë¯¸ì‚¬?š©'}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* í•™ì  ì •ë³´ */}
+              {/* ?•™?  ? •ë³? */}
               <div className="bg-gray-50 rounded-xl p-4">
-                <h4 className="font-bold text-gray-800 mb-3">í•™ì  ì •ë³´</h4>
+                <h4 className="font-bold text-gray-800 mb-3">?•™?  ? •ë³?</h4>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between py-2 border-b border-gray-200">
-                    <span className="text-sm text-gray-600">í•™ê³¼</span>
-                    <span className="font-medium text-gray-800">ì»´í“¨í„°ê³µí•™ê³¼</span>
+                    <span className="text-sm text-gray-600">?•™ê³?</span>
+                    <span className="font-medium text-gray-800">ì»´í“¨?„°ê³µí•™ê³?</span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-gray-200">
-                    <span className="text-sm text-gray-600">í•™ë…„</span>
+                    <span className="text-sm text-gray-600">?•™?…„</span>
                     <span className="font-medium text-gray-800">
-                      {authTokens?.userType === 'student' ? '3í•™ë…„' : '-'}
+                      {authTokens?.userType === 'student' ? '3?•™?…„' : '-'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between py-2">
-                    <span className="text-sm text-gray-600">ì´ë©”ì¼</span>
+                    <span className="text-sm text-gray-600">?´ë©”ì¼</span>
                     <span className="font-medium text-gray-800">school@example.com</span>
                   </div>
                 </div>
               </div>
 
-              {/* ë¡œê·¸ì¸ ì´ë ¥ */}
+              {/* ë¡œê·¸?¸ ?´? ¥ */}
               <div className="bg-gray-50 rounded-xl p-4">
-                <h4 className="font-bold text-gray-800 mb-3">ìµœê·¼ ë¡œê·¸ì¸ ì´ë ¥</h4>
+                <h4 className="font-bold text-gray-800 mb-3">ìµœê·¼ ë¡œê·¸?¸ ?´? ¥</h4>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between py-2 text-sm">
                     <div className="flex items-center gap-2">
@@ -2728,25 +2177,25 @@ export default function StudentDashboard() {
                 </div>
               </div>
 
-              {/* ë³´ì•ˆ ì„¤ì • */}
+              {/* ë³´ì•ˆ ?„¤? • */}
               <div className="bg-gray-50 rounded-xl p-4">
-                <h4 className="font-bold text-gray-800 mb-3">ë³´ì•ˆ ì„¤ì •</h4>
+                <h4 className="font-bold text-gray-800 mb-3">ë³´ì•ˆ ?„¤? •</h4>
                 <button className="w-full py-3 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all">
-                  ë¹„ë°€ë²ˆí˜¸ ë³€ê²½
+                  ë¹„ë??ë²ˆí˜¸ ë³?ê²?
                 </button>
               </div>
             </div>
 
             <div className="mt-6 p-4 bg-orange-50 rounded-xl">
               <p className="text-xs text-orange-700">
-                âš ï¸ ì˜ì‹¬ìŠ¤ëŸ¬ìš´ ë¡œê·¸ì¸ í™œë™ì´ ìˆë‹¤ë©´ ì¦‰ì‹œ ë¹„ë°€ë²ˆí˜¸ë¥¼ ë³€ê²½í•˜ì„¸ìš”
+                ?š ï¸? ?˜?‹¬?Š¤?Ÿ¬?š´ ë¡œê·¸?¸ ?™œ?™?´ ?ˆ?‹¤ë©? ì¦‰ì‹œ ë¹„ë??ë²ˆí˜¸ë¥? ë³?ê²½í•˜?„¸?š”
               </p>
             </div>
           </div>
         </div>
       )}
 
-      {/* ë§Œì¡±ë„ í‰ê°€ ëª¨ë‹¬ */}
+      {/* ë§Œì¡±?„ ?‰ê°? ëª¨ë‹¬ */}
       {showRatingModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-md rounded-2xl p-6">
@@ -2754,13 +2203,13 @@ export default function StudentDashboard() {
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
-              <h3 className="font-bold text-xl mb-2">ë¯¼ì› ì²˜ë¦¬ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤</h3>
-              <p className="text-sm text-gray-500">ì²˜ë¦¬ ê²°ê³¼ì— ëŒ€í•´ í‰ê°€í•´ì£¼ì„¸ìš”</p>
+              <h3 className="font-bold text-xl mb-2">ë¯¼ì› ì²˜ë¦¬ê°? ?™„ë£Œë˜?—ˆ?Šµ?‹ˆ?‹¤</h3>
+              <p className="text-sm text-gray-500">ì²˜ë¦¬ ê²°ê³¼?— ????•´ ?‰ê°??•´ì£¼ì„¸?š”</p>
             </div>
 
             {/* ë³„ì  */}
             <div className="mb-6">
-              <p className="text-sm font-medium text-gray-700 mb-3 text-center">ë§Œì¡±ë„ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”</p>
+              <p className="text-sm font-medium text-gray-700 mb-3 text-center">ë§Œì¡±?„ë¥? ?„ ?ƒ?•´ì£¼ì„¸?š”</p>
               <div className="flex justify-center gap-2">
                 {[1, 2, 3, 4, 5].map((rating) => (
                   <button
@@ -2780,9 +2229,9 @@ export default function StudentDashboard() {
               </div>
               <div className="text-center mt-2">
                 <span className="text-sm text-gray-500">
-                  {selectedRating === 0 && 'ì„ íƒí•´ì£¼ì„¸ìš”'}
-                  {selectedRating === 1 && 'ë§¤ìš° ë¶ˆë§Œì¡±'}
-                  {selectedRating === 2 && 'ë¶ˆë§Œì¡±'}
+                  {selectedRating === 0 && '?„ ?ƒ?•´ì£¼ì„¸?š”'}
+                  {selectedRating === 1 && 'ë§¤ìš° ë¶ˆë§Œì¡?'}
+                  {selectedRating === 2 && 'ë¶ˆë§Œì¡?'}
                   {selectedRating === 3 && 'ë³´í†µ'}
                   {selectedRating === 4 && 'ë§Œì¡±'}
                   {selectedRating === 5 && 'ë§¤ìš° ë§Œì¡±'}
@@ -2790,13 +2239,13 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* ì¶”ï¿½ï¿½ï¿½ ì˜ê²¬ */}
+            {/* ì¶”ï¿½ï¿½ï¿½ ?˜ê²? */}
             <div className="mb-6">
-              <label className="text-sm font-medium text-gray-700 mb-2 block">ì¶”ê°€ ì˜ê²¬ (ì„ íƒ)</label>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">ì¶”ê?? ?˜ê²? (?„ ?ƒ)</label>
               <textarea
                 value={ratingComment}
                 onChange={(e) => setRatingComment(e.target.value)}
-                placeholder="ë” ì¢‹ì€ ì„œë¹„ìŠ¤ë¥¼ ìœ„í•œ ì˜ê²¬ì„ ë‚¨ê²¨ì£¼ì„¸ìš”"
+                placeholder="?” ì¢‹ì?? ?„œë¹„ìŠ¤ë¥? ?œ„?•œ ?˜ê²¬ì„ ?‚¨ê²¨ì£¼?„¸?š”"
                 className="w-full p-3 border border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows={3}
               />
@@ -2814,7 +2263,7 @@ export default function StudentDashboard() {
                 }}
                 className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all"
               >
-                ë‚˜ì¤‘ì—
+                ?‚˜ì¤‘ì—
               </button>
               <button
                 onClick={handleRatingSubmit}
@@ -2825,21 +2274,21 @@ export default function StudentDashboard() {
                     : 'bg-gradient-to-r from-red-500 to-orange-500 text-white hover:shadow-lg'
                 }`}
               >
-                í‰ê°€ ì œì¶œ
+                ?‰ê°? ? œì¶?
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ë¯¼ì› ìƒì„¸ë³´ê¸° ëª¨ë‹¬ */}
+      {/* ë¯¼ì› ?ƒ?„¸ë³´ê¸° ëª¨ë‹¬ */}
       {complaintDetailModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md h-[85vh] rounded-t-3xl flex flex-col">
-            {/* í—¤ë” */}
+            {/* ?—¤?” */}
             <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-6 rounded-t-3xl shrink-0">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-bold text-xl">ë¯¼ì› ìƒì„¸ë³´ê¸°</h3>
+                <h3 className="font-bold text-xl">ë¯¼ì› ?ƒ?„¸ë³´ê¸°</h3>
                 <button
                   onClick={() => {
                     setComplaintDetailModal(null);
@@ -2852,18 +2301,18 @@ export default function StudentDashboard() {
               </div>
               <div className="flex items-center gap-2 text-sm opacity-90">
                 <span>{complaintDetailModal.category}</span>
-                <span>â€¢</span>
+                <span>???</span>
                 <span>{complaintDetailModal.date}</span>
               </div>
             </div>
 
-            {/* ë‚´ìš© */}
+            {/* ?‚´?š© */}
             <div className="flex-1 overflow-y-auto p-6">
-              {/* ì œëª© */}
+              {/* ? œëª? */}
               <div className="mb-6">
                 <h4 className="font-bold text-lg text-gray-800 mb-2">{complaintDetailModal.title}</h4>
                 <div className="flex items-center gap-2">
-                  {complaintDetailModal.status === 'ì™„ë£Œ' ? (
+                  {complaintDetailModal.status === '?™„ë£?' ? (
                     <>
                       {complaintRatings[complaintDetailModal.id] ? (
                         <div className="flex items-center gap-1 px-3 py-1 bg-yellow-50 rounded-full">
@@ -2875,14 +2324,14 @@ export default function StudentDashboard() {
                           onClick={() => handleRateComplaint(complaintDetailModal.id)}
                           className="px-3 py-1 bg-yellow-50 text-yellow-600 rounded-full text-xs font-medium hover:bg-yellow-100 transition-colors"
                         >
-                          í‰ê°€í•˜ê¸°
+                          ?‰ê°??•˜ê¸?
                         </button>
                       )}
                     </>
                   ) : (
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      complaintDetailModal.status === 'ì ‘ìˆ˜' ? 'bg-blue-100 text-blue-700' :
-                      complaintDetailModal.status === 'ì²˜ë¦¬ì¤‘' ? 'bg-orange-100 text-orange-700' :
+                      complaintDetailModal.status === '? ‘?ˆ˜' ? 'bg-blue-100 text-blue-700' :
+                      complaintDetailModal.status === 'ì²˜ë¦¬ì¤?' ? 'bg-orange-100 text-orange-700' :
                       'bg-green-100 text-green-700'
                     }`}>
                       {complaintDetailModal.status}
@@ -2891,11 +2340,11 @@ export default function StudentDashboard() {
                 </div>
               </div>
 
-              {/* ë‚´ê°€ ì‘ì„±í•œ ë¯¼ì› ë‚´ìš© */}
+              {/* ?‚´ê°? ?‘?„±?•œ ë¯¼ì› ?‚´?š© */}
               <div className="mb-6">
                 <div className="flex items-center gap-2 mb-3">
                   <MessageCircle className="w-5 h-5 text-gray-600" />
-                  <h5 className="font-bold text-gray-800">ë¬¸ì˜ ë‚´ìš©</h5>
+                  <h5 className="font-bold text-gray-800">ë¬¸ì˜ ?‚´?š©</h5>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4">
                   <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
@@ -2904,20 +2353,20 @@ export default function StudentDashboard() {
                 </div>
               </div>
 
-              {/* ì ‘ìˆ˜ ìƒíƒœ: ë‚´ìš©ë§Œ ë³´ì—¬ì¤Œ (ìœ„ì— ì´ë¯¸ í‘œì‹œë¨) */}
+              {/* ? ‘?ˆ˜ ?ƒ?ƒœ: ?‚´?š©ë§? ë³´ì—¬ì¤? (?œ„?— ?´ë¯? ?‘œ?‹œ?¨) */}
 
-              {/* ì²˜ë¦¬ì¤‘ ìƒíƒœ: íƒ€ì„ë¼ì¸ + ë‹´ë‹¹ì ì •ë³´ */}
-              {complaintDetailModal.status === 'ì²˜ë¦¬ì¤‘' && (
+              {/* ì²˜ë¦¬ì¤? ?ƒ?ƒœ: ????„?¼?¸ + ?‹´?‹¹? ? •ë³? */}
+              {complaintDetailModal.status === 'ì²˜ë¦¬ì¤?' && (
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-3">
                     <Clock className="w-5 h-5 text-blue-600" />
-                    <h5 className="font-bold text-gray-800">ì²˜ë¦¬ í˜„í™©</h5>
+                    <h5 className="font-bold text-gray-800">ì²˜ë¦¬ ?˜„?™©</h5>
                   </div>
                   
-                  {/* íƒ€ì„ë¼ì¸ UI */}
+                  {/* ????„?¼?¸ UI */}
                   <div className="bg-blue-50 rounded-lg p-4 mb-3">
                     <div className="flex items-center justify-between mb-2">
-                      {['ì ‘ìˆ˜ í™•ì¸', 'ë‹´ë‹¹ì ë°°ì •', 'ì²˜ë¦¬ì¤‘'].map((step, index) => (
+                      {['? ‘?ˆ˜ ?™•?¸', '?‹´?‹¹? ë°°ì •', 'ì²˜ë¦¬ì¤?'].map((step, index) => (
                         <div key={`${complaintDetailModal.id}-${step}`} className="flex items-center flex-1">
                           <div className="flex flex-col items-center w-full">
                             <div className="relative flex items-center justify-center w-full">
@@ -2951,15 +2400,15 @@ export default function StudentDashboard() {
                     </div>
                   </div>
 
-                  {/* ë‹´ë‹¹ ì •ë³´ */}
+                  {/* ?‹´?‹¹ ? •ë³? */}
                   {complaintDetailModal.department && complaintDetailModal.assignee && (
                     <div className="bg-white border border-blue-200 rounded-lg p-4">
                       <div className="flex items-center gap-2">
                         <User className="w-4 h-4 text-blue-600 shrink-0" />
                         <div className="text-sm text-gray-800">
-                          <span className="font-medium">ë¶€ì„œ:</span> {complaintDetailModal.department}
+                          <span className="font-medium">ë¶??„œ:</span> {complaintDetailModal.department}
                           <span className="mx-2">|</span>
-                          <span className="font-medium">ë‹´ë‹¹:</span> {complaintDetailModal.assignee}
+                          <span className="font-medium">?‹´?‹¹:</span> {complaintDetailModal.assignee}
                         </div>
                       </div>
                     </div>
@@ -2967,18 +2416,18 @@ export default function StudentDashboard() {
                 </div>
               )}
 
-              {/* ì™„ë£Œ ìƒíƒœ: ê´€ë¦¬ì ë‹µë³€ + ì²¨ë¶€íŒŒì¼ */}
-              {complaintDetailModal.status === 'ì™„ë£Œ' && complaintDetailModal.adminResponse && (
+              {/* ?™„ë£? ?ƒ?ƒœ: ê´?ë¦¬ì ?‹µë³? + ì²¨ë???ŒŒ?¼ */}
+              {complaintDetailModal.status === '?™„ë£?' && complaintDetailModal.adminResponse && (
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-3">
                     <CheckCircle className="w-5 h-5 text-green-600" />
-                    <h5 className="font-bold text-gray-800">ê´€ë¦¬ì ë‹µë³€</h5>
+                    <h5 className="font-bold text-gray-800">ê´?ë¦¬ì ?‹µë³?</h5>
                   </div>
                   
-                  {/* ê´€ë¦¬ì ë‹µë³€ */}
+                  {/* ê´?ë¦¬ì ?‹µë³? */}
                   <div className="bg-green-50 rounded-lg p-4 mb-3">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-bold text-green-900">ë‹µë³€ ë‚´ìš©</span>
+                      <span className="font-bold text-green-900">?‹µë³? ?‚´?š©</span>
                       <span className="text-xs text-green-700">{complaintDetailModal.responseDate}</span>
                     </div>
                     <p className="text-sm text-green-900 leading-relaxed whitespace-pre-wrap">
@@ -2986,12 +2435,12 @@ export default function StudentDashboard() {
                     </p>
                   </div>
 
-                  {/* ì²¨ë¶€íŒŒì¼ */}
+                  {/* ì²¨ë???ŒŒ?¼ */}
                   {complaintDetailModal.attachments && complaintDetailModal.attachments.length > 0 && (
                     <div>
                       <div className="flex items-center gap-2 mb-3">
                         <FileText className="w-5 h-5 text-gray-600" />
-                        <h5 className="font-bold text-gray-800">ì²¨ë¶€íŒŒì¼ ({complaintDetailModal.attachments.length})</h5>
+                        <h5 className="font-bold text-gray-800">ì²¨ë???ŒŒ?¼ ({complaintDetailModal.attachments.length})</h5>
                       </div>
                       <div className="space-y-2">
                         {complaintDetailModal.attachments.map((file: any) => (
@@ -3008,7 +2457,7 @@ export default function StudentDashboard() {
                               download 
                               className="ml-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors shrink-0"
                             >
-                              ë‹¤ìš´ë¡œë“œ
+                              ?‹¤?š´ë¡œë“œ
                             </a>
                           </div>
                         ))}
@@ -3019,7 +2468,7 @@ export default function StudentDashboard() {
               )}
             </div>
 
-            {/* í•˜ë‹¨ ë²„íŠ¼ */}
+            {/* ?•˜?‹¨ ë²„íŠ¼ */}
             <div className="p-6 pt-4 shrink-0 border-t border-gray-100">
               <button
                 onClick={() => {
@@ -3028,34 +2477,34 @@ export default function StudentDashboard() {
                 }}
                 className="w-full py-3 bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white rounded-xl font-medium hover:shadow-lg transition-all"
               >
-                ë‹«ê¸°
+                ?‹«ê¸?
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ë¯¼ì› ì´ë ¥ ë‹¤ìš´ë¡œë“œ ëª¨ë‹¬ */}
+      {/* ë¯¼ì› ?´? ¥ ?‹¤?š´ë¡œë“œ ëª¨ë‹¬ */}
       {showDownloadModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl p-6 animate-slide-up">
-            {/* í—¤ë” */}
+            {/* ?—¤?” */}
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-bold text-xl">ë¯¼ì› ì´ë ¥ ë‹¤ìš´ë¡œë“œ</h3>
+              <h3 className="font-bold text-xl">ë¯¼ì› ?´? ¥ ?‹¤?š´ë¡œë“œ</h3>
               <button onClick={() => setShowDownloadModal(false)}>
                 <X className="w-6 h-6 text-gray-400" />
               </button>
             </div>
 
-            {/* ë‹¤ìš´ë¡œë“œ ì˜µì…˜ */}
+            {/* ?‹¤?š´ë¡œë“œ ?˜µ?…˜ */}
             <div className="space-y-6">
-              {/* ê¸°ê°„ ì„ íƒ */}
+              {/* ê¸°ê°„ ?„ ?ƒ */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  ë‹¤ìš´ë¡œë“œ ê¸°ê°„
+                  ?‹¤?š´ë¡œë“œ ê¸°ê°„
                 </label>
                 <div className="grid grid-cols-2 gap-3">
-                  {['ìµœê·¼ 1ê°œì›”', 'ìµœê·¼ 3ê°œì›”', 'ìµœê·¼ 6ê°œì›”', 'ì „ì²´'].map((period) => (
+                  {['ìµœê·¼ 1ê°œì›”', 'ìµœê·¼ 3ê°œì›”', 'ìµœê·¼ 6ê°œì›”', '? „ì²?'].map((period) => (
                     <button
                       key={period}
                       onClick={() => setDownloadPeriod(period)}
@@ -3071,10 +2520,10 @@ export default function StudentDashboard() {
                 </div>
               </div>
 
-              {/* íŒŒì¼ í˜•ì‹ ì„ íƒ */}
+              {/* ?ŒŒ?¼ ?˜•?‹ ?„ ?ƒ */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  íŒŒì¼ í˜•ì‹
+                  ?ŒŒ?¼ ?˜•?‹
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   {['PDF', 'Excel'].map((format) => (
@@ -3096,29 +2545,29 @@ export default function StudentDashboard() {
                 </div>
               </div>
 
-              {/* ë‹¤ìš´ë¡œë“œ ë‚´ìš© ë¯¸ë¦¬ë³´ê¸° */}
+              {/* ?‹¤?š´ë¡œë“œ ?‚´?š© ë¯¸ë¦¬ë³´ê¸° */}
               <div className="bg-gradient-to-r from-red-50 via-pink-50 to-orange-50 rounded-xl p-4">
                 <div className="flex items-start gap-3">
                   <FileText className="w-5 h-5 text-red-500 mt-0.5" />
                   <div className="flex-1">
-                    <p className="font-medium text-gray-800 mb-1">í¬í•¨ ë‚´ìš©</p>
+                    <p className="font-medium text-gray-800 mb-1">?¬?•¨ ?‚´?š©</p>
                     <ul className="text-sm text-gray-600 space-y-1">
-                      <li>â€¢ ë¯¼ì› ì œëª© ë° ë‚´ìš©</li>
-                      <li>â€¢ ì²˜ë¦¬ ìƒíƒœ ë° ë‹´ë‹¹ì</li>
-                      <li>â€¢ ë‹µë³€ ë‚´ìš© (ì™„ë£Œëœ ê²½ìš°)</li>
-                      <li>â€¢ ì²˜ë¦¬ ì¼ì ë° ì´ë ¥</li>
+                      <li>??? ë¯¼ì› ? œëª? ë°? ?‚´?š©</li>
+                      <li>??? ì²˜ë¦¬ ?ƒ?ƒœ ë°? ?‹´?‹¹?</li>
+                      <li>??? ?‹µë³? ?‚´?š© (?™„ë£Œëœ ê²½ìš°)</li>
+                      <li>??? ì²˜ë¦¬ ?¼? ë°? ?´? ¥</li>
                     </ul>
                   </div>
                 </div>
               </div>
 
-              {/* ì•ˆë‚´ ë©”ì‹œì§€ */}
+              {/* ?•ˆ?‚´ ë©”ì‹œì§? */}
               <div className="bg-blue-50 rounded-xl p-4">
                 <p className="text-xs text-blue-700 flex items-start gap-2">
                   <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                   <span>
-                    ë‹¤ìš´ë¡œë“œëœ íŒŒì¼ì—ëŠ” ê°œì¸ì •ë³´ê°€ í¬í•¨ë˜ì–´ ìˆìœ¼ë‹ˆ 
-                    ë³´ì•ˆì— ìœ ì˜í•´ì£¼ì‹œê¸° ë°”ëë‹ˆë‹¤.
+                    ?‹¤?š´ë¡œë“œ?œ ?ŒŒ?¼?—?Š” ê°œì¸? •ë³´ê?? ?¬?•¨?˜?–´ ?ˆ?œ¼?‹ˆ 
+                    ë³´ì•ˆ?— ?œ ?˜?•´ì£¼ì‹œê¸? ë°”ë?‹ˆ?‹¤.
                   </span>
                 </p>
               </div>
@@ -3134,14 +2583,14 @@ export default function StudentDashboard() {
               </button>
               <button
                 onClick={() => {
-                  // ì‹¤ì œë¡œëŠ” íŒŒì¼ ìƒì„± ë¡œì§
-                  alert(`${downloadPeriod} ë¯¼ì› ì´ë ¥ì„ ${downloadFormat} í˜•ì‹ìœ¼ë¡œ ë‹¤ìš´ë¡œë“œí•©ë‹ˆë‹¤.`);
+                  // ?‹¤? œë¡œëŠ” ?ŒŒ?¼ ?ƒ?„± ë¡œì§
+                  alert(`${downloadPeriod} ë¯¼ì› ?´? ¥?„ ${downloadFormat} ?˜•?‹?œ¼ë¡? ?‹¤?š´ë¡œë“œ?•©?‹ˆ?‹¤.`);
                   setShowDownloadModal(false);
                 }}
                 className="flex-1 py-3 bg-gradient-to-r from-red-500 via-pink-500 to-orange-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2"
               >
                 <Download className="w-5 h-5" />
-                ë‹¤ìš´ë¡œë“œ
+                ?‹¤?š´ë¡œë“œ
               </button>
             </div>
           </div>
