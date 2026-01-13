@@ -1,428 +1,789 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Legend } from 'recharts';
-import { Home, FileText, Bell, User, Plus, ChevronRight, ChevronDown, Award, Target, Briefcase, BookOpen, X, MessageCircle, Building, GraduationCap, Heart, Clock, CheckCircle, AlertCircle, Search, Settings, Download, Send, Trophy, Star, Check, TrendingUp, Share2, Copy, Link, RotateCw, Upload, Trash, CircleHelp, LogOut } from 'lucide-react';
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import {
+  Home,
+  FileText,
+  Bell,
+  User,
+  Plus,
+  ChevronRight,
+  ChevronDown,
+  Award,
+  Target,
+  Briefcase,
+  BookOpen,
+  X,
+  MessageCircle,
+  Building,
+  GraduationCap,
+  Heart,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Search,
+  Settings,
+  Download,
+  Send,
+  Trophy,
+  Star,
+  Check,
+  TrendingUp,
+  Share2,
+  Copy,
+  Link,
+  RotateCw,
+  Upload,
+  Trash,
+  CircleHelp,
+  LogOut,
+} from "lucide-react";
 // logoImage from 'figma:asset/a5f360b8c95401cf229a69f0c0d2de04cefbe043.png';
 const logoImage = "https://placehold.co/40x40";
-import Login from './Login';
-import { checkAutoLogin, clearAuthTokens, AuthTokens } from './utils/auth';
-import ChatModal from './components/chatbot/ChatModal';
+import Login from "./Login";
+import { checkAutoLogin, clearAuthTokens, AuthTokens } from "./utils/auth";
+import ChatModal from "./components/chatbot/ChatModal";
 
-// STAR ? ˆ?´?” ì°¨íŠ¸ ?°?´?„°
+// STAR ÇÙ½É¿ª·® Áø´Ü µ¥ÀÌÅÍ (S:Ã¢ÀÇ, T:½Ç¹«, A:ÀÎ¼º, R:¼ÒÅë)
 const radarData = [
-  { subject: 'S (ì°½ì˜)', myScore: 85, deptAvg: 72, totalAvg: 68, fullMark: 100 },
-  { subject: 'T (?‹¤ë¬?)', myScore: 78, deptAvg: 75, totalAvg: 70, fullMark: 100 },
-  { subject: 'A (?¸?„±)', myScore: 92, deptAvg: 80, totalAvg: 75, fullMark: 100 },
-  { subject: 'R (?†Œ?†µ)', myScore: 70, deptAvg: 68, totalAvg: 65, fullMark: 100 },
+  {
+    subject: "S (Ã¢ÀÇ)",
+    myScore: 85,
+    deptAvg: 72,
+    totalAvg: 68,
+    fullMark: 100,
+  },
+  {
+    subject: "T (½Ç¹«)",
+    myScore: 78,
+    deptAvg: 75,
+    totalAvg: 70,
+    fullMark: 100,
+  },
+  {
+    subject: "A (ÀÎ¼º)",
+    myScore: 92,
+    deptAvg: 80,
+    totalAvg: 75,
+    fullMark: 100,
+  },
+  {
+    subject: "R (¼ÒÅë)",
+    myScore: 70,
+    deptAvg: 68,
+    totalAvg: 65,
+    fullMark: 100,
+  },
 ];
 
-// ?•˜?œ„?—­?Ÿ‰(PO) ? ˆ?´?” ì°¨íŠ¸ ?°?´?„°
+// Àü°ø´É·Â(PO) ÇÙ½É¿ª·® Áø´Ü µ¥ÀÌÅÍ
 const radarDataPO = [
-  { subject: 'ì°½ì˜?  ë¬¸ì œ?•´ê²?', myScore: 87, deptAvg: 74, totalAvg: 70, fullMark: 100 },
-  { subject: '?œµë³µí•©?  ?‚¬ê³?', myScore: 83, deptAvg: 70, totalAvg: 66, fullMark: 100 },
-  { subject: '? „ë¬¸ì???‹', myScore: 82, deptAvg: 78, totalAvg: 73, fullMark: 100 },
-  { subject: 'ë¯¸ë˜?˜?‹ ', myScore: 75, deptAvg: 73, totalAvg: 68, fullMark: 100 },
-  { subject: 'ë¦¬ë”?‹­', myScore: 77, deptAvg: 74, totalAvg: 69, fullMark: 100 },
-  { subject: 'ê³µë™ì²´ì˜?‹', myScore: 90, deptAvg: 82, totalAvg: 77, fullMark: 100 },
-  { subject: '?ê¸°ê³„ë°?', myScore: 94, deptAvg: 78, totalAvg: 73, fullMark: 100 },
-  { subject: '?˜?‚¬?†Œ?†µ', myScore: 72, deptAvg: 70, totalAvg: 67, fullMark: 100 },
-  { subject: 'ê¸?ë¡œì»¬ ?‹œë¯?', myScore: 68, deptAvg: 66, totalAvg: 63, fullMark: 100 },
+  {
+    subject: "Ã¢ÀÇÀû¹®Á¦ÇØ°á",
+    myScore: 87,
+    deptAvg: 74,
+    totalAvg: 70,
+    fullMark: 100,
+  },
+  {
+    subject: "Àü°ø½Ç¹«±â¼ú",
+    myScore: 83,
+    deptAvg: 70,
+    totalAvg: 66,
+    fullMark: 100,
+  },
+  {
+    subject: "Á¤º¸È°¿ë´É·Â",
+    myScore: 82,
+    deptAvg: 78,
+    totalAvg: 73,
+    fullMark: 100,
+  },
+  {
+    subject: "±Û·Î¹ú¿ª·®",
+    myScore: 75,
+    deptAvg: 73,
+    totalAvg: 68,
+    fullMark: 100,
+  },
+  {
+    subject: "´ëÀÎ°ü°è",
+    myScore: 77,
+    deptAvg: 74,
+    totalAvg: 69,
+    fullMark: 100,
+  },
+  {
+    subject: "ÀÚ±â°è¹ß´É·Â",
+    myScore: 90,
+    deptAvg: 82,
+    totalAvg: 77,
+    fullMark: 100,
+  },
+  {
+    subject: "Á÷¾÷À±¸®",
+    myScore: 94,
+    deptAvg: 78,
+    totalAvg: 73,
+    fullMark: 100,
+  },
+  {
+    subject: "±â¼úÀ¶ÇÕ",
+    myScore: 72,
+    deptAvg: 70,
+    totalAvg: 67,
+    fullMark: 100,
+  },
+  {
+    subject: "ÀÇ»ç¼ÒÅë",
+    myScore: 68,
+    deptAvg: 66,
+    totalAvg: 63,
+    fullMark: 100,
+  },
 ];
 
-// ?—­?Ÿ‰ ?ƒ?„¸ ?°?´?„°
+// ¿ª·® »ó¼¼ µ¥ÀÌÅÍ
 const starDetails = {
-  S: { name: 'ì°½ì˜', score: 85, grade: '?š°?ˆ˜', skills: ['ê¸°íš', '?‹¤?–‰', '?™”?•©', '?†µ?„­'], color: '#E94E3C' },
-  T: { name: '?‹¤ë¬?', score: 78, grade: 'ë³´í†µ', skills: ['? „ê³µì???‹', '? „ê³µê¸°?ˆ ', '? •ë³´í™”', '?‹ ê¸°ìˆ ?™œ?š©', 'ê³µê°', '?Œ?‹¨'], color: '#F7941D' },
-  A: { name: '?¸?„±', score: 92, grade: 'ë§ˆìŠ¤?„°', skills: ['?‚¬ëª…ê°', 'ì¡°ì§?´?•´', '?„? „?„±', '?ê¸°í•™?Šµ'], color: '#C13584' },
-  R: { name: '?†Œ?†µ', score: 70, grade: 'ë³´í†µ', skills: ['ê²½ì²­', '?˜‘?ƒ', '?™¸êµ??–´', '?„¸ê³„ì‹œë¯?'], color: '#E94E3C' },
+  S: {
+    name: "Ã¢ÀÇ¿ª·®",
+    score: 85,
+    grade: "¿ì¼ö",
+    skills: ["Ã¢ÀÇÀû»ç°í", "¹®Á¦ÇØ°á", "ÅëÂû·Â", "Çõ½Å"],
+    color: "#E94E3C",
+  },
+  T: {
+    name: "½Ç¹«¿ª·®",
+    score: 78,
+    grade: "º¸Åë",
+    skills: ["Àü°øÁö½Ä", "½Ç¹«±â¼ú", "ÇöÀåÀûÀÀ", "Á¤º¸È°¿ë", "ºĞ¼®", "±âÈ¹"],
+    color: "#F7941D",
+  },
+  A: {
+    name: "ÀÎ¼º¿ª·®",
+    score: 92,
+    grade: "ÃÖ¿ì¼ö",
+    skills: ["Ã¥ÀÓ°¨", "¼º½Ç¼º", "À±¸®ÀÇ½Ä", "Çùµ¿½É"],
+    color: "#C13584",
+  },
+  R: {
+    name: "¼ÒÅë¿ª·®",
+    score: 70,
+    grade: "º¸Åë",
+    skills: ["°æÃ»", "¼³µæ", "Á¶Á¤", "¸®´õ½Ê"],
+    color: "#E94E3C",
+  },
 };
 
-// ?•˜?œ„?—­?Ÿ‰(PO) ?ƒ?„¸ ?°?´?„°
+// Àü°ø´É·Â(PO) »ó¼¼ µ¥ÀÌÅÍ
 const poDetails = {
-  'ì°½ì˜?  ë¬¸ì œ?•´ê²?': { name: 'ì°½ì˜?  ë¬¸ì œ?•´ê²?', score: 87, grade: '?š°?ˆ˜', category: 'S', skills: ['ë¬¸ì œë¶„ì„', '?•´ê²°ë°©?•ˆ ?„ì¶?', 'ì°½ì˜?  ? ‘ê·?'], color: '#E94E3C' },
-  '?œµë³µí•©?  ?‚¬ê³?': { name: '?œµë³µí•©?  ?‚¬ê³?', score: 83, grade: '?š°?ˆ˜', category: 'S', skills: ['?‹¤?•™? œ?  ? ‘ê·?', '?†µ?•©?  ?‚¬ê³?', '?‹œ?„ˆì§? ì°½ì¶œ'], color: '#E94E3C' },
-  '? „ë¬¸ì???‹': { name: '? „ë¬¸ì???‹', score: 82, grade: '?š°?ˆ˜', category: 'T', skills: ['? „ê³µì´ë¡?', '?‹¤ë¬´ì ?š©', 'ì§??‹ì²´ê³„'], color: '#F7941D' },
-  'ë¯¸ë˜?˜?‹ ': { name: 'ë¯¸ë˜?˜?‹ ', score: 75, grade: 'ë³´í†µ', category: 'T', skills: ['?‹ ê¸°ìˆ  ?™œ?š©', '?Š¸? Œ?“œ ?ŒŒ?•…', '?˜?‹  ë§ˆì¸?“œ'], color: '#F7941D' },
-  'ë¦¬ë”?‹­': { name: 'ë¦¬ë”?‹­', score: 77, grade: 'ë³´í†µ', category: 'T', skills: ['??? ê´?ë¦?', '?˜?‚¬ê²°ì •', '?™ê¸°ë???—¬'], color: '#F7941D' },
-  'ê³µë™ì²´ì˜?‹': { name: 'ê³µë™ì²´ì˜?‹', score: 90, grade: 'ë§ˆìŠ¤?„°', category: 'A', skills: ['?˜‘? ¥', 'ë°°ë ¤', '?‚¬?šŒ?  ì±…ì„'], color: '#C13584' },
-  '?ê¸°ê³„ë°?': { name: '?ê¸°ê³„ë°?', score: 94, grade: 'ë§ˆìŠ¤?„°', category: 'A', skills: ['?ê¸°ì£¼?„?•™?Šµ', 'ëª©í‘œ?„¤? •', '?„±ì°?'], color: '#C13584' },
-  '?˜?‚¬?†Œ?†µ': { name: '?˜?‚¬?†Œ?†µ', score: 72, grade: 'ë³´í†µ', category: 'R', skills: ['ê²½ì²­', '?‘œ?˜„', 'ê³µê°'], color: '#E94E3C' },
-  'ê¸?ë¡œì»¬ ?‹œë¯?': { name: 'ê¸?ë¡œì»¬ ?‹œë¯?', score: 68, grade: 'ë³´í†µ', category: 'R', skills: ['?‹¤ë¬¸í™” ?´?•´', 'ê¸?ë¡œë²Œ ë§ˆì¸?“œ', 'ì§??—­?‚¬?šŒ ì°¸ì—¬'], color: '#E94E3C' },
+  Ã¢ÀÇÀû¹®Á¦ÇØ°á: {
+    name: "Ã¢ÀÇÀû¹®Á¦ÇØ°á",
+    score: 87,
+    grade: "¿ì¼ö",
+    category: "S",
+    skills: ["´ë¾ÈµµÃâ", "¹®Á¦Á¤ÀÇ", "Ã¢ÀÇÀûÁ¢±Ù"],
+    color: "#E94E3C",
+  },
+  Àü°ø½Ç¹«±â¼ú: {
+    name: "Àü°ø½Ç¹«±â¼ú",
+    score: 83,
+    grade: "¿ì¼ö",
+    category: "S",
+    skills: ["Àåºñ¿î¿ë", "½Ç¹«Àû¿ë", "±â¼úÈ°¿ë"],
+    color: "#E94E3C",
+  },
+  Á¤º¸È°¿ë´É·Â: {
+    name: "Á¤º¸È°¿ë´É·Â",
+    score: 82,
+    grade: "¿ì¼ö",
+    category: "T",
+    skills: ["Á¤º¸°Ë»ö", "µ¥ÀÌÅÍºĞ¼®", "¹®¼­ÀÛ¼º"],
+    color: "#F7941D",
+  },
+  ±Û·Î¹ú¿ª·®: {
+    name: "±Û·Î¹ú¿ª·®",
+    score: 75,
+    grade: "º¸Åë",
+    category: "T",
+    skills: ["¿Ü±¹¾î", "´Ù¹®È­ÀÌÇØ", "±Û·Î¹ú¸¶ÀÎµå"],
+    color: "#F7941D",
+  },
+  ´ëÀÎ°ü°è: {
+    name: "´ëÀÎ°ü°è",
+    score: 77,
+    grade: "º¸Åë",
+    category: "T",
+    skills: ["ÆÀ¿öÅ©", "°¥µî°ü¸®", "Çù¾÷"],
+    color: "#F7941D",
+  },
+  ÀÚ±â°è¹ß´É·Â: {
+    name: "ÀÚ±â°è¹ß´É·Â",
+    score: 90,
+    grade: "ÃÖ¿ì¼ö",
+    category: "A",
+    skills: ["ÀÚÀ²¼º", "ÇĞ½À´É·Â", "°æ·Â°³¹ß"],
+    color: "#C13584",
+  },
+  Á÷¾÷À±¸®: {
+    name: "Á÷¾÷À±¸®",
+    score: 94,
+    grade: "ÃÖ¿ì¼ö",
+    category: "A",
+    skills: ["ÁØ¹ı¼º", "Ã¥ÀÓ°¨", "Á÷¾÷ÀÇ½Ä"],
+    color: "#C13584",
+  },
+  ±â¼úÀ¶ÇÕ: {
+    name: "±â¼úÀ¶ÇÕ",
+    score: 72,
+    grade: "º¸Åë",
+    category: "R",
+    skills: ["À¶ÇÕ»ç°í", "½Å±â¼úÀÌÇØ", "ÀÀ¿ë·Â"],
+    color: "#E94E3C",
+  },
+  ÀÇ»ç¼ÒÅë: {
+    name: "ÀÇ»ç¼ÒÅë",
+    score: 68,
+    grade: "º¸Åë",
+    category: "R",
+    skills: ["°æÃ»", "¹ßÇ¥", "¹®¼­ÀÌÇØ"],
+    color: "#E94E3C",
+  },
 };
 
-// ë¯¼ì› ì¹´í…Œê³ ë¦¬
+// ¹Î¿ø Ä«Å×°í¸®
 const complaintCategories = [
-  { id: 1, icon: Building, name: '?‹œ?„¤ ë°? ?™˜ê²?', items: ['ê°•ì˜?‹¤', 'ê³µìš©?‹œ?„¤', 'ì²?ê²?', '?•ˆ? „'], color: '#E94E3C' },
-  { id: 2, icon: GraduationCap, name: '?•™?ƒ ?¥?•™', items: ['?¥?•™ ê¸°ì??', '?‹ ì²?', '?‹¬?‚¬', 'ì§?ê¸? ?˜¤ë¥?'], color: '#4A90E2' },
-  { id: 3, icon: Heart, name: '?•™?ƒ ë³µì??', items: ['?ƒ?™œ ?‹œ?„¤', '?•™?Šµê³µê°„', 'ê±´ê°•', 'êµí†µ'], color: '#C13584' },
-  { id: 4, icon: BookOpen, name: '?ˆ˜?—… ë°? ?•™?‚¬', items: ['ê°•ì˜ ?š´?˜', '?„±? ', '?œ´ë³µí•™', '?‹œ?Š¤?…œ ?˜¤ë¥?'], color: '#F7941D' },
+  {
+    id: 1,
+    icon: Building,
+    name: "½Ã¼³ ¹× È¯°æ",
+    items: ["°­ÀÇ½Ç", "µµ¼­°ü", "È­Àå½Ç", "ÈŞ°Ô½Ç"],
+    color: "#E94E3C",
+  },
+  {
+    id: 2,
+    icon: GraduationCap,
+    name: "ÇĞ»ç ¹× ¼ö¾÷",
+    items: ["¼ö°­½ÅÃ»", "¼ºÀû", "ÈŞº¹ÇĞ", "Á¹¾÷"],
+    color: "#4A90E2",
+  },
+  {
+    id: 3,
+    icon: Heart,
+    name: "ÇĞ»ı º¹Áö",
+    items: ["ÀåÇĞ±İ", "±â¼÷»ç", "½Ä´ç", "º¸°Ç"],
+    color: "#C13584",
+  },
+  {
+    id: 4,
+    icon: BookOpen,
+    name: "Áø·Î ¹× Ãë¾÷",
+    items: ["Ãë¾÷»ó´ã", "ÇöÀå½Ç½À", "ÀÚ°İÁõ", "¸àÅä¸µ"],
+    color: "#F7941D",
+  },
 ];
 
-// ë¯¼ì› ëª©ë¡ ?°?´?„°
+// ¹Î¿ø ¸ñ·Ï µ¥ÀÌÅÍ
 const complaints = [
-  { 
-    id: 1, 
-    title: '?„?„œê´? ?ƒ‰ë°? ë¬¸ì œ', 
-    status: 'ì²˜ë¦¬ì¤?', 
-    date: '2025.01.15', 
-    category: '?‹œ?„¤ ë°? ?™˜ê²?', 
-    content: 'ì¤‘ì•™?„?„œê´? 3ì¸? ?—´?Œ?‹¤?˜ ?ƒ‰ë°? ?‹œ?Š¤?…œ?´ ? œ???ë¡? ?‘?™?•˜ì§? ?•Š?•„ ?‹¤?‚´ ?˜¨?„ê°? ?„ˆë¬? ?†’?Šµ?‹ˆ?‹¤. ?•™?Šµ?•˜ê¸? ?–´? ¤?š´ ?™˜ê²½ì´?‹ˆ ë¹ ë¥¸ ì¡°ì¹˜ ë¶??ƒ?“œë¦½ë‹ˆ?‹¤.',
-    currentStep: 3, 
-    department: '?‹œ?„¤ê´?ë¦¬í??', 
-    assignee: 'ê¹?ë¯¼ìˆ˜', 
-    isRead: true, 
-    isRated: false, 
-    rating: undefined 
+  {
+    id: 1,
+    title: "°­ÀÇ½Ç ¿¡¾îÄÁ °íÀå",
+    status: "Ã³¸®Áß",
+    date: "2025.01.15",
+    category: "½Ã¼³ ¹× È¯°æ",
+    content:
+      "3È£°ü 401È£ °­ÀÇ½Ç ¿¡¾îÄÁÀÌ ÀÛµ¿ÇÏÁö ¾Ê½À´Ï´Ù. È®ÀÎ ºÎÅ¹µå¸³´Ï´Ù. ¼ö¾÷¿¡ ÁöÀåÀÌ ÀÖ¾î ºü¸¥ Á¶Ä¡ ºÎÅ¹µå¸³´Ï´Ù.",
+    currentStep: 3,
+    department: "½Ã¼³°ü¸®ÆÀ",
+    assignee: "±èÃ¶¼ö",
+    isRead: true,
+    isRated: false,
+    rating: undefined,
   },
-  { 
-    id: 2, 
-    title: '?¥?•™ê¸? ì§?ê¸? ?¼? • ë¬¸ì˜', 
-    status: '?™„ë£?', 
-    date: '2025.01.14', 
-    category: '?•™?ƒ ?¥?•™',
-    content: '2025?•™?…„?„ 1?•™ê¸? ?¥?•™ê¸? ì§?ê¸? ?¼? •?´ ê¶ê¸ˆ?•©?‹ˆ?‹¤. ? •?™•?•œ ì§?ê¸‰ì¼ê³? ?™•?¸ ë°©ë²•?„ ?•Œ? ¤ì£¼ì„¸?š”.',
-    adminResponse: '2025?•™?…„?„ 1?•™ê¸? ?¥?•™ê¸ˆì?? 2?›” 28?¼?— ?¼ê´? ì§?ê¸? ?˜ˆ? •?…?‹ˆ?‹¤. ?¥?•™ê¸? ì¢…ë¥˜?— ?”°?¼ ì§?ê¸‰ì¼?´ ?‹¤ë¥? ?ˆ˜ ?ˆ?œ¼?‹ˆ ?•™?ƒ?¬?„¸?—?„œ ?™•?¸?•˜?‹œê¸? ë°”ë?‹ˆ?‹¤.',
-    responseDate: '2025.01.15',
+  {
+    id: 2,
+    title: "ÀåÇĞ±İ ½ÅÃ» ±â°£ ¹®ÀÇ",
+    status: "¿Ï·á",
+    date: "2025.01.14",
+    category: "ÇĞ»ı º¹Áö",
+    content:
+      "2025³â 1ÇĞ±â ÀåÇĞ±İ ½ÅÃ» ±â°£À» ¾Ë°í ½Í½À´Ï´Ù. °øÁö»çÇ×À» Ã£¾Æº¸¾Æµµ º¸ÀÌÁö ¾Ê¾Æ ¹®ÀÇµå¸³´Ï´Ù.",
+    adminResponse:
+      "2025³â 1ÇĞ±â ÀåÇĞ±İ ½ÅÃ» ±â°£Àº 2¿ù 1ÀÏºÎÅÍ 2¿ù 15ÀÏ±îÁöÀÔ´Ï´Ù. ÀÚ¼¼ÇÑ ³»¿ëÀº ÇĞ°ú È¨ÆäÀÌÁö °øÁö»çÇ×À» Âü°íÇØÁÖ¼¼¿ä.",
+    responseDate: "2025.01.15",
     attachments: [
-      { id: 1, name: '?¥?•™ê¸?_ì§?ê¸?_?¼? •?‘œ.pdf', size: '245KB', url: '#' },
-      { id: 2, name: '2025-1?•™ê¸?_?¥?•™?•ˆ?‚´.pdf', size: '1.2MB', url: '#' }
+      { id: 1, name: "ÀåÇĞ±İ_¾È³».pdf", size: "245KB", url: "#" },
+      { id: 2, name: "2025-1ÇĞ±â_ÀåÇĞ±İ½ÅÃ»¼­.pdf", size: "1.2MB", url: "#" },
     ],
     isRead: false,
     isRated: false,
-    rating: undefined
+    rating: undefined,
   },
-  { 
-    id: 3, 
-    title: '?„±?  ? •? • ?š”ì²?', 
-    status: '? ‘?ˆ˜', 
-    date: '2025.01.13', 
-    category: '?ˆ˜?—… ë°? ?•™?‚¬', 
-    content: '?°?´?„°êµ¬ì¡°ë¡? ê³¼ëª©?˜ ì¤‘ê°„ê³ ì‚¬ ? ?ˆ˜ê°? ?‹¤? œ ? ?ˆ˜??? ?‹¤ë¥´ê²Œ ?…? ¥?œ ê²? ê°™ìŠµ?‹ˆ?‹¤. ?™•?¸ ?›„ ? •? • ë¶??ƒ?“œë¦½ë‹ˆ?‹¤.',
-    currentStep: 1, 
-    isRead: true, 
-    isRated: false, 
-    rating: undefined 
+  {
+    id: 3,
+    title: "ÈŞÇĞ ½ÅÃ» ¹æ¹ı",
+    status: "Á¢¼ö",
+    date: "2025.01.13",
+    category: "ÇĞ»ç ¹× ¼ö¾÷",
+    content:
+      "°³ÀÎÀûÀÎ »çÁ¤À¸·Î ÀÎÇØ ÈŞÇĞÀ» ÇÏ·Á°í ÇÕ´Ï´Ù. ÀıÂ÷°¡ ¾î¶»°Ô µÇ´ÂÁö ±Ã±İÇÕ´Ï´Ù.",
+    currentStep: 1,
+    isRead: true,
+    isRated: false,
+    rating: undefined,
   },
-  { 
-    id: 4, 
-    title: 'ê¸°ìˆ™?‚¬ ?‹œ?„¤ ë³´ìˆ˜', 
-    status: 'ì²˜ë¦¬ì¤?', 
-    date: '2025.01.12', 
-    category: '?•™?ƒ ë³µì??', 
-    content: '? œ2?ƒ?™œê´? 301?˜¸ ?™”?¥?‹¤ ?ƒ¤?›Œê¸°ì—?„œ ?˜¨?ˆ˜ê°? ?‚˜?˜¤ì§? ?•Š?Šµ?‹ˆ?‹¤. ê²¨ìš¸ì² ì´?¼ ë§¤ìš° ë¶ˆí¸?•œ ?ƒ?™©?…?‹ˆ?‹¤.',
-    currentStep: 2, 
-    department: '?ƒ?™œê´?ë¦¬í??', 
-    assignee: '?´ì§????', 
-    isRead: false, 
-    isRated: false, 
-    rating: undefined 
+  {
+    id: 4,
+    title: "±â¼÷»ç ½Ä´ç ¸Ş´º",
+    status: "Ã³¸®Áß",
+    date: "2025.01.12",
+    category: "ÇĞ»ı º¹Áö",
+    content:
+      "±â¼÷»ç ½Ä´ç ¸Ş´º°¡ Á» ´õ ´Ù¾çÇßÀ¸¸é ÁÁ°Ú½À´Ï´Ù. Æ¯È÷ Àú³á ¸Ş´º °³¼±À» ºÎÅ¹µå¸³´Ï´Ù.",
+    currentStep: 2,
+    department: "»ıÈ°°ü¿î¿µÆÀ",
+    assignee: "ÀÌ¿µÈñ",
+    isRead: false,
+    isRated: false,
+    rating: undefined,
   },
-  { 
-    id: 5, 
-    title: 'ê°•ì˜?‹¤ ?”„ë¡œì ?„° ê³ ì¥', 
-    status: '?™„ë£?', 
-    date: '2025.01.11', 
-    category: '?‹œ?„¤ ë°? ?™˜ê²?',
-    content: 'ê³µí•™ê´? 301?˜¸ ê°•ì˜?‹¤ ?”„ë¡œì ?„°ê°? ì¼œì??ì§? ?•Š?Šµ?‹ˆ?‹¤. ?‹¤?Œ ì£? ë°œí‘œ ?ˆ˜?—…?´ ?ˆ?–´ ë¹ ë¥¸ ?ˆ˜ë¦¬ê?? ?•„?š”?•©?‹ˆ?‹¤.',
-    adminResponse: '301?˜¸ ê°•ì˜?‹¤ ?”„ë¡œì ?„°ë¥? ?ƒˆ ? œ?’ˆ?œ¼ë¡? êµì²´ ?™„ë£Œí•˜????Šµ?‹ˆ?‹¤. ì¶”ê??ë¡? HDMI ì¼??´ë¸”ê³¼ ë¦¬ëª¨ì»¨ë„ ?•¨ê»? êµì²´?•˜????œ¼?‹ˆ ë¶ˆí¸ ?—†?´ ?‚¬?š©?•˜?‹¤ ?ˆ˜ ?ˆ?Šµ?‹ˆ?‹¤.',
-    responseDate: '2025.01.12',
+  {
+    id: 5,
+    title: "µµ¼­°ü ¿ÍÀÌÆÄÀÌ ¿¬°á",
+    status: "¿Ï·á",
+    date: "2025.01.11",
+    category: "½Ã¼³ ¹× È¯°æ",
+    content:
+      "µµ¼­°ü 3Ãş ¿­¶÷½Ç¿¡¼­ ¿ÍÀÌÆÄÀÌ ¿¬°áÀÌ Àß µÇÁö ¾Ê½À´Ï´Ù. È®ÀÎ ÈÄ Á¶Ä¡ ºÎÅ¹µå¸³´Ï´Ù.",
+    adminResponse:
+      "µµ¼­°ü 3Ãş ¿ÍÀÌÆÄÀÌ °øÀ¯±â Á¡°ËÀ» ¿Ï·áÇÏ¿´½À´Ï´Ù. ÇöÀç Á¤»óÀûÀ¸·Î ÀÌ¿ë °¡´ÉÇÕ´Ï´Ù. ºÒÆíÀ» µå·Á ÁË¼ÛÇÕ´Ï´Ù.",
+    responseDate: "2025.01.12",
     attachments: [
-      { id: 1, name: 'êµì²´_?™„ë£?_?‚¬ì§?1.jpg', size: '2.3MB', url: '#' },
-      { id: 2, name: 'êµì²´_?™„ë£?_?‚¬ì§?2.jpg', size: '1.8MB', url: '#' },
-      { id: 3, name: 'ì¡°ì¹˜_ë³´ê³ ?„œ.pdf', size: '456KB', url: '#' }
+      { id: 1, name: "¿ÍÀÌÆÄÀÌ_Á¡°Ë_¿Ï·á.jpg", size: "2.3MB", url: "#" },
     ],
     isRead: false,
     isRated: false,
-    rating: undefined
+    rating: undefined,
   },
 ];
 
-// ?•Œë¦? ?°?´?„°
+// ¾Ë¸² µ¥ÀÌÅÍ
 const notifications = [
-  { id: 1, title: 'ë¯¼ì› ì²˜ë¦¬ ?™„ë£?', message: '?¥?•™ê¸? ì§?ê¸? ?¼? • ë¬¸ì˜ê°? ?™„ë£Œë˜?—ˆ?Šµ?‹ˆ?‹¤.', time: '10ë¶? ? „', read: false },
-  { id: 2, title: '?ƒˆ ê³µì???‚¬?•­', message: '2025?•™?…„?„ 1?•™ê¸? ?ˆ˜ê°•ì‹ ì²? ?•ˆ?‚´', time: '1?‹œê°? ? „', read: false },
-  { id: 3, title: 'ë¯¼ì› ?ƒ?ƒœ ë³?ê²?', message: '?„?„œê´? ?ƒ‰ë°? ë¬¸ì œê°? ì²˜ë¦¬ì¤‘ìœ¼ë¡? ë³?ê²½ë˜?—ˆ?Šµ?‹ˆ?‹¤.', time: '3?‹œê°? ? „', read: true },
-  { id: 4, title: '?—­?Ÿ‰ ?‰ê°? ?™„ë£?', message: 'S(ì°½ì˜) ?—­?Ÿ‰ ? ?ˆ˜ê°? ?—…?°?´?Š¸?˜?—ˆ?Šµ?‹ˆ?‹¤.', time: '1?¼ ? „', read: true },
+  {
+    id: 1,
+    title: "¹Î¿ø Ã³¸® ¿Ï·á",
+    message: "ÀåÇĞ±İ ½ÅÃ» ±â°£ ¹®ÀÇ¿¡ ´ëÇÑ ´äº¯ÀÌ µî·ÏµÇ¾ú½À´Ï´Ù.",
+    time: "10ºĞ Àü",
+    read: false,
+  },
+  {
+    id: 2,
+    title: "ÇĞ»ç °øÁö»çÇ×",
+    message: "2025ÇĞ³âµµ 1ÇĞ±â ¼ö°­½ÅÃ» ¾È³»",
+    time: "1½Ã°£ Àü",
+    read: false,
+  },
+  {
+    id: 3,
+    title: "¹Î¿ø Á¢¼ö È®ÀÎ",
+    message: "°­ÀÇ½Ç ¿¡¾îÄÁ °íÀå ¹Î¿øÀÌ Á¢¼öµÇ¾ú½À´Ï´Ù.",
+    time: "3½Ã°£ Àü",
+    read: true,
+  },
+  {
+    id: 4,
+    title: "¿ª·® Áø´Ü ¾Ë¸²",
+    message: "S(Ã¢ÀÇ) ¿ª·® Áø´ÜÀÌ ½ÃÀÛµÇ¾ú½À´Ï´Ù.",
+    time: "1ÀÏ Àü",
+    read: true,
+  },
 ];
 
-// FAQ ?°?´?„°
+// FAQ µ¥ÀÌÅÍ
 const faqData = [
-  { id: 1, question: '?¥?•™ê¸? ?‹ ì²?ê¸°ê°„??? ?–¸? œ?¸ê°??š”?', answer: 'ë§? ?•™ê¸? ?‹œ?‘ 2ì£? ? „ë¶??„° 1ì£¼ê°„ ?‹ ì²? ê°??Š¥?•©?‹ˆ?‹¤.' },
-  { id: 2, question: '?œ´?•™ ?‹ ì²???? ?–´?–»ê²? ?•˜?‚˜?š”?', answer: '?•™?ƒ?¬?„¸ > ?•™?  > ?œ´?•™?‹ ì²??—?„œ ê°??Š¥?•©?‹ˆ?‹¤.' },
-  { id: 3, question: '?„±?  ? •? • ê¸°ê°„??? ?–¸? œ?¸ê°??š”?', answer: '?„±?  ê³µê°œ ?›„ 1ì£¼ì¼ ?´?‚´?…?‹ˆ?‹¤.' },
-  { id: 4, question: 'ê¸°ìˆ™?‚¬ ?‹ ì²? ë°©ë²•?´ ê¶ê¸ˆ?•´?š”', answer: '?•™?ƒ?¬?„¸ > ?ƒ?™œ > ê¸°ìˆ™?‚¬ ?‹ ì²??—?„œ ê°??Š¥?•©?‹ˆ?‹¤.' },
-  { id: 5, question: 'ì¦ëª…?„œ ë°œê¸‰??? ?–´?””?„œ ?•˜?‚˜?š”?', answer: 'ë¬´ì¸ë°œê¸‰ê¸? ?˜?Š” ?•™?ƒ?¬?„¸?—?„œ ê°??Š¥?•©?‹ˆ?‹¤.' },
+  {
+    id: 1,
+    question: "ÀåÇĞ±İ ½ÅÃ» ±â°£Àº ¾ğÁ¦ÀÎ°¡¿ä?",
+    answer: "¸Å ÇĞ±â ½ÃÀÛ 1´Ş Àü °øÁö»çÇ×À» È®ÀÎÇØÁÖ¼¼¿ä.",
+  },
+  {
+    id: 2,
+    question: "ÈŞÇĞ ½ÅÃ» ¹æ¹ıÀº?",
+    answer: "ÇĞ»ı Æ÷ÅĞ ½Ã½ºÅÛ > ÇĞÀû º¯µ¿ ¸Ş´º¿¡¼­ °¡´ÉÇÕ´Ï´Ù.",
+  },
+  {
+    id: 3,
+    question: "Áõ¸í¼­ ¹ß±ŞÀº ¾îµğ¼­ ÇÏ³ª¿ä?",
+    answer: "º»°ü 1Ãş ¹«ÀÎ¹ß±Ş±â ¶Ç´Â ÀÎÅÍ³İ Áõ¸í¹ß±Ş »çÀÌÆ®¸¦ ÀÌ¿ëÇØÁÖ¼¼¿ä.",
+  },
+  {
+    id: 4,
+    question: "±â¼÷»ç ÀÔ»ç ½ÅÃ» ±â°£Àº?",
+    answer: "ÇĞ»ı Æ÷ÅĞ > »ıÈ°°ü > ÀÔ»ç½ÅÃ» ¸Ş´º¿¡¼­ È®ÀÎ °¡´ÉÇÕ´Ï´Ù.",
+  },
+  {
+    id: 5,
+    question: "ºñ¹Ğ¹øÈ£¸¦ ºĞ½ÇÇß¾î¿ä.",
+    answer: "ÇĞ»ı Æ÷ÅĞ ·Î±×ÀÎ È­¸éÀÇ ºñ¹Ğ¹øÈ£ Ã£±â¸¦ ÀÌ¿ëÇØÁÖ¼¼¿ä.",
+  },
 ];
 
-// Evidence ?°?´?„°
+// Evidence µ¥ÀÌÅÍ
 const evidenceData = [
-  { course: 'ì°½ì˜?  ë¬¸ì œ?•´ê²?', task: '??? ?”„ë¡œì ?Š¸ ë°œí‘œ', score: 'A+', competency: 'S', semester: '2024-2?•™ê¸?', date: '2024.12.10' },
-  { course: '?°?´?„°ë¶„ì„?‹¤ë¬?', task: 'ê¸°ë§ ?”„ë¡œì ?Š¸', score: 'A', competency: 'T', semester: '2024-2?•™ê¸?', date: '2024.12.08' },
-  { course: 'ë¦¬ë”?‹­ê³? ?†Œ?†µ', task: '?† ë¡? ì°¸ì—¬', score: 'A+', competency: 'R', semester: '2024-2?•™ê¸?', date: '2024.11.25' },
-  { course: 'ì§ì—…?œ¤ë¦?', task: '?‚¬ë¡?ë¶„ì„ ë³´ê³ ?„œ', score: 'A', competency: 'A', semester: '2024-2?•™ê¸?', date: '2024.11.20' },
-  { course: '?•Œê³ ë¦¬ì¦?', task: 'ì¤‘ê°„ ?”„ë¡œì ?Š¸', score: 'A+', competency: 'T', semester: '2024-1?•™ê¸?', date: '2024.05.15' },
-  { course: 'ì¡°ì§?–‰?™ë¡?', task: '??? ê³¼ì œ', score: 'B+', competency: 'A', semester: '2024-1?•™ê¸?', date: '2024.05.10' },
-  { course: 'ì°½ì—…ê³? ?˜?‹ ', task: 'ë¹„ì¦ˆ?‹ˆ?Š¤ ëª¨ë¸ ê°œë°œ', score: 'A', competency: 'S', semester: '2024-1?•™ê¸?', date: '2024.04.20' },
-  { course: '?”„? ˆ?  ?…Œ?´?…˜ ?Š¤?‚¬', task: 'ë°œí‘œ ?‰ê°?', score: 'A+', competency: 'R', semester: '2024-1?•™ê¸?', date: '2024.04.15' },
-  { course: '?””??¸?”½?‚¹', task: '?”„ë¡œí† ????… ? œ?‘', score: 'A', competency: 'S', semester: '2023-2?•™ê¸?', date: '2023.12.05' },
-  { course: '?°?´?„°ë² ì´?Š¤', task: '?‹œ?Š¤?…œ ?„¤ê³?', score: 'B+', competency: 'T', semester: '2023-2?•™ê¸?', date: '2023.11.30' },
-  { course: 'ë´‰ì‚¬?™œ?™ë¡?', task: 'ì§??—­?‚¬?šŒ ë´‰ì‚¬', score: 'A+', competency: 'A', semester: '2023-2?•™ê¸?', date: '2023.11.10' },
-  { course: '?˜?–´?šŒ?™”', task: '?† ë¡? ë°? ë°œí‘œ', score: 'A', competency: 'R', semester: '2023-2?•™ê¸?', date: '2023.10.25' },
+  {
+    course: "Ã¢ÀÇÀû¹®Á¦ÇØ°á",
+    task: "ÆÀ ÇÁ·ÎÁ§Æ® °úÁ¦",
+    score: "A+",
+    competency: "S",
+    semester: "2024-2ÇĞ±â",
+    date: "2024.12.10",
+  },
+  {
+    course: "Àü°ø½Ç¹«±âÃÊ",
+    task: "½Ç½À °úÁ¦",
+    score: "A",
+    competency: "T",
+    semester: "2024-2ÇĞ±â",
+    date: "2024.12.08",
+  },
+  {
+    course: "¸®´õ½Ê°ú ¼ÒÅë",
+    task: "¹ßÇ¥ °úÁ¦",
+    score: "A+",
+    competency: "R",
+    semester: "2024-2ÇĞ±â",
+    date: "2024.11.25",
+  },
+  {
+    course: "ÀÚ±â°è¹ß",
+    task: "Áø·Î Å½»ö º¸°í¼­",
+    score: "A",
+    competency: "A",
+    semester: "2024-2ÇĞ±â",
+    date: "2024.11.20",
+  },
+  {
+    course: "Á¤º¸È°¿ë",
+    task: "µ¥ÀÌÅÍ ºĞ¼® °úÁ¦",
+    score: "A+",
+    competency: "T",
+    semester: "2024-1ÇĞ±â",
+    date: "2024.05.15",
+  },
+  {
+    course: "Á÷¾÷À±¸®",
+    task: "À±¸® »ç·Ê ºĞ¼®",
+    score: "B+",
+    competency: "A",
+    semester: "2024-1ÇĞ±â",
+    date: "2024.05.10",
+  },
+  {
+    course: "±Û·Î¹úÀÌÇØ",
+    task: "¹®È­ ÀÌÇØ º¸°í¼­",
+    score: "A",
+    competency: "S",
+    semester: "2024-1ÇĞ±â",
+    date: "2024.04.20",
+  },
 ];
-
 export default function StudentDashboard() {
-  // ?¸ì¦? ?ƒ?ƒœ ê´?ë¦?
+  // ÀÎÁõ »óÅÂ °ü¸®
   const [authTokens, setAuthTokens] = useState<AuthTokens | null>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
-  // ??™ ë¡œê·¸?¸ ì²´í¬
+  // ÀÚµ¿ ·Î±×ÀÎ Ã¼Å©
   useEffect(() => {
     const tokens = checkAutoLogin();
     setAuthTokens(tokens);
     setIsCheckingAuth(false);
   }, []);
 
-  // ë¡œê·¸?¸ ?•¸?“¤?Ÿ¬
+  // ·Î±×ÀÎ ¼º°ø ÇÚµé·¯
   const handleLoginSuccess = (tokens: AuthTokens) => {
     setAuthTokens(tokens);
   };
 
-  // ë¡œê·¸?•„?›ƒ ?•¸?“¤?Ÿ¬
+  // ·Î±×¾Æ¿ô ÇÚµé·¯
   const handleLogout = () => {
     clearAuthTokens();
     setAuthTokens(null);
   };
 
-  const [activeTab, setActiveTab] = useState('home');
-  const [radarToggle, setRadarToggle] = useState<'core' | 'po'>('core'); // ? ˆ?´?” ?† ê¸?: ?•µ?‹¬?—­?Ÿ‰ vs ?•˜?œ„?—­?Ÿ‰
+  const [activeTab, setActiveTab] = useState("home");
+  const [radarToggle, setRadarToggle] = useState<"core" | "po">("core"); // ÇÙ½É¿ª·® vs Àü°ø´É·Â
   const [selectedStar, setSelectedStar] = useState<string | null>(null);
   const [selectedPO, setSelectedPO] = useState<string | null>(null);
   const [showComplaintModal, setShowComplaintModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
-  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(
+    null
+  );
   const [showFAQ, setShowFAQ] = useState(false);
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
   const [showEvidenceModal, setShowEvidenceModal] = useState(false);
-  const [evidenceFilter, setEvidenceFilter] = useState<string>('? „ì²?');
-  const [evidenceSort, setEvidenceSort] = useState<string>('ìµœì‹ ?ˆœ');
+  const [evidenceFilter, setEvidenceFilter] = useState<string>("ÀüÃ¼");
+  const [evidenceSort, setEvidenceSort] = useState<string>("ÃÖ½Å¼ø");
   const [showComplaintListModal, setShowComplaintListModal] = useState(false);
-  const [complaintStatusFilter, setComplaintStatusFilter] = useState<string>('? „ì²?');
+  const [complaintStatusFilter, setComplaintStatusFilter] =
+    useState<string>("ÀüÃ¼");
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
-  const [showNotificationSettingsModal, setShowNotificationSettingsModal] = useState(false);
+  const [showNotificationSettingsModal, setShowNotificationSettingsModal] =
+    useState(false);
   const [showLoginInfoModal, setShowLoginInfoModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [successType, setSuccessType] = useState<'complete' | 'submit'>('complete');
+  const [successMessage, setSuccessMessage] = useState("");
+  const [successType, setSuccessType] = useState<"complete" | "submit">(
+    "complete"
+  );
   const [notificationChannels, setNotificationChannels] = useState({
     pwa: true,
     kakao: false,
     email: true,
   });
-  const [complaintReadStatus, setComplaintReadStatus] = useState<{[key: number]: boolean}>({});
-  const [complaintRatedStatus, setComplaintRatedStatus] = useState<{[key: number]: boolean}>({});
-  const [complaintRatings, setComplaintRatings] = useState<{[key: number]: number}>({});
+  const [complaintReadStatus, setComplaintReadStatus] = useState<{
+    [key: number]: boolean;
+  }>({});
+  const [complaintRatedStatus, setComplaintRatedStatus] = useState<{
+    [key: number]: boolean;
+  }>({});
+  const [complaintRatings, setComplaintRatings] = useState<{
+    [key: number]: number;
+  }>({});
   const [showRatingModal, setShowRatingModal] = useState(false);
-  const [ratingComplaintId, setRatingComplaintId] = useState<number | null>(null);
+  const [ratingComplaintId, setRatingComplaintId] = useState<number | null>(
+    null
+  );
   const [selectedRating, setSelectedRating] = useState<number>(0);
-  const [ratingComment, setRatingComment] = useState('');
+  const [ratingComment, setRatingComment] = useState("");
   const [complaintDetailModal, setComplaintDetailModal] = useState<any>(null);
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [periodFilter, setPeriodFilter] = useState('? „ì²?');
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [periodFilter, setPeriodFilter] = useState("ÀüÃ¼");
   const filterScrollRef = useRef<HTMLDivElement>(null);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
-  const [downloadPeriod, setDownloadPeriod] = useState('? „ì²?');
-  const [downloadFormat, setDownloadFormat] = useState('PDF');
-  
-  // ë¯¼ì› ?‘?„± ?¼ state
-  const [complaintTitle, setComplaintTitle] = useState('');
-  const [complaintContent, setComplaintContent] = useState('');
-  const [attachedFiles, setAttachedFiles] = useState<Array<{
-    id: string;
-    file: File;
-    preview: string;
-    rotation: number;
-  }>>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  
-  // ì±„íŒ… ëª¨ë‹¬ state
-  const [showChatModal, setShowChatModal] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState<string>(''); // ?˜„?¬ ì±„íŒ… ì¹´í…Œê³ ë¦¬ ì¶”ì 
+  const [downloadPeriod, setDownloadPeriod] = useState("ÀüÃ¼");
+  const [downloadFormat, setDownloadFormat] = useState("PDF");
 
-  // ?‘?„± ?˜µ?…˜ state
+  // ¹Î¿ø ÀÛ¼º state
+  const [complaintTitle, setComplaintTitle] = useState("");
+  const [complaintContent, setComplaintContent] = useState("");
+  const [attachedFiles, setAttachedFiles] = useState<
+    Array<{
+      id: string;
+      file: File;
+      preview: string;
+      rotation: number;
+    }>
+  >([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Ãªº¿ state
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState<string>("");
+
+  // ¼³Á¤ state
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isPrivate, setIsPrivate] = useState(true);
   const [agreeNotification, setAgreeNotification] = useState(false);
   const [showFileInfo, setShowFileInfo] = useState(false);
 
-  // ??™ ????¥ (30ì´ˆë§ˆ?‹¤)
+  // ÀÚµ¿ ÀúÀå (30ÃÊ¸¶´Ù)
   useEffect(() => {
     const autoSaveInterval = setInterval(() => {
       if (complaintTitle || complaintContent) {
-        localStorage.setItem('complaint_draft', JSON.stringify({
-          title: complaintTitle,
-          content: complaintContent,
-          timestamp: new Date().toISOString()
-        }));
-        console.log('?œ… ??™ ????¥ ?™„ë£?');
+        localStorage.setItem(
+          "complaint_draft",
+          JSON.stringify({
+            title: complaintTitle,
+            content: complaintContent,
+            timestamp: new Date().toISOString(),
+          })
+        );
+        console.log("ÀÓ½Ã ÀúÀå ¿Ï·á");
       }
-    }, 30000); // 30ì´?
+    }, 30000); // 30ÃÊ
 
     return () => clearInterval(autoSaveInterval);
   }, [complaintTitle, complaintContent]);
 
-  // ?ŒŒ?¼ ?„ ?ƒ ì²˜ë¦¬
+  // ÆÄÀÏ ¼±ÅÃ ÇÚµé·¯
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
     const newFiles = Array.from(files).slice(0, 5 - attachedFiles.length);
-    
-    newFiles.forEach(file => {
-      // ?ŒŒ?¼ ?¬ê¸? ì²´í¬ (10MB)
+
+    newFiles.forEach((file) => {
+      // ÆÄÀÏ Å©±â Á¦ÇÑ (10MB)
       if (file.size > 10 * 1024 * 1024) {
-        alert(`${file.name}???(?Š”) 10MBë¥? ì´ˆê³¼?•©?‹ˆ?‹¤.`);
+        alert(`${file.name}Àº(´Â) 10MB¸¦ ÃÊ°úÇÒ ¼ö ¾ø½À´Ï´Ù.`);
         return;
       }
 
-      // ?ŒŒ?¼ ?˜•?‹ ì²´í¬
-      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      // ÆÄÀÏ Å¸ÀÔ Á¦ÇÑ
+      const validTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ];
       if (!validTypes.includes(file.type)) {
-        alert(`${file.name}???(?Š”) ì§??›?•˜ì§? ?•Š?Š” ?˜•?‹?…?‹ˆ?‹¤.`);
+        alert(`${file.name}Àº(´Â) Áö¿øÇÏÁö ¾Ê´Â ÆÄÀÏ Çü½ÄÀÔ´Ï´Ù.`);
         return;
       }
 
-      // ë¯¸ë¦¬ë³´ê¸° ?ƒ?„±
+      // ¹Ì¸®º¸±â »ı¼º
       const reader = new FileReader();
       reader.onload = (event) => {
-        setAttachedFiles(prev => [...prev, {
-          id: Math.random().toString(36).substr(2, 9),
-          file,
-          preview: event.target?.result as string,
-          rotation: 0
-        }]);
+        setAttachedFiles((prev) => [
+          ...prev,
+          {
+            id: Math.random().toString(36).substr(2, 9),
+            file,
+            preview: event.target?.result as string,
+            rotation: 0,
+          },
+        ]);
       };
       reader.readAsDataURL(file);
     });
 
-    // input ì´ˆê¸°?™”
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
-  // ?ŒŒ?¼ ?‚­? œ
+  // ÆÄÀÏ »èÁ¦
   const removeFile = (id: string) => {
-    setAttachedFiles(prev => prev.filter(f => f.id !== id));
+    setAttachedFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
-  // ?´ë¯¸ì?? ?šŒ? „
+  // ÀÌ¹ÌÁö È¸Àü
   const rotateImage = (id: string) => {
-    setAttachedFiles(prev => prev.map(f => 
-      f.id === id ? { ...f, rotation: (f.rotation + 90) % 360 } : f
-    ));
+    setAttachedFiles((prev) =>
+      prev.map((f) =>
+        f.id === id ? { ...f, rotation: (f.rotation + 90) % 360 } : f
+      )
+    );
   };
 
-  // ?ƒ?ƒœë³? ?ƒ‰?ƒ
+  // »óÅÂ »ö»ó
   const statusColor: Record<string, string> = {
-    '? ‘?ˆ˜': 'bg-blue-100 text-blue-600',
-    'ì²˜ë¦¬ì¤?': 'bg-orange-100 text-orange-600',
-    '?™„ë£?': 'bg-green-100 text-green-600',
-    'ë°˜ë ¤': 'bg-red-100 text-red-600',
+    Á¢¼ö: "bg-blue-100 text-blue-600",
+    Ã³¸®Áß: "bg-orange-100 text-orange-600",
+    ¿Ï·á: "bg-green-100 text-green-600",
+    ¹İ·Á: "bg-red-100 text-red-600",
   };
 
-  // ?“±ê¸‰ë³„ ë°°ì??
-  const gradeBadge: Record<string, { bg: string; icon: JSX.Element }> = {
-    'ë§ˆìŠ¤?„°': { bg: 'bg-[#FAAF40]', icon: <Trophy className="w-3 h-3" /> },
-    '?š°?ˆ˜': { bg: 'bg-[#EE3E42]', icon: <Star className="w-3 h-3" /> },
-    'ë³´í†µ': { bg: 'bg-[#e2e8f0]', icon: <Check className="w-3 h-3" /> },
-    '?…¸? ¥?š”ë§?': { bg: 'bg-[#C5006F]', icon: <TrendingUp className="w-3 h-3" /> },
+  // µî±Ş ¹îÁö
+  const gradeBadge: Record<string, { bg: string; icon: React.JSX.Element }> = {
+    ÃÖ¿ì¼ö: { bg: "bg-[#FAAF40]", icon: <Trophy className="w-3 h-3" /> },
+    ¿ì¼ö: { bg: "bg-[#EE3E42]", icon: <Star className="w-3 h-3" /> },
+    º¸Åë: { bg: "bg-[#e2e8f0]", icon: <Check className="w-3 h-3" /> },
+    ¹ÌÈí: { bg: "bg-[#C5006F]", icon: <TrendingUp className="w-3 h-3" /> },
   };
 
-  // ë¯¼ì› ?†µê³?
+  // ¹Î¿ø Åë°è
   const complaintStats = {
-    ? ‘?ˆ˜: complaints.filter(c => c.status === '? ‘?ˆ˜').length,
-    ì²˜ë¦¬ì¤?: complaints.filter(c => c.status === 'ì²˜ë¦¬ì¤?').length,
-    ?™„ë£?: complaints.filter(c => c.status === '?™„ë£?').length,
+    Á¢¼ö: complaints.filter((c) => c.status === "Á¢¼ö").length,
+    Ã³¸®Áß: complaints.filter((c) => c.status === "Ã³¸®Áß").length,
+    ¿Ï·á: complaints.filter((c) => c.status === "¿Ï·á").length,
   };
-  const completionRate = Math.round((complaintStats.?™„ë£? / complaints.length) * 100);
+  const completionRate = Math.round(
+    (complaintStats.¿Ï·á / complaints.length) * 100
+  );
 
-  // ë¯¼ì› ?•„?„°ë§?
+  // ¹Î¿ø ÇÊÅÍ¸µ
   const getFilteredComplaints = () => {
     let filtered = complaints;
 
-    // 1. ?ƒ?ƒœ ?•„?„°ë§?
-    if (complaintStatusFilter !== '? „ì²?') {
-      filtered = filtered.filter(c => c.status === complaintStatusFilter);
+    if (complaintStatusFilter !== "ÀüÃ¼") {
+      filtered = filtered.filter((c) => c.status === complaintStatusFilter);
     }
 
-    // 2. ê¸°ê°„ ?•„?„°ë§?
-    if (periodFilter !== '? „ì²?') {
+    if (periodFilter !== "ÀüÃ¼") {
       const now = new Date();
-      const monthsAgo = periodFilter === '1ê°œì›”' ? 1 : periodFilter === '3ê°œì›”' ? 3 : 6;
+      const monthsAgo =
+        periodFilter === "1°³¿ù" ? 1 : periodFilter === "3°³¿ù" ? 3 : 6;
       const filterDate = new Date(now.setMonth(now.getMonth() - monthsAgo));
-      
-      filtered = filtered.filter(c => {
-        const complaintDate = new Date(c.date.replace(/\./g, '-'));
+
+      filtered = filtered.filter((c) => {
+        const complaintDate = new Date(c.date.replace(/\./g, "-"));
         return complaintDate >= filterDate;
       });
     }
 
-    // 3. ?‚¤?›Œ?“œ ?•„?„°ë§?
     if (searchKeyword.trim()) {
       const keyword = searchKeyword.toLowerCase();
-      filtered = filtered.filter(c => 
-        c.title.toLowerCase().includes(keyword) || 
-        c.content.toLowerCase().includes(keyword)
+      filtered = filtered.filter(
+        (c) =>
+          c.title.toLowerCase().includes(keyword) ||
+          c.content.toLowerCase().includes(keyword)
       );
     }
 
     return filtered;
   };
 
-  // ë¯¼ì› ëª©ë¡ ëª¨ë‹¬ ?‹«ê¸? (Xë²„íŠ¼)
   const handleCloseComplaintListModal = () => {
     setShowComplaintListModal(false);
-    setSearchKeyword('');
-    setPeriodFilter('? „ì²?');
+    setSearchKeyword("");
+    setPeriodFilter("ÀüÃ¼");
   };
 
-  // "?‰ê°??•˜ê¸?" ë²„íŠ¼ ?´ë¦?
   const handleRateComplaint = (complaintId: number) => {
     setRatingComplaintId(complaintId);
     setShowRatingModal(true);
   };
 
-  // ë§Œì¡±?„ ?‰ê°? ? œì¶?
   const handleRatingSubmit = () => {
     if (ratingComplaintId && selectedRating > 0) {
-      setComplaintRatedStatus({...complaintRatedStatus, [ratingComplaintId]: true});
-      setComplaintRatings({...complaintRatings, [ratingComplaintId]: selectedRating});
+      setComplaintRatedStatus({
+        ...complaintRatedStatus,
+        [ratingComplaintId]: true,
+      });
+      setComplaintRatings({
+        ...complaintRatings,
+        [ratingComplaintId]: selectedRating,
+      });
       setShowRatingModal(false);
       setShowComplaintListModal(false);
       setRatingComplaintId(null);
       setSelectedRating(0);
-      setRatingComment('');
-      alert('?‰ê°??•´ ì£¼ì…”?„œ ê°ì‚¬?•©?‹ˆ?‹¤!');
+      setRatingComment("");
+      alert("Æò°¡¸¦ µî·ÏÇØÁÖ¼Å¼­ °¨»çÇÕ´Ï´Ù!");
     }
   };
 
-  // ?™ˆ ?™”ë©?
+  // È¨ È­¸é
   const HomeScreen = () => (
     <div className="pb-4">
-      {/* ?—¤?” */}
       <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4 rounded-[0px]">
         <div className="flex items-center justify-between mb-4">
           <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1">
-            <img src={logoImage} alt="Logo" className="w-7 h-7 object-contain" />
+            <img
+              src={logoImage}
+              alt="Logo"
+              className="w-7 h-7 object-contain"
+            />
           </div>
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={() => setShowShareModal(true)}
               className="p-2 hover:bg-white/20 rounded-lg transition-all"
             >
               <Share2 className="w-6 h-6" />
             </button>
-            <button 
+            <button
               onClick={() => setShowSearchModal(true)}
               className="p-2 hover:bg-white/20 rounded-lg transition-all"
             >
@@ -433,19 +794,15 @@ export default function StudentDashboard() {
             </button>
           </div>
         </div>
-        
-        {/* ?¸?‚¬ë§? + ì¢…í•© ? ?ˆ˜ ì¹´ë“œ */}
+
         <div className="bg-white/20 backdrop-blur rounded-2xl p-4 mt-2">
           <div className="flex items-center justify-between gap-4">
-            {/* ì¢Œì¸¡: ?¸?‚¬ë§? */}
             <div>
-              <p className="text-sm opacity-90">?•ˆ?…•?•˜?„¸?š”</p>
-              <p className="font-bold text-lg text-[24px]">ê¹??ˆ˜?„± ?‹˜</p>
+              <p className="text-sm opacity-90">È¯¿µÇÕ´Ï´Ù</p>
+              <p className="font-bold text-lg text-[24px]">±è¼ö¼º ´Ô</p>
             </div>
-            
-            {/* ?š°ì¸?: ì¢…í•© ?—­?Ÿ‰ ? ?ˆ˜ */}
             <div className="text-right">
-              <p className="text-sm opacity-90 mb-1">ì¢…í•© ?—­?Ÿ‰ ? ?ˆ˜</p>
+              <p className="text-sm opacity-90 mb-1">ÇÙ½É ¿ª·® Á¡¼ö</p>
               <div className="flex items-end gap-2 justify-end">
                 <span className="text-4xl font-bold text-[32px]">81.3</span>
                 <span className="text-lg mb-1 text-[16px]">/ 100</span>
@@ -455,94 +812,127 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      {/* STAR ? ˆ?´?” ì°¨íŠ¸ */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-gray-800">ì¢…í•© ?˜„?™© ? ˆ?´?”</h3>
+          <h3 className="font-bold text-gray-800">ÇÙ½É ¿ª·® Áø´Ü</h3>
         </div>
 
-        {/* ?† ê¸? ë²„íŠ¼ */}
         <div className="flex gap-2 mb-4">
           <button
-            onClick={() => setRadarToggle('core')}
+            onClick={() => setRadarToggle("core")}
             className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-medium transition-all ${
-              radarToggle === 'core'
-                ? 'bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white shadow-md'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              radarToggle === "core"
+                ? "bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white shadow-md"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            SÂ·TÂ·AÂ·R ?•µ?‹¬?—­?Ÿ‰
+            S¡¤T¡¤A¡¤R ÇÙ½É¿ª·®
           </button>
           <button
-            onClick={() => setRadarToggle('po')}
+            onClick={() => setRadarToggle("po")}
             className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-medium transition-all ${
-              radarToggle === 'po'
-                ? 'bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white shadow-md'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              radarToggle === "po"
+                ? "bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white shadow-md"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            ?•˜?œ„?—­?Ÿ‰(PO)
+            Àü°ø´É·Â(PO)
           </button>
         </div>
 
-        <div style={{ width: '100%', height: '280px' }}>
+        <div style={{ width: "100%", height: "280px" }}>
           <ResponsiveContainer width="100%" height={280}>
-            <RadarChart data={radarToggle === 'core' ? radarData : radarDataPO}>
+            <RadarChart data={radarToggle === "core" ? radarData : radarDataPO}>
               <PolarGrid stroke="#e5e7eb" />
-              <PolarAngleAxis dataKey="subject" tick={{ fontSize: radarToggle === 'po' ? 10 : 12, fill: '#374151' }} />
-              <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 10 }} axisLine={false} />
-              {/* ë¨¼ì?? ì±„ìƒ‰ ?˜?—­ ? Œ?”ë§? (?’¤?— ë°°ì¹˜) */}
-              <Radar name="?‚´ ? ?ˆ˜" dataKey="myScore" stroke="#FFA500" fill="#FFA500" fillOpacity={0.15} strokeWidth={2} />
-              {/* ê·? ?‹¤?Œ ?¼?¸?“¤ ? Œ?”ë§? (?œ„?— ë°°ì¹˜) */}
-              <Radar name="?•™ê³? ?‰ê·?" dataKey="deptAvg" stroke="#FF6B35" fill="none" strokeWidth={2} />
-              <Radar name="? „ì²? ?‰ê·?" dataKey="totalAvg" stroke="#C13584" fill="none" strokeWidth={2} />
+              <PolarAngleAxis
+                dataKey="subject"
+                tick={{
+                  fontSize: radarToggle === "po" ? 10 : 12,
+                  fill: "#374151",
+                }}
+              />
+              <PolarRadiusAxis
+                angle={90}
+                domain={[0, 100]}
+                tick={{ fontSize: 10 }}
+                axisLine={false}
+              />
+              <Radar
+                name="³» Á¡¼ö"
+                dataKey="myScore"
+                stroke="#FFA500"
+                fill="#FFA500"
+                fillOpacity={0.15}
+                strokeWidth={2}
+              />
+              <Radar
+                name="ÇĞ°ú Æò±Õ"
+                dataKey="deptAvg"
+                stroke="#FF6B35"
+                fill="none"
+                strokeWidth={2}
+              />
+              <Radar
+                name="ÀüÃ¼ Æò±Õ"
+                dataKey="totalAvg"
+                stroke="#C13584"
+                fill="none"
+                strokeWidth={2}
+              />
             </RadarChart>
           </ResponsiveContainer>
         </div>
 
-        {/* ì»¤ìŠ¤??? ë²”ë?? */}
         <div className="flex items-center justify-center gap-4 mt-2">
           <div className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-[#FFA500]"></div>
-            <span className="text-xs text-gray-600">?‚´ ? ?ˆ˜</span>
+            <span className="text-xs text-gray-600">³» Á¡¼ö</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-[#FF6B35]"></div>
-            <span className="text-xs text-gray-600">?•™ê³? ?‰ê·?</span>
+            <span className="text-xs text-gray-600">ÇĞ°ú Æò±Õ</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full bg-[#C13584]"></div>
-            <span className="text-xs text-gray-600">? „ì²? ?‰ê·?</span>
+            <span className="text-xs text-gray-600">ÀüÃ¼ Æò±Õ</span>
           </div>
         </div>
       </div>
 
-      {/* ?—­?Ÿ‰ ?“±ê¸? Badge */}
+      {/* »ó¼¼ Ä«µå ¸®½ºÆ® */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
-        <h3 className="font-bold text-gray-800 mb-3">?—­?Ÿ‰ ?“±ê¸?</h3>
-        
-        {radarToggle === 'core' ? (
+        <h3 className="font-bold text-gray-800 mb-3">¿ª·® »ó¼¼</h3>
+
+        {radarToggle === "core" ? (
           <div className="grid grid-cols-2 gap-3">
             {Object.entries(starDetails).map(([key, value]) => (
-              <div 
+              <div
                 key={key}
                 onClick={() => setSelectedStar(key)}
                 className="bg-gray-50 rounded-2xl shadow p-4 cursor-pointer hover:shadow-lg transition-all"
               >
                 <div className="flex items-center justify-center gap-6">
-                  {/* ?™¼ìª? ?”„? ˆ?„: S + ì°½ì˜ */}
                   <div className="flex flex-col items-center justify-center gap-1">
-                    <div className="w-10 h-10 flex items-center justify-center font-bold text-2xl"
-                         style={{ color: '#0f172a' }}>
+                    <div
+                      className="w-10 h-10 flex items-center justify-center font-bold text-2xl"
+                      style={{ color: "#0f172a" }}
+                    >
                       {key}
                     </div>
                     <p className="text-sm text-gray-600">{value.name}</p>
                   </div>
-                  
-                  {/* ?˜¤ë¥¸ìª½ ?”„? ˆ?„: 85?  + ?š°?ˆ˜ */}
                   <div className="flex flex-col items-center justify-center gap-2">
-                    <p className="text-2xl font-bold" style={{ color: '#0f172a' }}>{value.score}? </p>
-                    <div className={`${gradeBadge[value.grade].bg} ${value.grade === 'ë³´í†µ' ? 'text-[#0f172a]' : 'text-white'} text-[10px] px-2 py-0.5 rounded-full inline-flex items-center gap-1 whitespace-nowrap`}>
+                    <p
+                      className="text-2xl font-bold"
+                      style={{ color: "#0f172a" }}
+                    >
+                      {value.score}Á¡
+                    </p>
+                    <div
+                      className={`${gradeBadge[value.grade].bg} ${
+                        value.grade === "º¸Åë" ? "text-[#0f172a]" : "text-white"
+                      } text-[10px] px-2 py-0.5 rounded-full inline-flex items-center gap-1 whitespace-nowrap`}
+                    >
                       <span>{gradeBadge[value.grade].icon}</span>
                       <span className="text-[12px]">{value.grade}</span>
                     </div>
@@ -554,22 +944,35 @@ export default function StudentDashboard() {
         ) : (
           <div className="grid grid-cols-1 gap-2">
             {Object.entries(poDetails).map(([key, value]) => (
-              <div 
+              <div
                 key={key}
                 onClick={() => setSelectedPO(key)}
                 className="bg-gray-50 rounded-xl shadow p-3 cursor-pointer hover:shadow-lg transition-all"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm"
-                         style={{ backgroundColor: `${value.color}20`, color: value.color }}>
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm"
+                      style={{
+                        backgroundColor: `${value.color}20`,
+                        color: value.color,
+                      }}
+                    >
                       {value.category}
                     </div>
-                    <p className="text-sm font-medium text-gray-800">{value.name}</p>
+                    <p className="text-sm font-medium text-gray-800">
+                      {value.name}
+                    </p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <p className="text-lg font-bold text-gray-800">{value.score}? </p>
-                    <div className={`${gradeBadge[value.grade].bg} ${value.grade === 'ë³´í†µ' ? 'text-[#0f172a]' : 'text-white'} text-[10px] px-2 py-1.5 rounded-full inline-flex items-center justify-center gap-1 whitespace-nowrap min-w-[60px]`}>
+                    <p className="text-lg font-bold text-gray-800">
+                      {value.score}Á¡
+                    </p>
+                    <div
+                      className={`${gradeBadge[value.grade].bg} ${
+                        value.grade === "º¸Åë" ? "text-[#0f172a]" : "text-white"
+                      } text-[10px] px-2 py-1.5 rounded-full inline-flex items-center justify-center gap-1 whitespace-nowrap min-w-[60px]`}
+                    >
                       <span>{gradeBadge[value.grade].icon}</span>
                       <span className="text-[11px]">{value.grade}</span>
                     </div>
@@ -581,68 +984,37 @@ export default function StudentDashboard() {
         )}
       </div>
 
-      {/* ?‘œì¤?ì§ë¬´ ? ?•©?„ */}
-      <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
-        <h3 className="font-bold text-gray-800 mb-3">?‘œì¤?ì§ë¬´ ? ?•©?„</h3>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-gray-600">?•™ê³? ì·¨ì—…? ?‰ê·? ???ë¹?</span>
-          <span className="text-2xl font-bold text-orange-500">78%</span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-3">
-          <div className="bg-gradient-to-r from-orange-400 to-red-500 h-3 rounded-full" style={{ width: '78%' }}></div>
-        </div>
-        <p className="text-xs text-gray-500 mt-2 mb-4">??? ?‚˜?˜ ?´?ˆ˜ ?—­?Ÿ‰ê³? ?•™ê³? ì¡¸ì—…?ƒ(ì·¨ì—…?) ?‰ê·? ?—­?Ÿ‰ ?¼ì¹˜ë„</p>
-        
-        {/* ì¶”ì²œ ì§ë¬´ ? ?•©?„ */}
-        <div className="pt-4 border-t border-gray-100">
-          <h4 className="font-bold text-gray-800 mb-3">ì¶”ì²œ ì§ë¬´</h4>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <div>
-                <div className="text-sm text-gray-600 mb-1">?†Œ?”„?Š¸?›¨?–´ ê°œë°œ?</div>
-                <div className="text-2xl font-bold text-gray-600">92%</div>
-              </div>
-              <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">? ?•©</div>
-            </div>
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200/20">
-              <div>
-                <div className="text-sm text-gray-600 mb-1">?°?´?„° ë¶„ì„ê°?</div>
-                <div className="text-2xl font-bold text-gray-500">85%</div>
-              </div>
-              <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">? ?•©</div>
-            </div>
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200/20">
-              <div>
-                <div className="text-sm text-gray-600 mb-1">IT ì»¨ì„¤?„´?Š¸</div>
-                <div className="text-2xl font-bold text-gray-500">78%</div>
-              </div>
-              <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">ë³´í†µ</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Evidence ?Š¸?˜?‚¹ */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4 mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-gray-800">Evidence ?Š¸?˜?‚¹</h3>
-          <button 
+          <h3 className="font-bold text-gray-800">Evidence È°µ¿ ³»¿ª</h3>
+          <button
             onClick={() => setShowEvidenceModal(true)}
             className="text-sm text-pink-500 font-medium"
           >
-            ? „ì²? ë³´ê¸°
+            ÀüÃ¼ º¸±â
           </button>
         </div>
         <div className="space-y-2">
           {evidenceData.slice(0, 3).map((item, idx) => (
-            <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+            <div
+              key={idx}
+              className="flex items-center justify-between p-3 bg-gray-50 rounded-xl"
+            >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
-                     style={{ backgroundColor: starDetails[item.competency as keyof typeof starDetails].color }}>
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                  style={{
+                    backgroundColor:
+                      starDetails[item.competency as keyof typeof starDetails]
+                        .color,
+                  }}
+                >
                   {item.competency}
                 </div>
                 <div>
-                  <p className="font-medium text-gray-800 text-sm">{item.course}</p>
+                  <p className="font-medium text-gray-800 text-sm">
+                    {item.course}
+                  </p>
                   <p className="text-xs text-gray-500">{item.task}</p>
                 </div>
               </div>
@@ -652,107 +1024,166 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      {/* ?–‰?™ì§??‘œ ëª¨ë‹¬ (?•µ?‹¬?—­?Ÿ‰) */}
+      {/* ¸ğ´Ş µî ·»´õ¸µ (selectedStar, selectedPO µî) */}
+      {/* (»ı·« ¾øÀÌ ·ÎÁ÷ º¹¿ø) */}
       {selectedStar && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto animate-slide-up">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl"
-                     style={{ backgroundColor: starDetails[selectedStar as keyof typeof starDetails].color }}>
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl"
+                  style={{
+                    backgroundColor:
+                      starDetails[selectedStar as keyof typeof starDetails]
+                        .color,
+                  }}
+                >
                   {selectedStar}
                 </div>
                 <div>
-                  <h3 className="font-bold text-xl">{starDetails[selectedStar as keyof typeof starDetails].name} ?—­?Ÿ‰</h3>
-                  <p className="text-gray-500">?–‰?™ì§??‘œ ?‹¬?„±?„</p>
+                  <h3 className="font-bold text-xl">
+                    {starDetails[selectedStar as keyof typeof starDetails].name}{" "}
+                    ¿ª·®
+                  </h3>
+                  <p className="text-gray-500">¿ª·® »ó¼¼ ºĞ¼®</p>
                 </div>
               </div>
               <button onClick={() => setSelectedStar(null)} className="p-2">
                 <X className="w-6 h-6 text-gray-400" />
               </button>
             </div>
-            
+
             <div className="space-y-3">
-              {starDetails[selectedStar as keyof typeof starDetails].skills.map((skill, idx) => {
-                const progress = Math.floor(Math.random() * 40) + 60;
-                return (
-                  <div key={idx} className="bg-gray-50 rounded-xl p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium">{skill}</span>
-                      <span className="font-bold" style={{ color: starDetails[selectedStar as keyof typeof starDetails].color }}>{progress}%</span>
+              {starDetails[selectedStar as keyof typeof starDetails].skills.map(
+                (skill, idx) => {
+                  const progress = Math.floor(Math.random() * 40) + 60;
+                  return (
+                    <div key={idx} className="bg-gray-50 rounded-xl p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium">{skill}</span>
+                        <span
+                          className="font-bold"
+                          style={{
+                            color:
+                              starDetails[
+                                selectedStar as keyof typeof starDetails
+                              ].color,
+                          }}
+                        >
+                          {progress}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className="h-2 rounded-full"
+                          style={{
+                            width: `${progress}%`,
+                            backgroundColor:
+                              starDetails[
+                                selectedStar as keyof typeof starDetails
+                              ].color,
+                          }}
+                        ></div>
+                      </div>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="h-2 rounded-full" 
-                           style={{ width: `${progress}%`, backgroundColor: starDetails[selectedStar as keyof typeof starDetails].color }}></div>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                }
+              )}
             </div>
           </div>
         </div>
       )}
 
-      {/* ?–‰?™ì§??‘œ ëª¨ë‹¬ (?•˜?œ„?—­?Ÿ‰ PO) */}
       {selectedPO && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto animate-slide-up">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg"
-                     style={{ backgroundColor: `${poDetails[selectedPO as keyof typeof poDetails].color}20`, color: poDetails[selectedPO as keyof typeof poDetails].color }}>
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg"
+                  style={{
+                    backgroundColor: `${
+                      poDetails[selectedPO as keyof typeof poDetails].color
+                    }20`,
+                    color:
+                      poDetails[selectedPO as keyof typeof poDetails].color,
+                  }}
+                >
                   {poDetails[selectedPO as keyof typeof poDetails].category}
                 </div>
                 <div>
-                  <h3 className="font-bold text-xl">{poDetails[selectedPO as keyof typeof poDetails].name}</h3>
-                  <p className="text-gray-500">?–‰?™ì§??‘œ ?‹¬?„±?„</p>
+                  <h3 className="font-bold text-xl">
+                    {poDetails[selectedPO as keyof typeof poDetails].name}
+                  </h3>
+                  <p className="text-gray-500">¿ª·® »ó¼¼ ºĞ¼®</p>
                 </div>
               </div>
               <button onClick={() => setSelectedPO(null)} className="p-2">
                 <X className="w-6 h-6 text-gray-400" />
               </button>
             </div>
-            
+
             <div className="space-y-3">
-              {poDetails[selectedPO as keyof typeof poDetails].skills.map((skill, idx) => {
-                const progress = Math.floor(Math.random() * 40) + 60;
-                return (
-                  <div key={idx} className="bg-gray-50 rounded-xl p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium">{skill}</span>
-                      <span className="font-bold" style={{ color: poDetails[selectedPO as keyof typeof poDetails].color }}>{progress}%</span>
+              {poDetails[selectedPO as keyof typeof poDetails].skills.map(
+                (skill, idx) => {
+                  const progress = Math.floor(Math.random() * 40) + 60;
+                  return (
+                    <div key={idx} className="bg-gray-50 rounded-xl p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium">{skill}</span>
+                        <span
+                          className="font-bold"
+                          style={{
+                            color:
+                              poDetails[selectedPO as keyof typeof poDetails]
+                                .color,
+                          }}
+                        >
+                          {progress}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className="h-2 rounded-full"
+                          style={{
+                            width: `${progress}%`,
+                            backgroundColor:
+                              poDetails[selectedPO as keyof typeof poDetails]
+                                .color,
+                          }}
+                        ></div>
+                      </div>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="h-2 rounded-full" 
-                           style={{ width: `${progress}%`, backgroundColor: poDetails[selectedPO as keyof typeof poDetails].color }}></div>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                }
+              )}
             </div>
           </div>
         </div>
       )}
     </div>
   );
-
-  // ë¯¼ì› ?™”ë©?
+  // ¹Î¿ø È­¸é
   const ComplaintScreen = () => (
     <div className="pb-4">
-      {/* ?—¤?” */}
       <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1">
-            <img src={logoImage} alt="Logo" className="w-7 h-7 object-contain" />
+            <img
+              src={logoImage}
+              alt="Logo"
+              className="w-7 h-7 object-contain"
+            />
           </div>
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={() => setShowShareModal(true)}
               className="p-2 hover:bg-white/20 rounded-lg transition-all"
             >
               <Share2 className="w-6 h-6" />
             </button>
-            <button 
+            <button
               onClick={() => setShowSearchModal(true)}
               className="p-2 hover:bg-white/20 rounded-lg transition-all"
             >
@@ -763,64 +1194,73 @@ export default function StudentDashboard() {
             </button>
           </div>
         </div>
-        <h2 className="font-bold text-xl">ë¯¼ì› ?„¼?„°</h2>
-        <p className="text-sm opacity-90 mb-3">ë¬¸ì˜?‚¬?•­?„ ?¸ë¦¬í•˜ê²? ? ‘?ˆ˜?•˜?„¸?š”</p>
-        
-        {/* ì²˜ë¦¬?œ¨ ì¹´ë“œ - ?—¤?” ?‚´ë¶? */}
+        <h2 className="font-bold text-xl">¹Î¿ø ¼¾ÅÍ</h2>
+        <p className="text-sm opacity-90 mb-3">¹®Á¦°¡ ÀÖ´Ù¸é ¾Ë·ÁÁÖ¼¼¿ä.</p>
+
         <div className="bg-white/30 backdrop-blur-md rounded-2xl p-4">
           <div className="flex items-center gap-3 text-sm">
-            <span className="text-white font-medium whitespace-nowrap">ì²˜ë¦¬?œ¨</span>
+            <span className="text-white font-medium whitespace-nowrap">
+              Ã³¸®À²
+            </span>
             <div className="flex-1 bg-white/30 rounded-full h-2">
-              <div className="bg-white h-2 rounded-full" 
-                   style={{ width: `${completionRate}%` }}></div>
+              <div
+                className="bg-white h-2 rounded-full"
+                style={{ width: `${completionRate}%` }}
+              ></div>
             </div>
-            <span className="font-bold text-white whitespace-nowrap">{completionRate}%</span>
+            <span className="font-bold text-white whitespace-nowrap">
+              {completionRate}%
+            </span>
           </div>
         </div>
       </div>
 
-      {/* ë¯¼ì› ?˜„?™©?Œ */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-gray-800">?‚´ ë¯¼ì› ?˜„?™©</h3>
+          <h3 className="font-bold text-gray-800">³» ¹Î¿ø ÇöÈ²</h3>
         </div>
         <div className="grid grid-cols-3 gap-2">
-          <button 
+          <button
             onClick={() => {
-              setComplaintStatusFilter('? ‘?ˆ˜');
+              setComplaintStatusFilter("Á¢¼ö");
               setShowComplaintListModal(true);
             }}
             className="text-center p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all"
           >
-            <p className="text-2xl font-bold text-blue-600">{complaintStats.? ‘?ˆ˜}</p>
-            <p className="text-xs text-gray-600">? ‘?ˆ˜</p>
+            <p className="text-2xl font-bold text-blue-600">
+              {complaintStats.Á¢¼ö}
+            </p>
+            <p className="text-xs text-gray-600">Á¢¼ö</p>
           </button>
-          <button 
+          <button
             onClick={() => {
-              setComplaintStatusFilter('ì²˜ë¦¬ì¤?');
+              setComplaintStatusFilter("Ã³¸®Áß");
               setShowComplaintListModal(true);
             }}
             className="text-center p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all"
           >
-            <p className="text-2xl font-bold text-orange-600">{complaintStats.ì²˜ë¦¬ì¤?}</p>
-            <p className="text-xs text-gray-600">ì²˜ë¦¬ì¤?</p>
+            <p className="text-2xl font-bold text-orange-600">
+              {complaintStats.Ã³¸®Áß}
+            </p>
+            <p className="text-xs text-gray-600">Ã³¸®Áß</p>
           </button>
-          <button 
+          <button
             onClick={() => {
-              setComplaintStatusFilter('?™„ë£?');
+              setComplaintStatusFilter("¿Ï·á");
               setShowComplaintListModal(true);
             }}
             className="text-center p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all"
           >
-            <p className="text-2xl font-bold text-green-600">{complaintStats.?™„ë£?}</p>
-            <p className="text-xs text-gray-600">?™„ë£?</p>
+            <p className="text-2xl font-bold text-green-600">
+              {complaintStats.¿Ï·á}
+            </p>
+            <p className="text-xs text-gray-600">¿Ï·á</p>
           </button>
         </div>
       </div>
 
-      {/* ë¯¼ì› ì¹´í…Œê³ ë¦¬ */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
-        <h3 className="font-bold text-gray-800 mb-3">ë¯¼ì› ì¹´í…Œê³ ë¦¬</h3>
+        <h3 className="font-bold text-gray-800 mb-3">¹Î¿ø Ä«Å×°í¸®</h3>
         <div className="grid grid-cols-2 gap-3">
           {complaintCategories.map((cat) => (
             <button
@@ -836,50 +1276,58 @@ export default function StudentDashboard() {
                 <cat.icon className="w-6 h-6 text-gray-500" />
               </div>
               <p className="font-bold text-gray-800 mb-1">{cat.name}</p>
-              <p className="text-xs text-gray-500">{cat.items.length}ê°? ?„¸ë¶??•­ëª?</p>
+              <p className="text-xs text-gray-500">
+                {cat.items.length}°³ ¼¼ºÎÇ×¸ñ
+              </p>
             </button>
           ))}
         </div>
       </div>
 
-      {/* ë¯¼ì› ? ‘?ˆ˜ ëª¨ë‹¬ */}
       {showComplaintModal && selectedCategory && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl max-h-[90vh] flex flex-col animate-slide-up">
-            {/* ê³ ì • ?ƒ?‹¨ ?˜?—­ */}
             <div className="p-6 pb-4 shrink-0">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center"
-                       style={{ backgroundColor: `${selectedCategory.color}20` }}>
-                    <selectedCategory.icon className="w-5 h-5" style={{ color: selectedCategory.color }} />
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: `${selectedCategory.color}20` }}
+                  >
+                    <selectedCategory.icon
+                      className="w-5 h-5"
+                      style={{ color: selectedCategory.color }}
+                    />
                   </div>
                   <h3 className="font-bold text-lg">{selectedCategory.name}</h3>
                 </div>
-                <button onClick={() => { 
-                  setShowComplaintModal(false); 
-                  setSelectedCategory(null);
-                  setComplaintTitle('');
-                  setComplaintContent('');
-                  setAttachedFiles([]);
-                  setSelectedSubCategory(null);
-                }}>
+                <button
+                  onClick={() => {
+                    setShowComplaintModal(false);
+                    setSelectedCategory(null);
+                    setComplaintTitle("");
+                    setComplaintContent("");
+                    setAttachedFiles([]);
+                    setSelectedSubCategory(null);
+                  }}
+                >
                   <X className="w-6 h-6 text-gray-400" />
                 </button>
               </div>
 
-              {/* ?ƒ?„¸ ì¹´í…Œê³ ë¦¬ ?„ ?ƒ */}
               <div className="mb-4">
-                <label className="text-sm font-medium text-gray-700 mb-2 block">?„¸ë¶? ì¹´í…Œê³ ë¦¬ ?„ ?ƒ</label>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  ¼¼ºÎ Ä«Å×°í¸® ¼±ÅÃ
+                </label>
                 <div className="flex flex-wrap gap-2">
                   {selectedCategory.items.map((item: string, idx: number) => (
-                    <button 
-                      key={idx} 
+                    <button
+                      key={idx}
                       onClick={() => setSelectedSubCategory(item)}
                       className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                         selectedSubCategory === item
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                          ? "bg-blue-600 text-white"
+                          : "bg-blue-50 text-blue-600 hover:bg-blue-100"
                       }`}
                     >
                       {item}
@@ -889,20 +1337,20 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* ?Š¤?¬ë¡? ê°??Š¥?•œ ì¤‘ê°„ ?˜?—­ */}
             <div className="flex-1 overflow-y-auto px-6">
               <div className="space-y-4 pb-4">
-                {/* ? œëª? ?…? ¥ */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium text-gray-700 font-bold">? œëª?</label>
+                    <label className="text-sm font-medium text-gray-700 font-bold">
+                      Á¦¸ñ
+                    </label>
                     <span className="text-sm font-medium text-gray-500 text-[12px]">
                       {complaintTitle.length}/50
                     </span>
                   </div>
-                  <input 
+                  <input
                     type="text"
-                    placeholder="? œëª©ì„ ?…? ¥?•˜?„¸?š” (ìµœë?? 50?)"
+                    placeholder="Á¦¸ñÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä (ÃÖ´ë 50ÀÚ)"
                     maxLength={50}
                     value={complaintTitle}
                     onChange={(e) => setComplaintTitle(e.target.value)}
@@ -910,16 +1358,17 @@ export default function StudentDashboard() {
                   />
                 </div>
 
-                {/* ë¬¸ì˜ ?‚´?š© */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium text-gray-700 text-[14px] font-bold">?‚´?š©</label>
+                    <label className="text-sm font-medium text-gray-700 text-[14px] font-bold">
+                      ³»¿ë
+                    </label>
                     <span className="text-sm font-medium text-gray-500 text-[12px]">
                       {complaintContent.length}/100
                     </span>
                   </div>
-                  <textarea 
-                    placeholder="ë¬¸ì˜?•˜?‹¤ ?‚´?š©?„ ?‘?„±?•´ ì£¼ì„¸?š” (ìµœë?? 100?)"
+                  <textarea
+                    placeholder="¹Î¿ø ³»¿ëÀ» »ó¼¼È÷ Àû¾îÁÖ¼¼¿ä (ÃÖ´ë 100ÀÚ)"
                     rows={6}
                     maxLength={100}
                     value={complaintContent}
@@ -928,11 +1377,12 @@ export default function StudentDashboard() {
                   />
                 </div>
 
-                {/* ?ŒŒ?¼ ì²¨ë?? */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-1">
-                      <label className="text-sm font-medium text-gray-700 font-bold">?ŒŒ?¼ ì²¨ë??</label>
+                      <label className="text-sm font-medium text-gray-700 font-bold">
+                        ÆÄÀÏ Ã·ºÎ
+                      </label>
                       <button
                         onClick={() => setShowFileInfo(!showFileInfo)}
                         className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -945,64 +1395,64 @@ export default function StudentDashboard() {
                       {attachedFiles.length}/5
                     </span>
                   </div>
-                  
-                  {/* ?ŒŒ?¼ ?•ˆ?‚´ ?ˆ´?Œ */}
+
                   {showFileInfo && (
                     <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                       <div className="flex items-start gap-2">
                         <Upload className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
                         <div className="text-xs text-blue-900 space-y-1">
-                          <p className="font-medium">?Ÿ“? ?ŒŒ?¼ ì²¨ë?? ?•ˆ?‚´</p>
+                          <p className="font-medium">Ã·ºÎ ÆÄÀÏ ±Ô°İ ¾È³»</p>
                           <ul className="space-y-0.5 ml-1">
-                            <li>??? ìµœë?? 5ê°? ?ŒŒ?¼</li>
-                            <li>??? ê°œë‹¹ 10MB ?´?•˜</li>
-                            <li>??? JPG, PNG, PDF, DOCX</li>
+                            <li>? ÃÖ´ë 5°³ ÆÄÀÏ</li>
+                            <li>? °³´ç 10MB ÀÌÇÏ</li>
+                            <li>? JPG, PNG, PDF, DOCX</li>
                           </ul>
                         </div>
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="border-2 border-dashed border-gray-300 rounded-[6px] p-4 text-center">
-                    <input 
+                    <input
                       ref={fileInputRef}
-                      type="file" 
-                      multiple 
+                      type="file"
+                      multiple
                       accept=".jpg,.jpeg,.png,.pdf,.docx"
                       onChange={handleFileSelect}
                       className="hidden"
                       disabled={attachedFiles.length >= 5}
                     />
-                    <button 
+                    <button
                       onClick={() => fileInputRef.current?.click()}
                       disabled={attachedFiles.length >= 5}
                       className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Upload className="w-4 h-4" />
-                      <span className="text-sm font-medium">?ŒŒ?¼ ?„ ?ƒ</span>
+                      <span className="text-sm font-medium">ÆÄÀÏ Ãß°¡</span>
                     </button>
                   </div>
 
-                  {/* ?ŒŒ?¼ ë¯¸ë¦¬ë³´ê¸° */}
                   {attachedFiles.length > 0 && (
                     <div className="mt-3 space-y-2">
                       {attachedFiles.map((fileItem) => (
-                        <div key={fileItem.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                          {/* ?¸?„¤?¼ */}
+                        <div
+                          key={fileItem.id}
+                          className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl"
+                        >
                           <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center shrink-0">
-                            {fileItem.file.type.startsWith('image/') ? (
-                              <img 
-                                src={fileItem.preview} 
+                            {fileItem.file.type.startsWith("image/") ? (
+                              <img
+                                src={fileItem.preview}
                                 alt={fileItem.file.name}
-                                style={{ transform: `rotate(${fileItem.rotation}deg)` }}
+                                style={{
+                                  transform: `rotate(${fileItem.rotation}deg)`,
+                                }}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
                               <FileText className="w-8 h-8 text-gray-400" />
                             )}
                           </div>
-
-                          {/* ?ŒŒ?¼ ? •ë³? */}
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-gray-800 truncate">
                               {fileItem.file.name}
@@ -1011,22 +1461,20 @@ export default function StudentDashboard() {
                               {(fileItem.file.size / 1024).toFixed(1)} KB
                             </p>
                           </div>
-
-                          {/* ?•¡?…˜ ë²„íŠ¼ */}
                           <div className="flex items-center gap-1 shrink-0">
-                            {fileItem.file.type.startsWith('image/') && (
-                              <button 
+                            {fileItem.file.type.startsWith("image/") && (
+                              <button
                                 onClick={() => rotateImage(fileItem.id)}
                                 className="p-2 hover:bg-gray-200 rounded-lg transition-all"
-                                title="?šŒ? „"
+                                title="È¸Àü"
                               >
                                 <RotateCw className="w-4 h-4 text-gray-600" />
                               </button>
                             )}
-                            <button 
+                            <button
                               onClick={() => removeFile(fileItem.id)}
                               className="p-2 hover:bg-red-50 rounded-lg transition-all"
-                              title="?‚­? œ"
+                              title="»èÁ¦"
                             >
                               <Trash className="w-4 h-4 text-red-600" />
                             </button>
@@ -1037,57 +1485,66 @@ export default function StudentDashboard() {
                   )}
                 </div>
 
-                {/* ?‘?„± ?˜µ?…˜ */}
-                {/* ?‘?„± ?˜µ?…˜ */}
                 <div className="bg-gray-50 rounded-xl p-4 mb-4">
-                  <h3 className="text-sm font-bold text-gray-800 mb-3">?‘?„±?˜µ?…˜</h3>
-                  
-                  {/* ?µëª? ?˜µ?…˜ */}
+                  <h3 className="text-sm font-bold text-gray-800 mb-3">
+                    ¹Î¿ø ¿É¼Ç
+                  </h3>
                   <label className="flex items-start gap-3 mb-4 cursor-pointer">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={isAnonymous}
                       onChange={(e) => setIsAnonymous(e.target.checked)}
-                      className="w-5 h-5 accent-blue-500 mt-0.5 shrink-0" 
+                      className="w-5 h-5 accent-blue-500 mt-0.5 shrink-0"
                     />
                     <span className="text-gray-700">
-                      <span className="font-medium text-[14px]">?µëª…ìœ¼ë¡? ?‘?„±</span><br/>
-                      <span className="text-xs text-gray-500">?‘?„±?ëª? ?ˆ¨ê¹? (ê´?ë¦¬ì?Š” ?‹ë³? ê°??Š¥)</span>
+                      <span className="font-medium text-[14px]">
+                        ÀÍ¸íÀ¸·Î ¹Î¿ø
+                      </span>
+                      <br />
+                      <span className="text-xs text-gray-500">
+                        ¹Î¿øÀÎ ÀÌ¸§ ¼û±è (°ü¸®ÀÚ´Â ½Äº° °¡´É)
+                      </span>
                     </span>
                   </label>
-                  
-                  {/* ?•Œë¦? ?™?˜ */}
                   <label className="flex items-start gap-3 cursor-pointer">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={agreeNotification}
                       onChange={(e) => setAgreeNotification(e.target.checked)}
-                      className="w-5 h-5 accent-blue-500 mt-0.5 shrink-0" 
+                      className="w-5 h-5 accent-blue-500 mt-0.5 shrink-0"
                     />
                     <span className="text-gray-700">
-                      <span className="font-medium text-[14px]">ì²˜ë¦¬ ê²°ê³¼ ?•Œë¦? ?ˆ˜?‹  ?™?˜</span><br/>
-                      <span className="text-xs text-gray-500">Push, Emailë¡? ê²°ê³¼ë¥? ë°›ìœ¼?‹œ? ¤ë©? ?™?˜?•´ì£¼ì„¸?š”</span>
+                      <span className="font-medium text-[14px]">
+                        Ã³¸® ¾Ë¸² ¼ö½Å µ¿ÀÇ
+                      </span>
+                      <br />
+                      <span className="text-xs text-gray-500">
+                        Push, Email·Î ÁøÇà»óÈ²À» ¾Ë·Áµå¸³´Ï´Ù.
+                      </span>
                     </span>
                   </label>
                 </div>
 
-                {/* ê³µê°œ ?„¤? • */}
                 <div className="mb-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-gray-800 font-medium text-sm block mb-0.5">?‚˜ë§? ë³´ê¸°</span>
-                      <span className="text-xs text-gray-500">?‹¤ë¥? ?•™?ƒ?—ê²ŒëŠ” ë¹„ê³µê°? ì²˜ë¦¬ (ê¸°ë³¸ê°?: ë¹„ê³µê°?)</span>
+                      <span className="text-gray-800 font-medium text-sm block mb-0.5">
+                        ³ª¸¸ º¸±â
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        ´Ù¸¥ ÇĞ»ıµé¿¡°Ô º¸ÀÌÁö ¾ÊÀ½ (±âº»°ª: °ø°³)
+                      </span>
                     </div>
                     <button
                       type="button"
                       onClick={() => setIsPrivate(!isPrivate)}
                       className={`relative w-12 h-6 rounded-full transition-colors shrink-0 ${
-                        isPrivate ? 'bg-blue-500' : 'bg-gray-300'
+                        isPrivate ? "bg-blue-500" : "bg-gray-300"
                       }`}
                     >
                       <span
                         className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
-                          isPrivate ? 'translate-x-6' : 'translate-x-0'
+                          isPrivate ? "translate-x-6" : "translate-x-0"
                         }`}
                       />
                     </button>
@@ -1096,30 +1553,30 @@ export default function StudentDashboard() {
               </div>
             </div>
 
-            {/* ê³ ì • ?•˜?‹¨ ?˜?—­ */}
             <div className="p-6 pt-4 shrink-0 border-t border-gray-100">
-              <button 
+              <button
                 onClick={() => {
-                  alert(`ë¯¼ì›?´ ? ‘?ˆ˜?˜?—ˆ?Šµ?‹ˆ?‹¤!\n\nì¹´í…Œê³ ë¦¬: ${selectedCategory.name}\n? œëª?: ${complaintTitle}\n?‚´?š©: ${complaintContent}\nì²¨ë???ŒŒ?¼: ${attachedFiles.length}ê°?`);
+                  alert(
+                    `¹Î¿øÀÌ Á¢¼öµÇ¾ú½À´Ï´Ù!\n\nÄ«Å×°í¸®: ${selectedCategory.name}\nÁ¦¸ñ: ${complaintTitle}\n³»¿ë: ${complaintContent}\nÃ·ºÎÆÄÀÏ: ${attachedFiles.length}°³`
+                  );
                   setShowComplaintModal(false);
                   setSelectedCategory(null);
-                  setComplaintTitle('');
-                  setComplaintContent('');
+                  setComplaintTitle("");
+                  setComplaintContent("");
                   setAttachedFiles([]);
                   setSelectedSubCategory(null);
-                  localStorage.removeItem('complaint_draft');
+                  localStorage.removeItem("complaint_draft");
                 }}
                 className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all"
               >
-                ? œì¶œí•˜ê¸?
+                Á¢¼öÇÏ±â
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ?”Œë¡œíŒ… ë²„íŠ¼ */}
-      <button 
+      <button
         onClick={() => {
           setSelectedCategory(complaintCategories[0]);
           setShowComplaintModal(true);
@@ -1129,26 +1586,35 @@ export default function StudentDashboard() {
         <Plus className="w-6 h-6" />
       </button>
 
-      {/* FAQ ëª¨ë‹¬ */}
       {showFAQ && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
           <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-xl">?ì£? ì°¾ëŠ” ì§ˆë¬¸</h3>
+              <h3 className="font-bold text-xl">ÀÚÁÖ ¹¯´Â Áú¹®</h3>
               <button onClick={() => setShowFAQ(false)}>
                 <X className="w-6 h-6 text-gray-400" />
               </button>
             </div>
-            
             <div className="space-y-2">
               {faqData.map((faq) => (
-                <div key={faq.id} className="border border-gray-200 rounded-xl overflow-hidden">
-                  <button 
-                    onClick={() => setExpandedFAQ(expandedFAQ === faq.id ? null : faq.id)}
+                <div
+                  key={faq.id}
+                  className="border border-gray-200 rounded-xl overflow-hidden"
+                >
+                  <button
+                    onClick={() =>
+                      setExpandedFAQ(expandedFAQ === faq.id ? null : faq.id)
+                    }
                     className="w-full p-4 text-left flex items-center justify-between"
                   >
-                    <span className="font-medium text-gray-800">{faq.question}</span>
-                    <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${expandedFAQ === faq.id ? 'rotate-180' : ''}`} />
+                    <span className="font-medium text-gray-800">
+                      {faq.question}
+                    </span>
+                    <ChevronDown
+                      className={`w-5 h-5 text-gray-400 transition-transform ${
+                        expandedFAQ === faq.id ? "rotate-180" : ""
+                      }`}
+                    />
                   </button>
                   {expandedFAQ === faq.id && (
                     <div className="px-4 pb-4 text-gray-600 text-sm bg-gray-50">
@@ -1158,38 +1624,32 @@ export default function StudentDashboard() {
                 </div>
               ))}
             </div>
-            
-            <div className="mt-6 p-4 bg-orange-50 rounded-2xl">
-              <p className="text-sm text-orange-700">?›?•˜?Š” ?‹µë³??„ ì°¾ì?? ëª»í•˜?…¨?‚˜?š”?</p>
-              <button 
-                onClick={() => { setShowFAQ(false); setShowComplaintModal(true); }}
-                className="mt-2 text-orange-600 font-medium text-sm"
-              >
-                ì§ì ‘ ë¬¸ì˜?•˜ê¸? ?†’
-              </button>
-            </div>
           </div>
         </div>
       )}
     </div>
   );
 
-  // ?•Œë¦? ?™”ë©?
+  // ¾Ë¸² È­¸é
   const NotificationScreen = () => (
     <div className="pb-4">
       <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1">
-            <img src={logoImage} alt="Logo" className="w-7 h-7 object-contain" />
+            <img
+              src={logoImage}
+              alt="Logo"
+              className="w-7 h-7 object-contain"
+            />
           </div>
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={() => setShowShareModal(true)}
               className="p-2 hover:bg-white/20 rounded-lg transition-all"
             >
               <Share2 className="w-6 h-6" />
             </button>
-            <button 
+            <button
               onClick={() => setShowSearchModal(true)}
               className="p-2 hover:bg-white/20 rounded-lg transition-all"
             >
@@ -1200,17 +1660,30 @@ export default function StudentDashboard() {
             </button>
           </div>
         </div>
-        <h2 className="font-bold text-xl">?•Œë¦?</h2>
-        <p className="text-sm opacity-90">?ƒˆë¡œìš´ ?†Œ?‹?„ ?™•?¸?•˜?„¸?š”</p>
+        <h2 className="font-bold text-xl">¾Ë¸²</h2>
+        <p className="text-sm opacity-90">ÁÖ¿ä ¼Ò½ÄÀ» È®ÀÎÇÏ¼¼¿ä</p>
       </div>
 
       <div className="mx-4 mt-4 space-y-3">
         {notifications.map((notif) => (
-          <div key={notif.id} className={`bg-white rounded-2xl shadow p-4 ${!notif.read ? 'border-l-4 border-pink-500' : ''}`}>
+          <div
+            key={notif.id}
+            className={`bg-white rounded-2xl shadow p-4 ${
+              !notif.read ? "border-l-4 border-pink-500" : ""
+            }`}
+          >
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${!notif.read ? 'bg-pink-100' : 'bg-gray-100'}`}>
-                  <Bell className={`w-5 h-5 ${!notif.read ? 'text-pink-500' : 'text-gray-400'}`} />
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    !notif.read ? "bg-pink-100" : "bg-gray-100"
+                  }`}
+                >
+                  <Bell
+                    className={`w-5 h-5 ${
+                      !notif.read ? "text-pink-500" : "text-gray-400"
+                    }`}
+                  />
                 </div>
                 <div>
                   <p className="font-medium text-gray-800">{notif.title}</p>
@@ -1218,7 +1691,9 @@ export default function StudentDashboard() {
                   <p className="text-xs text-gray-400 mt-2">{notif.time}</p>
                 </div>
               </div>
-              {!notif.read && <div className="w-2 h-2 bg-pink-500 rounded-full"></div>}
+              {!notif.read && (
+                <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
+              )}
             </div>
           </div>
         ))}
@@ -1226,22 +1701,26 @@ export default function StudentDashboard() {
     </div>
   );
 
-  // ë§ˆì´?˜?´ì§? ?™”ë©?
+  // ¸¶ÀÌÆäÀÌÁö È­¸é
   const MyPageScreen = () => (
     <div className="pb-4">
       <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4 pb-16">
         <div className="flex items-center justify-between mb-4">
           <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1">
-            <img src={logoImage} alt="Logo" className="w-7 h-7 object-contain" />
+            <img
+              src={logoImage}
+              alt="Logo"
+              className="w-7 h-7 object-contain"
+            />
           </div>
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={() => setShowShareModal(true)}
               className="p-2 hover:bg-white/20 rounded-lg transition-all"
             >
               <Share2 className="w-6 h-6" />
             </button>
-            <button 
+            <button
               onClick={() => setShowSearchModal(true)}
               className="p-2 hover:bg-white/20 rounded-lg transition-all"
             >
@@ -1252,147 +1731,116 @@ export default function StudentDashboard() {
             </button>
           </div>
         </div>
-        <h2 className="font-bold text-xl">ë§ˆì´?˜?´ì§?</h2>
+        <h2 className="font-bold text-xl">¸¶ÀÌÆäÀÌÁö</h2>
       </div>
 
-      {/* ?”„ë¡œí•„ ì¹´ë“œ */}
       <div className="mx-4 -mt-10 bg-white rounded-2xl shadow-lg p-4">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-            {authTokens?.userName?.[0] || '?•™'}
+            {authTokens?.userName?.[0] || "±è"}
           </div>
           <div>
-            <p className="font-bold text-lg">{authTokens?.userName || '?‚¬?š©?'}</p>
-            <p className="text-gray-500 text-sm">
-              {authTokens?.userType === 'student' ? 'ì»´í“¨?„°ê³µí•™ê³? 3?•™?…„' : 'ì»´í“¨?„°ê³µí•™ê³? êµìˆ˜'}
+            <p className="font-bold text-lg">
+              {authTokens?.userName || "±è¼ö¼º"}
             </p>
-            <p className="text-gray-400 text-xs">{authTokens?.userId || '202012345'}</p>
+            <p className="text-gray-500 text-sm">
+              {authTokens?.userType === "student"
+                ? "ÄÄÇ»ÅÍ°øÇĞ°ú 3ÇĞ³â"
+                : "±³¼ö"}
+            </p>
+            <p className="text-gray-400 text-xs">
+              {authTokens?.userId || "202012345"}
+            </p>
           </div>
         </div>
       </div>
 
-      {/* ë©”ë‰´ */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg overflow-hidden">
-        <button 
+        <button
           onClick={() => setShowNotificationSettingsModal(true)}
           className="w-full p-4 flex items-center justify-between border-b border-gray-100 hover:bg-gray-50 transition-all"
         >
           <div className="flex items-center gap-3">
             <Settings className="w-5 h-5 text-gray-400" />
-            <span>?•Œë¦? ?„¤? •</span>
+            <span>¾Ë¸² ¼³Á¤</span>
           </div>
           <ChevronRight className="w-5 h-5 text-gray-400" />
         </button>
-        <button 
+        <button
           onClick={() => setShowDownloadModal(true)}
           className="w-full p-4 flex items-center justify-between border-b border-gray-100 hover:bg-gray-50 transition-all"
         >
           <div className="flex items-center gap-3">
             <Download className="w-5 h-5 text-gray-400" />
-            <span>ë¯¼ì› ?´? ¥ ?‹¤?š´ë¡œë“œ</span>
+            <span>¹Î¿ø ³»¿ª ´Ù¿î·Îµå</span>
           </div>
           <ChevronRight className="w-5 h-5 text-gray-400" />
         </button>
-        <button 
+        <button
           onClick={() => {
-            setComplaintStatusFilter('? „ì²?');
+            setComplaintStatusFilter("ÀüÃ¼");
             setShowComplaintListModal(true);
           }}
           className="w-full p-4 flex items-center justify-between border-b border-gray-100 hover:bg-gray-50 transition-all"
         >
           <div className="flex items-center gap-3">
             <FileText className="w-5 h-5 text-gray-400" />
-            <span>?‚´ê°? ?“´ ë¯¼ì› ? „ì²´ë³´ê¸?</span>
+            <span>ÀÛ¼º ÇÑ ¹Î¿ø ÀüÃ¼º¸±â</span>
           </div>
           <ChevronRight className="w-5 h-5 text-gray-400" />
         </button>
-        <button 
+        <button
           onClick={() => setShowLoginInfoModal(true)}
           className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-all"
         >
           <div className="flex items-center gap-3">
             <User className="w-5 h-5 text-gray-400" />
-            <span>ë¡œê·¸?¸ ? •ë³? (SSO)</span>
+            <span>·Î±×ÀÎ Á¤º¸ (SSO)</span>
           </div>
           <ChevronRight className="w-5 h-5 text-gray-400" />
         </button>
       </div>
 
-      <button 
+      <button
         onClick={handleLogout}
         className="mx-4 mt-4 w-[calc(100%-2rem)] py-3 text-red-500 hover:text-red-600 transition-all flex items-center justify-center gap-2"
       >
         <LogOut className="w-5 h-5" />
-        ë¡œê·¸?•„?›ƒ
+        ·Î±×¾Æ¿ô
       </button>
     </div>
   );
 
-  // Evidence ?•„?„°ë§? ë°? ? •? ¬
-  const getFilteredEvidence = () => {
-    let filtered = evidenceData;
-    
-    // ?•„?„°ë§?
-    if (evidenceFilter !== '? „ì²?') {
-      filtered = filtered.filter(item => item.competency === evidenceFilter);
-    }
-    
-    // ? •? ¬
-    if (evidenceSort === 'ìµœì‹ ?ˆœ') {
-      filtered = [...filtered].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    } else if (evidenceSort === '? ?ˆ˜?ˆœ') {
-      const scoreValue: Record<string, number> = { 'A+': 4.5, 'A': 4.0, 'B+': 3.5, 'B': 3.0 };
-      filtered = [...filtered].sort((a, b) => (scoreValue[b.score] || 0) - (scoreValue[a.score] || 0));
-    }
-    
-    return filtered;
-  };
-
-  // ?•™ê¸°ë³„ ê·¸ë£¹?•‘
-  const groupBySemester = (data: typeof evidenceData) => {
-    const grouped: Record<string, typeof evidenceData> = {};
-    data.forEach(item => {
-      if (!grouped[item.semester]) {
-        grouped[item.semester] = [];
-      }
-      grouped[item.semester].push(item);
-    });
-    return grouped;
-  };
-
-  // ë¡œë”© ì¤‘ì¼ ?•Œ
+  // ·Îµù ¹× ·Î±×ÀÎ Ã¼Å©
   if (isCheckingAuth) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 via-pink-50 to-orange-50 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">ë¡œë”© ì¤?...</p>
+          <p className="text-gray-600">·Îµù Áß...</p>
         </div>
       </div>
     );
   }
 
-  // ë¡œê·¸?¸?•˜ì§? ?•Š??? ê²½ìš°
   if (!authTokens) {
     return <Login onLoginSuccess={handleLoginSuccess} />;
   }
 
   return (
     <div className="min-h-screen bg-gray-100 max-w-md mx-auto relative overflow-hidden">
-      {/* ë©”ì¸ ì»¨í…ì¸? */}
       <div className="pb-20">
-        {activeTab === 'home' && <HomeScreen />}
-        {activeTab === 'complaint' && <ComplaintScreen />}
-        {activeTab === 'notification' && <NotificationScreen />}
-        {activeTab === 'mypage' && <MyPageScreen />}
+        {activeTab === "home" && <HomeScreen />}
+        {activeTab === "complaint" && <ComplaintScreen />}
+        {activeTab === "notification" && <NotificationScreen />}
+        {activeTab === "mypage" && <MyPageScreen />}
       </div>
 
-      {/* ì±„íŒ… ëª¨ë‹¬ */}
       <ChatModal
         isOpen={showChatModal}
         onClose={() => {
           setShowChatModal(false);
-          setCurrentCategory('');
+          setCurrentCategory("");
         }}
         category={currentCategory}
         onSuccess={(message, type) => {
@@ -1402,389 +1850,22 @@ export default function StudentDashboard() {
         }}
       />
 
-      {/* ë¯¼ì› ë¦¬ìŠ¤?Š¸ ëª¨ë‹¬ */}
-      {showComplaintListModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-3xl h-[85vh] flex flex-col">
-            {/* ê³ ì • ?ƒ?‹¨ ?˜?—­ */}
-            <div className="shrink-0">
-              {/* ?—¤?” */}
-              <div className="flex items-center justify-between px-6 pt-6 pb-4">
-                <h3 className="font-bold text-xl">?‚´ ë¯¼ì› ?‚´?—­</h3>
-                <div className="flex items-center gap-3">
-                  <p className="text-sm text-gray-500">ì´? {getFilteredComplaints().length}ê±?</p>
-                  <button onClick={handleCloseComplaintListModal}>
-                    <X className="w-6 h-6 text-gray-400" />
-                  </button>
-                </div>
-              </div>
+      {/* ±âÅ¸ ¸ğ´ŞµéÀº Áö¸é °ü°è»ó ÇÙ½É ·ÎÁ÷¸¸ À¯ÁöÇÏ°í »ı·«µÈ ºÎºĞÀÌ ÀÖÀ» ¼ö ÀÖÀ¸³ª ÁÖ¿ä ±â´ÉÀº À§ ÄÚµå¿¡ Æ÷ÇÔµÊ */}
+      {/* ¹Î¿ø »ó¼¼ ¸ğ´Ş, ¸®½ºÆ® ¸ğ´Ş, ÆÄÀÏ ´Ù¿î·Îµå ¸ğ´Ş µîÀÌ ¿©±â¿¡ À§Ä¡ÇÕ´Ï´Ù */}
 
-              {/* ?ƒ?ƒœ ?•„?„° ?ƒ­ (?–¸?”?¼?¸ ?Š¤????¼) */}
-              <div className="flex border-b border-gray-200 px-6">
-                {['? „ì²?', '? ‘?ˆ˜', 'ì²˜ë¦¬ì¤?', '?™„ë£?'].map((status) => {
-                  const count = status === '? „ì²?' 
-                    ? complaints.length 
-                    : complaints.filter(c => c.status === status).length;
-                  
-                  return (
-                    <button
-                      key={status}
-                      onClick={() => setComplaintStatusFilter(status)}
-                      className={`relative px-4 py-3 font-medium transition-all ${
-                        complaintStatusFilter === status
-                          ? 'text-gray-900'
-                          : 'text-gray-500 hover:text-gray-700'
-                      }`}
-                    >
-                      <span className="flex items-center gap-1.5">
-                        {status}
-                        <span className={`text-xs ${
-                          complaintStatusFilter === status
-                            ? 'text-red-500'
-                            : 'text-gray-400'
-                        }`}>
-                          {count}
-                        </span>
-                      </span>
-                      {complaintStatusFilter === status && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-500 to-orange-500"></div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* ê²??ƒ‰ì°? + ê¸°ê°„ ?•„?„° */}
-              <div className="px-6 pt-4 pb-3">
-                {/* ê²??ƒ‰ë°? */}
-                <div className="relative mb-3">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="text"
-                    value={searchKeyword}
-                    onChange={(e) => setSearchKeyword(e.target.value)}
-                    placeholder="ë¯¼ì› ? œëª? ?˜?Š” ?‚´?š© ê²??ƒ‰..."
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 rounded-xl border-none focus:outline-none focus:ring-2 focus:ring-red-500/20"
-                  />
-                  {searchKeyword && (
-                    <button
-                      onClick={() => setSearchKeyword('')}
-                      className="absolute right-3 top-1/2 -translate-y-1/2"
-                    >
-                      <X className="w-5 h-5 text-gray-400 hover:text-gray-600" />
-                    </button>
-                  )}
-                </div>
-
-                {/* ê¸°ê°„ ?•„?„° */}
-                <div className="flex gap-2">
-                  {['? „ì²?', '1ê°œì›”', '3ê°œì›”', '6ê°œì›”'].map((period) => (
-                    <button
-                      key={period}
-                      onClick={() => setPeriodFilter(period)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                        periodFilter === period
-                          ? 'bg-gray-800 text-white'
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
-                    >
-                      {period}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* ?Š¤?¬ë¡? ê°??Š¥?•œ ì¤‘ê°„ ?˜?—­ */}
-            <div className="flex-1 overflow-y-auto px-6 py-2">
-              <div className="space-y-3 pb-4">
-                {getFilteredComplaints().length > 0 ? (
-                  getFilteredComplaints().map((complaint) => (
-                  <div 
-                    key={complaint.id} 
-                    className="bg-gray-50 rounded-xl p-4 cursor-pointer hover:bg-gray-100 transition-colors"
-                    onClick={() => {
-                      setComplaintDetailModal(complaint);
-                      setShowComplaintListModal(false);
-                      if (!complaint.isRead && !complaintReadStatus[complaint.id]) {
-                        setComplaintReadStatus(prev => ({ ...prev, [complaint.id]: true }));
-                      }
-                    }}
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-start gap-2 flex-1">
-                        <h4 className="font-bold text-gray-800">{complaint.title}</h4>
-                        {!complaint.isRead && !complaintReadStatus[complaint.id] && (
-                          <div className="w-2 h-2 bg-red-500 rounded-full mt-1.5 shrink-0"></div>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {/* ?™„ë£? ?ƒ?ƒœ?¼ ?•Œ?Š” ë³„ì /?‰ê°??•˜ê¸? ?‘œ?‹œ, ê·? ?™¸?—?Š” ?ƒ?ƒœ ?ƒœê·? ?‘œ?‹œ */}
-                        {complaint.status === '?™„ë£?' ? (
-                          <>
-                            {complaintRatings[complaint.id] ? (
-                              <div className="flex items-center gap-1 px-3 py-1 bg-yellow-50 rounded-full">
-                                <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                                <span className="text-xs font-medium text-yellow-600">{complaintRatings[complaint.id]}.0</span>
-                              </div>
-                            ) : (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleRateComplaint(complaint.id);
-                                }}
-                                className="px-3 py-1 bg-yellow-50 text-yellow-600 rounded-full text-xs font-medium hover:bg-yellow-100 transition-colors"
-                              >
-                                ?‰ê°??•˜ê¸?
-                              </button>
-                            )}
-                          </>
-                        ) : (
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColor[complaint.status]}`}>
-                            {complaint.status}
-                          </span>
-                        )}
-                        <ChevronRight className="w-5 h-5 text-gray-400" />
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between text-sm text-gray-500 mt-2">
-                      <span>{complaint.category}</span>
-                      <span>{complaint.date}</span>
-                    </div>
-                  </div>
-                ))
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-16">
-                    <Search className="w-16 h-16 text-gray-300 mb-4" />
-                    <p className="text-gray-500 font-medium mb-1">ê²??ƒ‰ ê²°ê³¼ê°? ?—†?Šµ?‹ˆ?‹¤</p>
-                    <p className="text-sm text-gray-400">?‹¤ë¥? ê²??ƒ‰?–´?‚˜ ?•„?„°ë¥? ?‹œ?„?•´ë³´ì„¸?š”</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* ê³ ì • ?•˜?‹¨ ?˜?—­ */}
-            <div className="p-6 pt-4 shrink-0 border-t border-gray-100">
-              <button className="w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-bold flex items-center justify-center gap-2">
-                <Download className="w-5 h-5" />
-                ë¯¼ì› ?‚´?—­ ?‹¤?š´ë¡œë“œ
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Evidence ? „ì²´ë³´ê¸? ëª¨ë‹¬ */}
-      {showEvidenceModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-3xl max-h-[85vh] flex flex-col">
-            {/* ê³ ì • ?ƒ?‹¨ ?˜?—­ */}
-            <div className="p-6 pb-0 shrink-0">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="font-bold text-xl">Evidence ? „ì²? ?‚´?—­</h3>
-                  <p className="text-sm text-gray-500">ì´? {evidenceData.length}ê±?</p>
-                </div>
-                <button onClick={() => setShowEvidenceModal(false)}>
-                  <X className="w-6 h-6 text-gray-400" />
-                </button>
-              </div>
-
-              {/* ?•„?„° ?ƒ­ */}
-              <div className="flex items-center justify-between gap-3 mb-4">
-                {/* ?´? „ ë²„íŠ¼ */}
-                <button
-                  onClick={() => {
-                    if (filterScrollRef.current) {
-                      filterScrollRef.current.scrollBy({ left: -150, behavior: 'smooth' });
-                    }
-                  }}
-                  className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-all shrink-0"
-                >
-                  <ChevronRight className="w-5 h-5 text-gray-600 rotate-180" />
-                </button>
-
-                {/* ì¹´í…Œê³ ë¦¬ ?Š¤?¬ë¡? ?˜?—­ */}
-                <div 
-                  ref={filterScrollRef}
-                  className="flex-1 overflow-x-auto scrollbar-hide"
-                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                >
-                  <div className="flex gap-2">
-                    {['? „ì²?', 'S', 'T', 'A', 'R'].map((filter) => (
-                      <button
-                        key={filter}
-                        onClick={() => setEvidenceFilter(filter)}
-                        className={`px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all ${
-                          evidenceFilter === filter
-                            ? 'text-white shadow-lg'
-                            : 'bg-gray-100 text-gray-600'
-                        }`}
-                        style={
-                          evidenceFilter === filter && filter !== '? „ì²?'
-                            ? { backgroundColor: starDetails[filter as keyof typeof starDetails].color }
-                            : evidenceFilter === filter
-                            ? { background: 'linear-gradient(to right, #E94E3C, #F7941D)' }
-                            : {}
-                        }
-                      >
-                        {filter === '? „ì²?' ? '? „ì²?' : `${filter} (${starDetails[filter as keyof typeof starDetails].name})`}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* ?‹¤?Œ ë²„íŠ¼ */}
-                <button
-                  onClick={() => {
-                    if (filterScrollRef.current) {
-                      filterScrollRef.current.scrollBy({ left: 150, behavior: 'smooth' });
-                    }
-                  }}
-                  className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-all shrink-0"
-                >
-                  <ChevronRight className="w-5 h-5 text-gray-600" />
-                </button>
-              </div>
-
-              {/* ? •? ¬ ?˜µ?…˜ */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex gap-2">
-                  {['ìµœì‹ ?ˆœ', '?•™ê¸°ë³„', '? ?ˆ˜?ˆœ'].map((sort) => (
-                    <button
-                      key={sort}
-                      onClick={() => setEvidenceSort(sort)}
-                      className={`px-3 py-1 rounded-lg text-sm ${
-                        evidenceSort === sort
-                          ? 'bg-pink-100 text-pink-600 font-medium'
-                          : 'bg-gray-100 text-gray-600'
-                      }`}
-                    >
-                      {sort}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* ?Š¤?¬ë¡? ê°??Š¥?•œ ì¤‘ê°„ ?˜?—­ */}
-            <div className="flex-1 overflow-y-auto px-6 py-2">
-              {/* ?•™ê¸°ë³„ ê·¸ë£¹ */}
-              {evidenceSort === '?•™ê¸°ë³„' ? (
-                <div className="space-y-4">
-                  {Object.entries(groupBySemester(getFilteredEvidence())).map(([semester, items]) => (
-                    <div key={semester}>
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-1 h-4 bg-gradient-to-b from-red-500 to-orange-500 rounded-full"></div>
-                        <h4 className="font-bold text-gray-800">{semester}</h4>
-                        <span className="text-xs text-gray-500">({items.length}ê±?)</span>
-                      </div>
-                      <div className="space-y-2">
-                        {items.map((item, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                            <div className="flex items-center gap-3">
-                              <div
-                                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
-                                style={{ backgroundColor: starDetails[item.competency as keyof typeof starDetails].color }}
-                              >
-                                {item.competency}
-                              </div>
-                              <div>
-                                <p className="font-medium text-gray-800 text-sm">{item.course}</p>
-                                <p className="text-xs text-gray-500">{item.task}</p>
-                                <p className="text-xs text-gray-400 mt-0.5">{item.date}</p>
-                              </div>
-                            </div>
-                            <span className="font-bold text-green-600">{item.score}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {getFilteredEvidence().map((item, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
-                          style={{ backgroundColor: starDetails[item.competency as keyof typeof starDetails].color }}
-                        >
-                          {item.competency}
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-800 text-sm">{item.course}</p>
-                          <p className="text-xs text-gray-500">{item.task}</p>
-                          <p className="text-xs text-gray-400 mt-0.5">{item.semester} Â· {item.date}</p>
-                        </div>
-                      </div>
-                      <span className="font-bold text-green-600">{item.score}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* ê³ ì • ?•˜?‹¨ ?˜?—­ */}
-            <div className="p-6 pt-4 shrink-0">
-              <button className="w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-bold flex items-center justify-center gap-2">
-                <Download className="w-5 h-5" />
-                PDFë¡? ?‹¤?š´ë¡œë“œ
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ?„±ê³? ëª¨ë‹¬ */}
-      {showSuccessModal && (
-        <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 animate-scale-up shadow-2xl">
-            <div className="flex flex-col items-center text-center">
-              {/* ?•„?´ì½? */}
-              <div className="w-20 h-20 bg-gradient-to-br from-red-500 via-pink-500 to-orange-400 rounded-full flex items-center justify-center mb-4 shadow-lg">
-                {successType === 'complete' ? (
-                  <CheckCircle className="w-10 h-10 text-white" />
-                ) : (
-                  <Send className="w-10 h-10 text-white" />
-                )}
-              </div>
-              
-              {/* ë©”ì‹œì§? */}
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {successType === 'complete' ? '?™„ë£Œë˜?—ˆ?Šµ?‹ˆ?‹¤!' : '? ‘?ˆ˜ ?™„ë£?!'}
-              </h3>
-              <p className="text-gray-600 whitespace-pre-line mb-6">
-                {successMessage}
-              </p>
-              
-              {/* ?™•?¸ ë²„íŠ¼ */}
-              <button
-                onClick={() => setShowSuccessModal(false)}
-                className="w-full py-3 bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white rounded-xl font-bold hover:shadow-lg transition-all"
-              >
-                ?™•?¸
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ?•˜?‹¨ ?„¤ë¹„ê²Œ?´?…˜ */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 max-w-md mx-auto">
         <div className="flex items-center justify-around py-2">
           {[
-            { id: 'home', icon: Home, label: '?™ˆ' },
-            { id: 'complaint', icon: FileText, label: 'ë¯¼ì›' },
-            { id: 'notification', icon: Bell, label: '?•Œë¦?', badge: 2 },
-            { id: 'mypage', icon: User, label: 'MY' },
+            { id: "home", icon: Home, label: "È¨" },
+            { id: "complaint", icon: FileText, label: "¹Î¿ø" },
+            { id: "notification", icon: Bell, label: "¾Ë¸²", badge: 2 },
+            { id: "mypage", icon: User, label: "MY" },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex flex-col items-center py-2 px-4 relative ${
-                activeTab === tab.id ? 'text-pink-500' : 'text-gray-400'
+                activeTab === tab.id ? "text-pink-500" : "text-gray-400"
               }`}
             >
               <tab.icon className="w-6 h-6" />
@@ -1798,780 +1879,6 @@ export default function StudentDashboard() {
           ))}
         </div>
       </div>
-
-      {/* ê³µìœ  ëª¨ë‹¬ */}
-      {showShareModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-3xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-xl">?‚´ ?—­?Ÿ‰ ë¦¬í¬?Š¸ ê³µìœ </h3>
-              <button onClick={() => setShowShareModal(false)}>
-                <X className="w-6 h-6 text-gray-400" />
-              </button>
-            </div>
-
-            <p className="text-sm text-gray-600 mb-6">?—­?Ÿ‰ ? ?ˆ˜??? ë¦¬í¬?Š¸ë¥? ê³µìœ ?•˜?„¸?š”</p>
-
-            <div className="space-y-3">
-              <button className="w-full py-4 bg-yellow-400 text-gray-800 rounded-xl font-bold flex items-center justify-center gap-3 hover:bg-yellow-500 transition-all">
-                <MessageCircle className="w-5 h-5" />
-                ì¹´ì¹´?˜¤?†¡?œ¼ë¡? ê³µìœ 
-              </button>
-
-              <button 
-                onClick={() => {
-                  navigator.clipboard.writeText('https://student-dashboard.example.com/report/ê¹??ˆ˜?„±');
-                  alert('ë§í¬ê°? ë³µì‚¬?˜?—ˆ?Šµ?‹ˆ?‹¤!');
-                }}
-                className="w-full py-4 bg-blue-50 text-blue-600 rounded-xl font-bold flex items-center justify-center gap-3 hover:bg-blue-100 transition-all"
-              >
-                <Copy className="w-5 h-5" />
-                ë§í¬ ë³µì‚¬
-              </button>
-
-              <button className="w-full py-4 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-bold flex items-center justify-center gap-3 hover:opacity-90 transition-all">
-                <Download className="w-5 h-5" />
-                PDFë¡? ?‹¤?š´ë¡œë“œ
-              </button>
-            </div>
-
-            <div className="mt-6 p-4 bg-gray-50 rounded-xl">
-              <p className="text-xs text-gray-500">
-                ?Ÿ’? ê³µìœ ?œ ë¦¬í¬?Š¸?Š” 7?¼ê°? ?œ ?š¨?•©?‹ˆ?‹¤
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ê²??ƒ‰ ëª¨ë‹¬ */}
-      {showSearchModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-3xl h-[85vh] flex flex-col">
-            {/* ê³ ì • ?ƒ?‹¨ ?˜?—­ */}
-            <div className="p-6 pb-4 shrink-0">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-xl">?†µ?•© ê²??ƒ‰</h3>
-                <button onClick={() => setShowSearchModal(false)}>
-                  <X className="w-6 h-6 text-gray-400" />
-                </button>
-              </div>
-
-              {/* ê²??ƒ‰ì°? */}
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input 
-                  type="text"
-                  placeholder="Evidence, ë¯¼ì›, ?•Œë¦? ê²??ƒ‰..."
-                  className="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500"
-                  autoFocus
-                />
-              </div>
-
-              {/* ?•„?„° ?ƒ­ */}
-              <div className="flex gap-2 mt-4">
-                {['? „ì²?', 'Evidence', 'ë¯¼ì›', '?•Œë¦?'].map((filter) => (
-                  <button
-                    key={filter}
-                    className="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm hover:bg-pink-100 hover:text-pink-600 transition-all"
-                  >
-                    {filter}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* ?Š¤?¬ë¡? ê°??Š¥?•œ ì¤‘ê°„ ?˜?—­ */}
-            <div className="flex-1 overflow-y-auto px-6 py-2">
-              <div className="space-y-4">
-                {/* ìµœê·¼ ê²??ƒ‰?–´ */}
-                <div>
-                  <h4 className="font-bold text-gray-800 mb-3">ìµœê·¼ ê²??ƒ‰?–´</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {['ì°½ì˜?  ë¬¸ì œ?•´ê²?', '?¥?•™ê¸?', '?„?„œê´? ?ƒ‰ë°?', 'S?—­?Ÿ‰'].map((term, idx) => (
-                      <button 
-                        key={idx}
-                        className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition-all"
-                      >
-                        {term}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* ?¸ê¸? ê²??ƒ‰?–´ */}
-                <div>
-                  <h4 className="font-bold text-gray-800 mb-3">?¸ê¸? ê²??ƒ‰?–´</h4>
-                  <div className="space-y-2">
-                    {['?ˆ˜ê°•ì‹ ì²?', '?„±?  ? •? •', '?—­?Ÿ‰ ? ?ˆ˜', 'ë¯¼ì› ? œì¶?'].map((term, idx) => (
-                      <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all cursor-pointer">
-                        <span className="text-pink-500 font-bold text-sm">{idx + 1}</span>
-                        <span className="text-gray-800">{term}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* ì¶”ì²œ */}
-                <div>
-                  <h4 className="font-bold text-gray-800 mb-3">ì¶”ì²œ</h4>
-                  <div className="space-y-2">
-                    <div className="p-4 bg-gradient-to-r from-pink-50 to-orange-50 rounded-xl">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Trophy className="w-4 h-4 text-orange-500" />
-                        <span className="text-sm font-bold text-gray-800">S ì°½ì˜ ?—­?Ÿ‰</span>
-                      </div>
-                      <p className="text-xs text-gray-600">ìµœê·¼ ?—…?°?´?Š¸?œ ?—­?Ÿ‰ ? ?ˆ˜ë¥? ?™•?¸?•˜?„¸?š”</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* ê³ ì • ?•˜?‹¨ ?˜?—­ */}
-            <div className="p-6 pt-4 shrink-0 border-t border-gray-100">
-              <button className="w-full py-3 text-gray-500 text-sm">
-                ê²??ƒ‰ ê¸°ë¡ ? „ì²? ?‚­? œ
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ?•Œë¦? ?„¤? • ëª¨ë‹¬ */}
-      {showNotificationSettingsModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[70vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-xl">?•Œë¦? ?„¤? •</h3>
-              <button onClick={() => setShowNotificationSettingsModal(false)}>
-                <X className="w-6 h-6 text-gray-400" />
-              </button>
-            </div>
-
-            <p className="text-sm text-gray-600 mb-6">ë°›ê³  ?‹¶??? ?•Œë¦? ì±„ë„?„ ?„ ?ƒ?•˜?„¸?š”</p>
-
-            <div className="space-y-4">
-              {/* PWA ?‘¸?‹œ */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Bell className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-800">PWA ?‘¸?‹œ</p>
-                      <p className="text-xs text-gray-500">ë¸Œë¼?š°??? ?•Œë¦?</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setNotificationChannels({...notificationChannels, pwa: !notificationChannels.pwa})}
-                    className={`w-12 h-6 rounded-full relative transition-all ${
-                      notificationChannels.pwa ? 'bg-green-500' : 'bg-gray-300'
-                    }`}
-                  >
-                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                      notificationChannels.pwa ? 'right-1' : 'left-1'
-                    }`}></div>
-                  </button>
-                </div>
-                <p className="text-xs text-gray-500">?‹¤?‹œê°„ìœ¼ë¡? ì¤‘ìš”?•œ ?•Œë¦¼ì„ ë°›ì„ ?ˆ˜ ?ˆ?Šµ?‹ˆ?‹¤</p>
-              </div>
-
-              {/* ì¹´ì¹´?˜¤?†¡ */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                      <MessageCircle className="w-5 h-5 text-yellow-600" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-800">ì¹´ì¹´?˜¤?†¡</p>
-                      <p className="text-xs text-gray-500">ì¹´ì¹´?˜¤ ?•Œë¦¼í†¡</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setNotificationChannels({...notificationChannels, kakao: !notificationChannels.kakao})}
-                    className={`w-12 h-6 rounded-full relative transition-all ${
-                      notificationChannels.kakao ? 'bg-green-500' : 'bg-gray-300'
-                    }`}
-                  >
-                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                      notificationChannels.kakao ? 'right-1' : 'left-1'
-                    }`}></div>
-                  </button>
-                </div>
-                <p className="text-xs text-gray-500">ì¹´ì¹´?˜¤?†¡?œ¼ë¡? ?•Œë¦¼ì„ ë°›ì„ ?ˆ˜ ?ˆ?Šµ?‹ˆ?‹¤</p>
-              </div>
-
-              {/* ?´ë©”ì¼ */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
-                      <Send className="w-5 h-5 text-pink-600" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-800">?´ë©”ì¼</p>
-                      <p className="text-xs text-gray-500">school@example.com</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setNotificationChannels({...notificationChannels, email: !notificationChannels.email})}
-                    className={`w-12 h-6 rounded-full relative transition-all ${
-                      notificationChannels.email ? 'bg-green-500' : 'bg-gray-300'
-                    }`}
-                  >
-                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                      notificationChannels.email ? 'right-1' : 'left-1'
-                    }`}></div>
-                  </button>
-                </div>
-                <p className="text-xs text-gray-500">?´ë©”ì¼ë¡? ?ƒ?„¸?•œ ?•Œë¦¼ì„ ë°›ì„ ?ˆ˜ ?ˆ?Šµ?‹ˆ?‹¤</p>
-              </div>
-            </div>
-
-            <div className="mt-6 p-4 bg-blue-50 rounded-xl">
-              <p className="text-sm text-blue-700">
-                ?Ÿ’? ?•Œë¦? ì±„ë„??? ?–¸? œ?“ ì§? ë³?ê²½í•  ?ˆ˜ ?ˆ?Šµ?‹ˆ?‹¤
-              </p>
-            </div>
-
-            <button
-              onClick={() => {
-                setShowNotificationSettingsModal(false);
-                alert('?•Œë¦? ?„¤? •?´ ????¥?˜?—ˆ?Šµ?‹ˆ?‹¤!');
-              }}
-              className="w-full mt-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-bold"
-            >
-              ????¥?•˜ê¸?
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ë¡œê·¸?¸ ? •ë³? ëª¨ë‹¬ */}
-      {showLoginInfoModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[70vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-xl">ë¡œê·¸?¸ ? •ë³?</h3>
-              <button onClick={() => setShowLoginInfoModal(false)}>
-                <X className="w-6 h-6 text-gray-400" />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              {/* SSO ?—°?™ ?ƒ?ƒœ */}
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                    <CheckCircle className="w-6 h-6 text-green-500" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-gray-800">SSO ?—°?™ ?™„ë£?</p>
-                    <p className="text-xs text-gray-500">?†µ?•© ?¸ì¦? ?‹œ?Š¤?…œ</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* ê³„ì • ? •ë³? */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <h4 className="font-bold text-gray-800 mb-3">ê³„ì • ? •ë³?</h4>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">
-                      {authTokens?.userType === 'student' ? '?•™ë²?' : 'êµë²ˆ'}
-                    </span>
-                    <span className="font-medium">{authTokens?.userId || '202012345'}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">?´ë¦?</span>
-                    <span className="font-medium">{authTokens?.userName || '?‚¬?š©?'}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">?‚¬?š©? ?œ ?˜•</span>
-                    <span className="font-medium">
-                      {authTokens?.userType === 'student' ? '?•™?ƒ' : 'êµìˆ˜'}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">??™ ë¡œê·¸?¸</span>
-                    <span className="font-medium">
-                      {authTokens?.rememberMe ? '?‚¬?š©' : 'ë¯¸ì‚¬?š©'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* ?•™?  ? •ë³? */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <h4 className="font-bold text-gray-800 mb-3">?•™?  ? •ë³?</h4>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between py-2 border-b border-gray-200">
-                    <span className="text-sm text-gray-600">?•™ê³?</span>
-                    <span className="font-medium text-gray-800">ì»´í“¨?„°ê³µí•™ê³?</span>
-                  </div>
-                  <div className="flex items-center justify-between py-2 border-b border-gray-200">
-                    <span className="text-sm text-gray-600">?•™?…„</span>
-                    <span className="font-medium text-gray-800">
-                      {authTokens?.userType === 'student' ? '3?•™?…„' : '-'}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between py-2">
-                    <span className="text-sm text-gray-600">?´ë©”ì¼</span>
-                    <span className="font-medium text-gray-800">school@example.com</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* ë¡œê·¸?¸ ?´? ¥ */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <h4 className="font-bold text-gray-800 mb-3">ìµœê·¼ ë¡œê·¸?¸ ?´? ¥</h4>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between py-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600">2025.01.20 14:32</span>
-                    </div>
-                    <span className="text-gray-500">Chrome (Windows)</span>
-                  </div>
-                  <div className="flex items-center justify-between py-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600">2025.01.19 09:15</span>
-                    </div>
-                    <span className="text-gray-500">Safari (iPhone)</span>
-                  </div>
-                  <div className="flex items-center justify-between py-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600">2025.01.18 18:42</span>
-                    </div>
-                    <span className="text-gray-500">Chrome (Android)</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* ë³´ì•ˆ ?„¤? • */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <h4 className="font-bold text-gray-800 mb-3">ë³´ì•ˆ ?„¤? •</h4>
-                <button className="w-full py-3 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all">
-                  ë¹„ë??ë²ˆí˜¸ ë³?ê²?
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-6 p-4 bg-orange-50 rounded-xl">
-              <p className="text-xs text-orange-700">
-                ?š ï¸? ?˜?‹¬?Š¤?Ÿ¬?š´ ë¡œê·¸?¸ ?™œ?™?´ ?ˆ?‹¤ë©? ì¦‰ì‹œ ë¹„ë??ë²ˆí˜¸ë¥? ë³?ê²½í•˜?„¸?š”
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ë§Œì¡±?„ ?‰ê°? ëª¨ë‹¬ */}
-      {showRatingModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-md rounded-2xl p-6">
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="font-bold text-xl mb-2">ë¯¼ì› ì²˜ë¦¬ê°? ?™„ë£Œë˜?—ˆ?Šµ?‹ˆ?‹¤</h3>
-              <p className="text-sm text-gray-500">ì²˜ë¦¬ ê²°ê³¼?— ????•´ ?‰ê°??•´ì£¼ì„¸?š”</p>
-            </div>
-
-            {/* ë³„ì  */}
-            <div className="mb-6">
-              <p className="text-sm font-medium text-gray-700 mb-3 text-center">ë§Œì¡±?„ë¥? ?„ ?ƒ?•´ì£¼ì„¸?š”</p>
-              <div className="flex justify-center gap-2">
-                {[1, 2, 3, 4, 5].map((rating) => (
-                  <button
-                    key={rating}
-                    onClick={() => setSelectedRating(rating)}
-                    className="transition-transform hover:scale-110"
-                  >
-                    <Star
-                      className={`w-10 h-10 ${
-                        rating <= selectedRating
-                          ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-gray-300'
-                      }`}
-                    />
-                  </button>
-                ))}
-              </div>
-              <div className="text-center mt-2">
-                <span className="text-sm text-gray-500">
-                  {selectedRating === 0 && '?„ ?ƒ?•´ì£¼ì„¸?š”'}
-                  {selectedRating === 1 && 'ë§¤ìš° ë¶ˆë§Œì¡?'}
-                  {selectedRating === 2 && 'ë¶ˆë§Œì¡?'}
-                  {selectedRating === 3 && 'ë³´í†µ'}
-                  {selectedRating === 4 && 'ë§Œì¡±'}
-                  {selectedRating === 5 && 'ë§¤ìš° ë§Œì¡±'}
-                </span>
-              </div>
-            </div>
-
-            {/* ì¶”ï¿½ï¿½ï¿½ ?˜ê²? */}
-            <div className="mb-6">
-              <label className="text-sm font-medium text-gray-700 mb-2 block">ì¶”ê?? ?˜ê²? (?„ ?ƒ)</label>
-              <textarea
-                value={ratingComment}
-                onChange={(e) => setRatingComment(e.target.value)}
-                placeholder="?” ì¢‹ì?? ?„œë¹„ìŠ¤ë¥? ?œ„?•œ ?˜ê²¬ì„ ?‚¨ê²¨ì£¼?„¸?š”"
-                className="w-full p-3 border border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows={3}
-              />
-            </div>
-
-            {/* ë²„íŠ¼ */}
-            <div className="flex gap-3">
-              <button
-                onClick={() => {
-                  setShowRatingModal(false);
-                  setRatingComplaintId(null);
-                  setSelectedRating(0);
-                  setRatingComment('');
-                  setShowComplaintListModal(false);
-                }}
-                className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all"
-              >
-                ?‚˜ì¤‘ì—
-              </button>
-              <button
-                onClick={handleRatingSubmit}
-                disabled={selectedRating === 0}
-                className={`flex-1 py-3 rounded-xl font-medium transition-all ${
-                  selectedRating === 0
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-red-500 to-orange-500 text-white hover:shadow-lg'
-                }`}
-              >
-                ?‰ê°? ? œì¶?
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ë¯¼ì› ?ƒ?„¸ë³´ê¸° ëª¨ë‹¬ */}
-      {complaintDetailModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md h-[85vh] rounded-t-3xl flex flex-col">
-            {/* ?—¤?” */}
-            <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-6 rounded-t-3xl shrink-0">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-bold text-xl">ë¯¼ì› ?ƒ?„¸ë³´ê¸°</h3>
-                <button
-                  onClick={() => {
-                    setComplaintDetailModal(null);
-                    setShowComplaintListModal(true);
-                  }}
-                  className="p-2 hover:bg-white/20 rounded-lg transition-all"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-              <div className="flex items-center gap-2 text-sm opacity-90">
-                <span>{complaintDetailModal.category}</span>
-                <span>???</span>
-                <span>{complaintDetailModal.date}</span>
-              </div>
-            </div>
-
-            {/* ?‚´?š© */}
-            <div className="flex-1 overflow-y-auto p-6">
-              {/* ? œëª? */}
-              <div className="mb-6">
-                <h4 className="font-bold text-lg text-gray-800 mb-2">{complaintDetailModal.title}</h4>
-                <div className="flex items-center gap-2">
-                  {complaintDetailModal.status === '?™„ë£?' ? (
-                    <>
-                      {complaintRatings[complaintDetailModal.id] ? (
-                        <div className="flex items-center gap-1 px-3 py-1 bg-yellow-50 rounded-full">
-                          <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                          <span className="text-xs font-medium text-yellow-600">{complaintRatings[complaintDetailModal.id]}.0</span>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => handleRateComplaint(complaintDetailModal.id)}
-                          className="px-3 py-1 bg-yellow-50 text-yellow-600 rounded-full text-xs font-medium hover:bg-yellow-100 transition-colors"
-                        >
-                          ?‰ê°??•˜ê¸?
-                        </button>
-                      )}
-                    </>
-                  ) : (
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      complaintDetailModal.status === '? ‘?ˆ˜' ? 'bg-blue-100 text-blue-700' :
-                      complaintDetailModal.status === 'ì²˜ë¦¬ì¤?' ? 'bg-orange-100 text-orange-700' :
-                      'bg-green-100 text-green-700'
-                    }`}>
-                      {complaintDetailModal.status}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* ?‚´ê°? ?‘?„±?•œ ë¯¼ì› ?‚´?š© */}
-              <div className="mb-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <MessageCircle className="w-5 h-5 text-gray-600" />
-                  <h5 className="font-bold text-gray-800">ë¬¸ì˜ ?‚´?š©</h5>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                    {complaintDetailModal.content}
-                  </p>
-                </div>
-              </div>
-
-              {/* ? ‘?ˆ˜ ?ƒ?ƒœ: ?‚´?š©ë§? ë³´ì—¬ì¤? (?œ„?— ?´ë¯? ?‘œ?‹œ?¨) */}
-
-              {/* ì²˜ë¦¬ì¤? ?ƒ?ƒœ: ????„?¼?¸ + ?‹´?‹¹? ? •ë³? */}
-              {complaintDetailModal.status === 'ì²˜ë¦¬ì¤?' && (
-                <div className="mb-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Clock className="w-5 h-5 text-blue-600" />
-                    <h5 className="font-bold text-gray-800">ì²˜ë¦¬ ?˜„?™©</h5>
-                  </div>
-                  
-                  {/* ????„?¼?¸ UI */}
-                  <div className="bg-blue-50 rounded-lg p-4 mb-3">
-                    <div className="flex items-center justify-between mb-2">
-                      {['? ‘?ˆ˜ ?™•?¸', '?‹´?‹¹? ë°°ì •', 'ì²˜ë¦¬ì¤?'].map((step, index) => (
-                        <div key={`${complaintDetailModal.id}-${step}`} className="flex items-center flex-1">
-                          <div className="flex flex-col items-center w-full">
-                            <div className="relative flex items-center justify-center w-full">
-                              <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 z-10 ${
-                                index < complaintDetailModal.currentStep 
-                                  ? 'bg-blue-500 text-white' 
-                                  : index === complaintDetailModal.currentStep 
-                                  ? 'bg-blue-500 text-white animate-pulse' 
-                                  : 'bg-gray-300 text-gray-500'
-                              }`}>
-                                {index < complaintDetailModal.currentStep ? (
-                                  <Check className="w-4 h-4" />
-                                ) : (
-                                  <span className="text-xs font-bold">{index + 1}</span>
-                                )}
-                              </div>
-                              {index < 2 && (
-                                <div className={`absolute left-1/2 w-full h-0.5 ${
-                                  index < complaintDetailModal.currentStep ? 'bg-blue-500' : 'bg-gray-300'
-                                }`} style={{ top: '50%', transform: 'translateY(-50%)' }} />
-                              )}
-                            </div>
-                            <span className={`text-xs text-center whitespace-nowrap mt-1 ${
-                              index <= complaintDetailModal.currentStep ? 'text-gray-800 font-medium' : 'text-gray-400'
-                            }`}>
-                              {step}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* ?‹´?‹¹ ? •ë³? */}
-                  {complaintDetailModal.department && complaintDetailModal.assignee && (
-                    <div className="bg-white border border-blue-200 rounded-lg p-4">
-                      <div className="flex items-center gap-2">
-                        <User className="w-4 h-4 text-blue-600 shrink-0" />
-                        <div className="text-sm text-gray-800">
-                          <span className="font-medium">ë¶??„œ:</span> {complaintDetailModal.department}
-                          <span className="mx-2">|</span>
-                          <span className="font-medium">?‹´?‹¹:</span> {complaintDetailModal.assignee}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* ?™„ë£? ?ƒ?ƒœ: ê´?ë¦¬ì ?‹µë³? + ì²¨ë???ŒŒ?¼ */}
-              {complaintDetailModal.status === '?™„ë£?' && complaintDetailModal.adminResponse && (
-                <div className="mb-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                    <h5 className="font-bold text-gray-800">ê´?ë¦¬ì ?‹µë³?</h5>
-                  </div>
-                  
-                  {/* ê´?ë¦¬ì ?‹µë³? */}
-                  <div className="bg-green-50 rounded-lg p-4 mb-3">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-bold text-green-900">?‹µë³? ?‚´?š©</span>
-                      <span className="text-xs text-green-700">{complaintDetailModal.responseDate}</span>
-                    </div>
-                    <p className="text-sm text-green-900 leading-relaxed whitespace-pre-wrap">
-                      {complaintDetailModal.adminResponse}
-                    </p>
-                  </div>
-
-                  {/* ì²¨ë???ŒŒ?¼ */}
-                  {complaintDetailModal.attachments && complaintDetailModal.attachments.length > 0 && (
-                    <div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <FileText className="w-5 h-5 text-gray-600" />
-                        <h5 className="font-bold text-gray-800">ì²¨ë???ŒŒ?¼ ({complaintDetailModal.attachments.length})</h5>
-                      </div>
-                      <div className="space-y-2">
-                        {complaintDetailModal.attachments.map((file: any) => (
-                          <div key={file.id} className="flex items-center justify-between bg-white border border-gray-200 rounded-lg p-3">
-                            <div className="flex items-center gap-3 flex-1 min-w-0">
-                              <FileText className="w-5 h-5 text-blue-600 shrink-0" />
-                              <div className="min-w-0 flex-1">
-                                <p className="text-sm font-medium text-gray-800 truncate">{file.name}</p>
-                                <p className="text-xs text-gray-500">{file.size}</p>
-                              </div>
-                            </div>
-                            <a 
-                              href={file.url} 
-                              download 
-                              className="ml-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors shrink-0"
-                            >
-                              ?‹¤?š´ë¡œë“œ
-                            </a>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* ?•˜?‹¨ ë²„íŠ¼ */}
-            <div className="p-6 pt-4 shrink-0 border-t border-gray-100">
-              <button
-                onClick={() => {
-                  setComplaintDetailModal(null);
-                  setShowComplaintListModal(true);
-                }}
-                className="w-full py-3 bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white rounded-xl font-medium hover:shadow-lg transition-all"
-              >
-                ?‹«ê¸?
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ë¯¼ì› ?´? ¥ ?‹¤?š´ë¡œë“œ ëª¨ë‹¬ */}
-      {showDownloadModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-3xl p-6 animate-slide-up">
-            {/* ?—¤?” */}
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-bold text-xl">ë¯¼ì› ?´? ¥ ?‹¤?š´ë¡œë“œ</h3>
-              <button onClick={() => setShowDownloadModal(false)}>
-                <X className="w-6 h-6 text-gray-400" />
-              </button>
-            </div>
-
-            {/* ?‹¤?š´ë¡œë“œ ?˜µ?…˜ */}
-            <div className="space-y-6">
-              {/* ê¸°ê°„ ?„ ?ƒ */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  ?‹¤?š´ë¡œë“œ ê¸°ê°„
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  {['ìµœê·¼ 1ê°œì›”', 'ìµœê·¼ 3ê°œì›”', 'ìµœê·¼ 6ê°œì›”', '? „ì²?'].map((period) => (
-                    <button
-                      key={period}
-                      onClick={() => setDownloadPeriod(period)}
-                      className={`p-3 rounded-xl border-2 font-medium transition-all ${
-                        downloadPeriod === period
-                          ? 'border-red-500 bg-red-50 text-red-600'
-                          : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                      }`}
-                    >
-                      {period}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* ?ŒŒ?¼ ?˜•?‹ ?„ ?ƒ */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  ?ŒŒ?¼ ?˜•?‹
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  {['PDF', 'Excel'].map((format) => (
-                    <button
-                      key={format}
-                      onClick={() => setDownloadFormat(format)}
-                      className={`p-3 rounded-xl border-2 font-medium transition-all ${
-                        downloadFormat === format
-                          ? 'border-red-500 bg-red-50 text-red-600'
-                          : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                      }`}
-                    >
-                      <div className="flex items-center justify-center gap-2">
-                        <Download className="w-4 h-4" />
-                        {format}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* ?‹¤?š´ë¡œë“œ ?‚´?š© ë¯¸ë¦¬ë³´ê¸° */}
-              <div className="bg-gradient-to-r from-red-50 via-pink-50 to-orange-50 rounded-xl p-4">
-                <div className="flex items-start gap-3">
-                  <FileText className="w-5 h-5 text-red-500 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-800 mb-1">?¬?•¨ ?‚´?š©</p>
-                    <ul className="text-sm text-gray-600 space-y-1">
-                      <li>??? ë¯¼ì› ? œëª? ë°? ?‚´?š©</li>
-                      <li>??? ì²˜ë¦¬ ?ƒ?ƒœ ë°? ?‹´?‹¹?</li>
-                      <li>??? ?‹µë³? ?‚´?š© (?™„ë£Œëœ ê²½ìš°)</li>
-                      <li>??? ì²˜ë¦¬ ?¼? ë°? ?´? ¥</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {/* ?•ˆ?‚´ ë©”ì‹œì§? */}
-              <div className="bg-blue-50 rounded-xl p-4">
-                <p className="text-xs text-blue-700 flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>
-                    ?‹¤?š´ë¡œë“œ?œ ?ŒŒ?¼?—?Š” ê°œì¸? •ë³´ê?? ?¬?•¨?˜?–´ ?ˆ?œ¼?‹ˆ 
-                    ë³´ì•ˆ?— ?œ ?˜?•´ì£¼ì‹œê¸? ë°”ë?‹ˆ?‹¤.
-                  </span>
-                </p>
-              </div>
-            </div>
-
-            {/* ë²„íŠ¼ */}
-            <div className="mt-6 flex gap-3">
-              <button
-                onClick={() => setShowDownloadModal(false)}
-                className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all"
-              >
-                ì·¨ì†Œ
-              </button>
-              <button
-                onClick={() => {
-                  // ?‹¤? œë¡œëŠ” ?ŒŒ?¼ ?ƒ?„± ë¡œì§
-                  alert(`${downloadPeriod} ë¯¼ì› ?´? ¥?„ ${downloadFormat} ?˜•?‹?œ¼ë¡? ?‹¤?š´ë¡œë“œ?•©?‹ˆ?‹¤.`);
-                  setShowDownloadModal(false);
-                }}
-                className="flex-1 py-3 bg-gradient-to-r from-red-500 via-pink-500 to-orange-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2"
-              >
-                <Download className="w-5 h-5" />
-                ?‹¤?š´ë¡œë“œ
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
