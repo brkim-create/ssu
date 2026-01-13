@@ -1,215 +1,151 @@
-import React, { useState, useRef, useEffect } from "react";
-import { X, MessageCircle } from "lucide-react";
+import React, { useState, useRef, useEffect } from 'react';
+import { X, MessageCircle } from 'lucide-react';
 
 // Props Interface
 interface ChatModalProps {
   isOpen: boolean;
   onClose: () => void;
   category: string;
-  onSuccess: (message: string, type: "complete" | "submit") => void;
+  onSuccess: (message: string, type: 'complete' | 'submit') => void;
 }
 
-// ì±„íŒ… ?‹µë³? ????…
+// ì±„íŒ… ë‹µë³€ íƒ€ì…
 interface ChatAnswers {
   facilityType?: string;
   building?: string;
   floor?: string;
   problemType?: string;
   detail?: string;
-  // ?•™?ƒ ?¥?•™
+  // í•™ìƒ ì¥í•™
   scholarshipType?: string;
   semester?: string;
   inquiryType?: string;
-  // ?•™?ƒ ë³µì??
+  // í•™ìƒ ë³µì§€
   welfareType?: string;
   welfareInquiry?: string;
-  // ?ˆ˜?—… ë°? ?•™?‚¬
+  // ìˆ˜ì—… ë° í•™ì‚¬
   academicType?: string;
   courseName?: string;
 }
 
-// ì±„íŒ… ?ˆ?Š¤?† ë¦? ????…
+// ì±„íŒ… íˆìŠ¤í† ë¦¬ íƒ€ì…
 interface ChatMessage {
-  type: "bot" | "user";
+  type: 'bot' | 'user';
   message: string;
 }
 
-// ??™ ?‘?‹µ ?•¨?ˆ˜?“¤
-const getScholarshipAnswer = (
-  scholarshipType: string,
-  semester: string,
-  inquiryType: string
-): string => {
+// ìë™ ì‘ë‹µ í•¨ìˆ˜ë“¤
+const getScholarshipAnswer = (scholarshipType: string, semester: string, inquiryType: string): string => {
   const answers: Record<string, string> = {
-    "?‹ ì²? ê¸°ê°„": `${scholarshipType}?˜ ${semester} ?‹ ì²? ê¸°ê°„??? ?•™ê¸? ?‹œ?‘ 2ì£? ? „ë¶??„° 1ì£¼ê°„?…?‹ˆ?‹¤. ?•™?ƒ?¬?„¸?—?„œ ?‹ ì²??•˜?‹¤ ?ˆ˜ ?ˆ?œ¼ë©?, ??„¸?•œ ?¼? •??? ?•™?ƒì²? ê³µì???‚¬?•­?„ ?™•?¸?•´ì£¼ì„¸?š”.`,
-    "?„ ë°? ê¸°ì??": `${scholarshipType} ?„ ë°? ê¸°ì????? ?‹¤?Œê³? ê°™ìŠµ?‹ˆ?‹¤:\n??? ì§ì „?•™ê¸? ?‰?  3.0 ?´?ƒ\n??? ?´?ˆ˜?•™?  12?•™?  ?´?ƒ\n??? ê°?? • ê²½ì œ ?ˆ˜ì¤? (êµ?ê°??¥?•™ê¸ˆì˜ ê²½ìš°)\n??„¸?•œ ê¸°ì????? ?•™?ƒì²?(02-1234-5678)ë¡? ë¬¸ì˜?•˜?‹œê¸? ë°”ë?‹ˆ?‹¤.`,
-    "ì§?ê¸? ?¼? •": `${semester} ${scholarshipType} ì§?ê¸? ?¼? •??? ?•™ê¸? ê°œì‹œ ?›„ 1ê°œì›” ?´?‚´?…?‹ˆ?‹¤. ? •?™•?•œ ì§?ê¸‰ì¼??? ?•™?ƒ?¬?„¸ ë§ˆì´?˜?´ì§??—?„œ ?™•?¸?•˜?‹¤ ?ˆ˜ ?ˆ?Šµ?‹ˆ?‹¤.`,
-    "ê¸°í?? ë¬¸ì˜": `${scholarshipType}?— ????•œ ì¶”ê?? ë¬¸ì˜?Š” ?•™?ƒì²? ?¥?•™?‹´?‹¹(scholarship@university.ac.kr / 02-1234-5678)?œ¼ë¡? ?—°?½ ì£¼ì‹œê¸? ë°”ë?‹ˆ?‹¤. ?ƒ?‹´ ?‹œê°„ì?? ?‰?¼ 09:00~18:00?…?‹ˆ?‹¤.`,
+    'ì‹ ì²­ ê¸°ê°„': `${scholarshipType}ì˜ ${semester} ì‹ ì²­ ê¸°ê°„ì€ í•™ê¸° ì‹œì‘ 2ì£¼ ì „ë¶€í„° 1ì£¼ê°„ì…ë‹ˆë‹¤. í•™ìƒí¬í„¸ì—ì„œ ì‹ ì²­í•˜ì‹¤ ìˆ˜ ìˆìœ¼ë©°, ìì„¸í•œ ì¼ì •ì€ í•™ìƒì²˜ ê³µì§€ì‚¬í•­ì„ í™•ì¸í•´ì£¼ì„¸ìš”.`,
+    'ì„ ë°œ ê¸°ì¤€': `${scholarshipType} ì„ ë°œ ê¸°ì¤€ì€ ë‹¤ìŒê³¼ ê°™ìŠµë‹ˆë‹¤:\nâ€¢ ì§ì „í•™ê¸° í‰ì  3.0 ì´ìƒ\nâ€¢ ì´ìˆ˜í•™ì  12í•™ì  ì´ìƒ\nâ€¢ ê°€ì • ê²½ì œ ìˆ˜ì¤€ (êµ­ê°€ì¥í•™ê¸ˆì˜ ê²½ìš°)\nìì„¸í•œ ê¸°ì¤€ì€ í•™ìƒì²˜(02-1234-5678)ë¡œ ë¬¸ì˜í•˜ì‹œê¸° ë°”ëë‹ˆë‹¤.`,
+    'ì§€ê¸‰ ì¼ì •': `${semester} ${scholarshipType} ì§€ê¸‰ ì¼ì •ì€ í•™ê¸° ê°œì‹œ í›„ 1ê°œì›” ì´ë‚´ì…ë‹ˆë‹¤. ì •í™•í•œ ì§€ê¸‰ì¼ì€ í•™ìƒí¬í„¸ ë§ˆì´í˜ì´ì§€ì—ì„œ í™•ì¸í•˜ì‹¤ ìˆ˜ ìˆìŠµë‹ˆë‹¤.`,
+    'ê¸°íƒ€ ë¬¸ì˜': `${scholarshipType}ì— ëŒ€í•œ ì¶”ê°€ ë¬¸ì˜ëŠ” í•™ìƒì²˜ ì¥í•™ë‹´ë‹¹(scholarship@university.ac.kr / 02-1234-5678)ìœ¼ë¡œ ì—°ë½ ì£¼ì‹œê¸° ë°”ëë‹ˆë‹¤. ìƒë‹´ ì‹œê°„ì€ í‰ì¼ 09:00~18:00ì…ë‹ˆë‹¤.`
   };
-  return (
-    answers[inquiryType] ||
-    "ë¬¸ì˜?•˜?‹  ?‚´?š©?— ????•œ ?‹µë³??„ ì¤?ë¹? ì¤‘ì…?‹ˆ?‹¤. ?•™?ƒì²˜ë¡œ ì§ì ‘ ë¬¸ì˜?•´ì£¼ì„¸?š”."
-  );
+  return answers[inquiryType] || 'ë¬¸ì˜í•˜ì‹  ë‚´ìš©ì— ëŒ€í•œ ë‹µë³€ì„ ì¤€ë¹„ ì¤‘ì…ë‹ˆë‹¤. í•™ìƒì²˜ë¡œ ì§ì ‘ ë¬¸ì˜í•´ì£¼ì„¸ìš”.';
 };
 
-const getWelfareAnswer = (
-  welfareType: string,
-  welfareInquiry: string
-): string => {
+const getWelfareAnswer = (welfareType: string, welfareInquiry: string): string => {
   const answers: Record<string, Record<string, string>> = {
-    "ê¸°ìˆ™?‚¬": {
-      "?´?š© ?‹œê°?":
-        "ê¸°ìˆ™?‚¬ ì¶œì…??? 24?‹œê°? ê°??Š¥?•˜ë©?, ?™¸ë°? ?‹œ?—?Š” ?‚¬? „ ?‹ ì²??´ ?•„?š”?•©?‹ˆ?‹¤. ë¬¸ì˜: ?ƒ?™œê´?ë¦¬í??(02-1234-5679)",
-      "?‹ ì²? ë°©ë²•":
-        "ê¸°ìˆ™?‚¬ ?‹ ì²???? ë§? ?•™ê¸? ?•™?ƒ?¬?„¸ > ?ƒ?™œ > ê¸°ìˆ™?‚¬ ?‹ ì²? ë©”ë‰´?—?„œ ê°??Š¥?•©?‹ˆ?‹¤. ?‹ ì²? ê¸°ê°„??? ë°©í•™ ì¤? 2ì£¼ê°„?…?‹ˆ?‹¤.",
-      "?‹œ?„¤ ë¬¸ì˜":
-        "ê¸°ìˆ™?‚¬ ?‹œ?„¤ ë¬¸ì˜ ë°? ê³ ì¥ ?‹ ê³ ëŠ” ?ƒ?™œê´?ë¦¬í??(02-1234-5679)?œ¼ë¡? ?—°?½ ì£¼ì‹œê¸? ë°”ë?‹ˆ?‹¤.",
-      "ê¸°í??":
-        "ê¸°í?? ê¸°ìˆ™?‚¬ ê´?? ¨ ë¬¸ì˜?Š” ?ƒ?™œê´?ë¦¬í??(dorm@university.ac.kr)?œ¼ë¡? ?—°?½?•´ì£¼ì„¸?š”.",
+    'ê¸°ìˆ™ì‚¬': {
+      'ì´ìš© ì‹œê°„': 'ê¸°ìˆ™ì‚¬ ì¶œì…ì€ 24ì‹œê°„ ê°€ëŠ¥í•˜ë©°, ì™¸ë°• ì‹œì—ëŠ” ì‚¬ì „ ì‹ ì²­ì´ í•„ìš”í•©ë‹ˆë‹¤. ë¬¸ì˜: ìƒí™œê´€ë¦¬íŒ€(02-1234-5679)',
+      'ì‹ ì²­ ë°©ë²•': 'ê¸°ìˆ™ì‚¬ ì‹ ì²­ì€ ë§¤ í•™ê¸° í•™ìƒí¬í„¸ > ìƒí™œ > ê¸°ìˆ™ì‚¬ ì‹ ì²­ ë©”ë‰´ì—ì„œ ê°€ëŠ¥í•©ë‹ˆë‹¤. ì‹ ì²­ ê¸°ê°„ì€ ë°©í•™ ì¤‘ 2ì£¼ê°„ì…ë‹ˆë‹¤.',
+      'ì‹œì„¤ ë¬¸ì˜': 'ê¸°ìˆ™ì‚¬ ì‹œì„¤ ë¬¸ì˜ ë° ê³ ì¥ ì‹ ê³ ëŠ” ìƒí™œê´€ë¦¬íŒ€(02-1234-5679)ìœ¼ë¡œ ì—°ë½ ì£¼ì‹œê¸° ë°”ëë‹ˆë‹¤.',
+      'ê¸°íƒ€': 'ê¸°íƒ€ ê¸°ìˆ™ì‚¬ ê´€ë ¨ ë¬¸ì˜ëŠ” ìƒí™œê´€ë¦¬íŒ€(dorm@university.ac.kr)ìœ¼ë¡œ ì—°ë½í•´ì£¼ì„¸ìš”.'
     },
-    "?•™?ƒ?‹?‹¹": {
-      "?´?š© ?‹œê°?":
-        "?•™?ƒ?‹?‹¹ ?š´?˜ ?‹œê°?:\n??? ì¡°ì‹: 08:00~09:30\n??? ì¤‘ì‹: 11:30~13:30\n??? ?„?‹: 17:30~19:00",
-      "?‹ ì²? ë°©ë²•":
-        "?•™?ƒ?‹?‹¹??? ë³„ë„ ?‹ ì²? ?—†?´ ?´?š© ê°??Š¥?•©?‹ˆ?‹¤. ?‹ê¶Œì?? ?˜„?¥?—?„œ êµ¬ë§¤?•˜ê±°ë‚˜ ?•™?ƒì¦ìœ¼ë¡? ê²°ì œ?•˜?‹¤ ?ˆ˜ ?ˆ?Šµ?‹ˆ?‹¤.",
-      "?‹œ?„¤ ë¬¸ì˜":
-        "?‹?‹¹ ?‹œ?„¤ ë°? ë©”ë‰´ ë¬¸ì˜?Š” ë³µì?????(02-1234-5680)?œ¼ë¡? ?—°?½?•´ì£¼ì„¸?š”.",
-      "ê¸°í??":
-        "ê¸°í?? ?•™?ƒ?‹?‹¹ ê´?? ¨ ë¬¸ì˜?Š” ë³µì?????(welfare@university.ac.kr)?œ¼ë¡? ?—°?½?•´ì£¼ì„¸?š”.",
+    'í•™ìƒì‹ë‹¹': {
+      'ì´ìš© ì‹œê°„': 'í•™ìƒì‹ë‹¹ ìš´ì˜ ì‹œê°„:\nâ€¢ ì¡°ì‹: 08:00~09:30\nâ€¢ ì¤‘ì‹: 11:30~13:30\nâ€¢ ì„ì‹: 17:30~19:00',
+      'ì‹ ì²­ ë°©ë²•': 'í•™ìƒì‹ë‹¹ì€ ë³„ë„ ì‹ ì²­ ì—†ì´ ì´ìš© ê°€ëŠ¥í•©ë‹ˆë‹¤. ì‹ê¶Œì€ í˜„ì¥ì—ì„œ êµ¬ë§¤í•˜ê±°ë‚˜ í•™ìƒì¦ìœ¼ë¡œ ê²°ì œí•˜ì‹¤ ìˆ˜ ìˆìŠµë‹ˆë‹¤.',
+      'ì‹œì„¤ ë¬¸ì˜': 'ì‹ë‹¹ ì‹œì„¤ ë° ë©”ë‰´ ë¬¸ì˜ëŠ” ë³µì§€íŒ€(02-1234-5680)ìœ¼ë¡œ ì—°ë½í•´ì£¼ì„¸ìš”.',
+      'ê¸°íƒ€': 'ê¸°íƒ€ í•™ìƒì‹ë‹¹ ê´€ë ¨ ë¬¸ì˜ëŠ” ë³µì§€íŒ€(welfare@university.ac.kr)ìœ¼ë¡œ ì—°ë½í•´ì£¼ì„¸ìš”.'
     },
-    "ë³´ê±´?„¼?„°": {
-      "?´?š© ?‹œê°?":
-        "ë³´ê±´?„¼?„° ?š´?˜ ?‹œê°?:\n??? ?‰?¼: 09:00~18:00\n??? ? ?‹¬?‹œê°?: 12:00~13:00\n??? ?‘ê¸‰ìƒ?™© ?‹œ 24?‹œê°? ?—°?½ ê°??Š¥",
-      "?‹ ì²? ë°©ë²•":
-        "ë³´ê±´?„¼?„° ?´?š©??? ë°©ë¬¸ ? ‘?ˆ˜ ?˜?Š” ? „?™” ?˜ˆ?•½(02-1234-5681) ê°??Š¥?•©?‹ˆ?‹¤.",
-      "?‹œ?„¤ ë¬¸ì˜": "ë³´ê±´?„¼?„° ?‹œ?„¤ ë°? ì§„ë£Œ ë¬¸ì˜: 02-1234-5681",
-      "ê¸°í??":
-        "ê¸°í?? ê±´ê°• ê´?? ¨ ë¬¸ì˜?Š” ë³´ê±´?„¼?„°(health@university.ac.kr)ë¡? ?—°?½?•´ì£¼ì„¸?š”.",
+    'ë³´ê±´ì„¼í„°': {
+      'ì´ìš© ì‹œê°„': 'ë³´ê±´ì„¼í„° ìš´ì˜ ì‹œê°„:\nâ€¢ í‰ì¼: 09:00~18:00\nâ€¢ ì ì‹¬ì‹œê°„: 12:00~13:00\nâ€¢ ì‘ê¸‰ìƒí™© ì‹œ 24ì‹œê°„ ì—°ë½ ê°€ëŠ¥',
+      'ì‹ ì²­ ë°©ë²•': 'ë³´ê±´ì„¼í„° ì´ìš©ì€ ë°©ë¬¸ ì ‘ìˆ˜ ë˜ëŠ” ì „í™” ì˜ˆì•½(02-1234-5681) ê°€ëŠ¥í•©ë‹ˆë‹¤.',
+      'ì‹œì„¤ ë¬¸ì˜': 'ë³´ê±´ì„¼í„° ì‹œì„¤ ë° ì§„ë£Œ ë¬¸ì˜: 02-1234-5681',
+      'ê¸°íƒ€': 'ê¸°íƒ€ ê±´ê°• ê´€ë ¨ ë¬¸ì˜ëŠ” ë³´ê±´ì„¼í„°(health@university.ac.kr)ë¡œ ì—°ë½í•´ì£¼ì„¸ìš”.'
     },
-    "?ƒ?‹´?„¼?„°": {
-      "?´?š© ?‹œê°?":
-        "?•™?ƒ?ƒ?‹´?„¼?„° ?š´?˜ ?‹œê°?:\n??? ?‰?¼: 09:00~18:00\n??? ?ƒ?‹´ ?˜ˆ?•½? œ ?š´?˜\n??? ë¹„ë??ë©? ?ƒ?‹´ ê°??Š¥",
-      "?‹ ì²? ë°©ë²•":
-        "?ƒ?‹´ ?‹ ì²???? ?•™?ƒ?¬?„¸ ?˜?Š” ? „?™”(02-1234-5682)ë¡? ?˜ˆ?•½?•˜?‹¤ ?ˆ˜ ?ˆ?Šµ?‹ˆ?‹¤. ëª¨ë“  ?ƒ?‹´ ?‚´?š©??? ë¹„ë???´ ë³´ì¥?©?‹ˆ?‹¤.",
-      "?‹œ?„¤ ë¬¸ì˜":
-        "?ƒ?‹´?„¼?„° ?œ„ì¹? ë°? ?”„ë¡œê·¸?¨ ë¬¸ì˜: 02-1234-5682",
-      "ê¸°í??":
-        "ê¸°í?? ?ƒ?‹´ ê´?? ¨ ë¬¸ì˜?Š” ?•™?ƒ?ƒ?‹´?„¼?„°(counsel@university.ac.kr)ë¡? ?—°?½?•´ì£¼ì„¸?š”.",
-    },
+    'ìƒë‹´ì„¼í„°': {
+      'ì´ìš© ì‹œê°„': 'í•™ìƒìƒë‹´ì„¼í„° ìš´ì˜ ì‹œê°„:\nâ€¢ í‰ì¼: 09:00~18:00\nâ€¢ ìƒë‹´ ì˜ˆì•½ì œ ìš´ì˜\nâ€¢ ë¹„ëŒ€ë©´ ìƒë‹´ ê°€ëŠ¥',
+      'ì‹ ì²­ ë°©ë²•': 'ìƒë‹´ ì‹ ì²­ì€ í•™ìƒí¬í„¸ ë˜ëŠ” ì „í™”(02-1234-5682)ë¡œ ì˜ˆì•½í•˜ì‹¤ ìˆ˜ ìˆìŠµë‹ˆë‹¤. ëª¨ë“  ìƒë‹´ ë‚´ìš©ì€ ë¹„ë°€ì´ ë³´ì¥ë©ë‹ˆë‹¤.',
+      'ì‹œì„¤ ë¬¸ì˜': 'ìƒë‹´ì„¼í„° ìœ„ì¹˜ ë° í”„ë¡œê·¸ë¨ ë¬¸ì˜: 02-1234-5682',
+      'ê¸°íƒ€': 'ê¸°íƒ€ ìƒë‹´ ê´€ë ¨ ë¬¸ì˜ëŠ” í•™ìƒìƒë‹´ì„¼í„°(counsel@university.ac.kr)ë¡œ ì—°ë½í•´ì£¼ì„¸ìš”.'
+    }
   };
-  return (
-    answers[welfareType]?.[welfareInquiry] ||
-    "ë¬¸ì˜?•˜?‹  ?‚´?š©?— ????•œ ?‹µë³??„ ì¤?ë¹? ì¤‘ì…?‹ˆ?‹¤. ?•™?ƒë³µì??????œ¼ë¡? ì§ì ‘ ë¬¸ì˜?•´ì£¼ì„¸?š”."
-  );
+  return answers[welfareType]?.[welfareInquiry] || 'ë¬¸ì˜í•˜ì‹  ë‚´ìš©ì— ëŒ€í•œ ë‹µë³€ì„ ì¤€ë¹„ ì¤‘ì…ë‹ˆë‹¤. í•™ìƒë³µì§€íŒ€ìœ¼ë¡œ ì§ì ‘ ë¬¸ì˜í•´ì£¼ì„¸ìš”.';
 };
 
 const getAcademicAnswer = (academicType: string, detail: string): string => {
   const answers: Record<string, string> = {
-    "?„±?  ë¬¸ì˜": `${detail} ê³¼ëª©?˜ ?„±?  ë¬¸ì˜?Š” ?‹¤?Œê³? ê°™ì´ ì§„í–‰?©?‹ˆ?‹¤:\n1. ?„±?  ê³µê°œ ?›„ 1ì£¼ì¼ ?´?‚´ ? •? • ?‹ ì²? ê°??Š¥\n2. ?•™?ƒ?¬?„¸ > ?•™?‚¬ > ?„±? ? •? •?‹ ì²?\n3. ?‹´?‹¹ êµìˆ˜ ?™•?¸ ?›„ ì²˜ë¦¬\në¬¸ì˜: êµí•™???(02-1234-5683)`,
-    "?ˆ˜ê°•ì‹ ì²?": `?ˆ˜ê°•ì‹ ì²? ê´?? ¨ ?•ˆ?‚´:\n??? ?ˆ˜ê°•ì‹ ì²? ê¸°ê°„: ?•™ê¸? ?‹œ?‘ 2ì£? ? „\n??? ? •? • ê¸°ê°„: ê°œê°• ?›„ 1ì£?\n??? ?¬ê¸? ê¸°ê°„: ì¤‘ê°„ê³ ì‚¬ ?´?›„ 1ì£?\n??„¸?•œ ?¼? •??? ?•™?ƒ?¬?„¸ ?•™?‚¬?¼? •?„ ?™•?¸?•´ì£¼ì„¸?š”.\në¬¸ì˜: êµí•™???(02-1234-5683)`,
-    "?œ´/ë³µí•™": `?œ´?•™ ë°? ë³µí•™ ?‹ ì²? ?•ˆ?‚´:\n??? ?œ´?•™: ?•™ê¸? ?‹œ?‘ ? „ ?˜?Š” ê°œê°• ?›„ 2ì£? ?´?‚´\n??? ë³µí•™: ë³µí•™ ?•™ê¸? ?‹œ?‘ 1ê°œì›” ? „\n??? ?‹ ì²?: ?•™?ƒ?¬?„¸ > ?•™?  > ?œ´?•™/ë³µí•™ ?‹ ì²?\në¬¸ì˜: êµí•™???(02-1234-5683)`,
-    "ì¡¸ì—…?š”ê±?": `ì¡¸ì—…?š”ê±? ?™•?¸:\n??? ì´? ?´?ˆ˜?•™? : 130?•™?  ?´?ƒ\n??? ? „ê³µí•™? : 60?•™?  ?´?ƒ\n??? êµì–‘?•™? : 30?•™?  ?´?ƒ\n??? STAR ?—­?Ÿ‰ ê¸°ì?? ì¶©ì¡±\n??„¸?•œ ì¡¸ì—…?š”ê±´ì?? ?•™?ƒ?¬?„¸ > ?•™?‚¬ > ì¡¸ì—…?š”ê±´ì¡°?šŒ?—?„œ ?™•?¸?•˜?‹¤ ?ˆ˜ ?ˆ?Šµ?‹ˆ?‹¤.\në¬¸ì˜: êµí•™???(academic@university.ac.kr)`,
+    'ì„±ì  ë¬¸ì˜': `${detail} ê³¼ëª©ì˜ ì„±ì  ë¬¸ì˜ëŠ” ë‹¤ìŒê³¼ ê°™ì´ ì§„í–‰ë©ë‹ˆë‹¤:\n1. ì„±ì  ê³µê°œ í›„ 1ì£¼ì¼ ì´ë‚´ ì •ì • ì‹ ì²­ ê°€ëŠ¥\n2. í•™ìƒí¬í„¸ > í•™ì‚¬ > ì„±ì ì •ì •ì‹ ì²­\n3. ë‹´ë‹¹ êµìˆ˜ í™•ì¸ í›„ ì²˜ë¦¬\në¬¸ì˜: êµí•™íŒ€(02-1234-5683)`,
+    'ìˆ˜ê°•ì‹ ì²­': `ìˆ˜ê°•ì‹ ì²­ ê´€ë ¨ ì•ˆë‚´:\nâ€¢ ìˆ˜ê°•ì‹ ì²­ ê¸°ê°„: í•™ê¸° ì‹œì‘ 2ì£¼ ì „\nâ€¢ ì •ì • ê¸°ê°„: ê°œê°• í›„ 1ì£¼\nâ€¢ í¬ê¸° ê¸°ê°„: ì¤‘ê°„ê³ ì‚¬ ì´í›„ 1ì£¼\nìì„¸í•œ ì¼ì •ì€ í•™ìƒí¬í„¸ í•™ì‚¬ì¼ì •ì„ í™•ì¸í•´ì£¼ì„¸ìš”.\në¬¸ì˜: êµí•™íŒ€(02-1234-5683)`,
+    'íœ´/ë³µí•™': `íœ´í•™ ë° ë³µí•™ ì‹ ì²­ ì•ˆë‚´:\nâ€¢ íœ´í•™: í•™ê¸° ì‹œì‘ ì „ ë˜ëŠ” ê°œê°• í›„ 2ì£¼ ì´ë‚´\nâ€¢ ë³µí•™: ë³µí•™ í•™ê¸° ì‹œì‘ 1ê°œì›” ì „\nâ€¢ ì‹ ì²­: í•™ìƒí¬í„¸ > í•™ì  > íœ´í•™/ë³µí•™ ì‹ ì²­\në¬¸ì˜: êµí•™íŒ€(02-1234-5683)`,
+    'ì¡¸ì—…ìš”ê±´': `ì¡¸ì—…ìš”ê±´ í™•ì¸:\nâ€¢ ì´ ì´ìˆ˜í•™ì : 130í•™ì  ì´ìƒ\nâ€¢ ì „ê³µí•™ì : 60í•™ì  ì´ìƒ\nâ€¢ êµì–‘í•™ì : 30í•™ì  ì´ìƒ\nâ€¢ STAR ì—­ëŸ‰ ê¸°ì¤€ ì¶©ì¡±\nìì„¸í•œ ì¡¸ì—…ìš”ê±´ì€ í•™ìƒí¬í„¸ > í•™ì‚¬ > ì¡¸ì—…ìš”ê±´ì¡°íšŒì—ì„œ í™•ì¸í•˜ì‹¤ ìˆ˜ ìˆìŠµë‹ˆë‹¤.\në¬¸ì˜: êµí•™íŒ€(academic@university.ac.kr)`
   };
-  return (
-    answers[academicType] ||
-    "ë¬¸ì˜?•˜?‹  ?‚´?š©?— ????•œ ?‹µë³??„ ì¤?ë¹? ì¤‘ì…?‹ˆ?‹¤. êµí•™????œ¼ë¡? ì§ì ‘ ë¬¸ì˜?•´ì£¼ì„¸?š”."
-  );
+  return answers[academicType] || 'ë¬¸ì˜í•˜ì‹  ë‚´ìš©ì— ëŒ€í•œ ë‹µë³€ì„ ì¤€ë¹„ ì¤‘ì…ë‹ˆë‹¤. êµí•™íŒ€ìœ¼ë¡œ ì§ì ‘ ë¬¸ì˜í•´ì£¼ì„¸ìš”.';
 };
 
-// ì¹´í…Œê³ ë¦¬ë³? ì´ˆê¸° ë©”ì‹œì§? ?ƒ?„±
+// ì¹´í…Œê³ ë¦¬ë³„ ì´ˆê¸° ë©”ì‹œì§€ ìƒì„±
 const getInitialMessages = (category: string): ChatMessage[] => {
   const messages: Record<string, ChatMessage[]> = {
-    "?‹œ?„¤ ë°? ?™˜ê²?": [
-      {
-        type: "bot",
-        message:
-          "?•ˆ?…•?•˜?„¸?š”! ?‹œ?„¤ ë°? ?™˜ê²? ê´?? ¨ ë¬¸ì˜ë¥? ?„????“œë¦¬ê² ?Šµ?‹ˆ?‹¤. ?Ÿ˜?",
-      },
-      { type: "bot", message: "?–´?–¤ ?‹œ?„¤?— ë¬¸ì œê°? ?ˆ?‚˜?š”?" },
+    'ì‹œì„¤ ë° í™˜ê²½': [
+      { type: 'bot', message: 'ì•ˆë…•í•˜ì„¸ìš”! ì‹œì„¤ ë° í™˜ê²½ ê´€ë ¨ ë¬¸ì˜ë¥¼ ë„ì™€ë“œë¦¬ê² ìŠµë‹ˆë‹¤. ğŸ˜Š' },
+      { type: 'bot', message: 'ì–´ë–¤ ì‹œì„¤ì— ë¬¸ì œê°€ ìˆë‚˜ìš”?' }
     ],
-    "?•™?ƒ ?¥?•™": [
-      {
-        type: "bot",
-        message:
-          "?•ˆ?…•?•˜?„¸?š”! ?¥?•™ê¸? ê´?? ¨ ë¬¸ì˜ë¥? ?„????“œë¦¬ê² ?Šµ?‹ˆ?‹¤. ?Ÿ˜?",
-      },
-      {
-        type: "bot",
-        message: "?–´?–¤ ?¥?•™ê¸ˆì— ????•´ ë¬¸ì˜?•˜?‹œ?‚˜?š”?",
-      },
+    'í•™ìƒ ì¥í•™': [
+      { type: 'bot', message: 'ì•ˆë…•í•˜ì„¸ìš”! ì¥í•™ê¸ˆ ê´€ë ¨ ë¬¸ì˜ë¥¼ ë„ì™€ë“œë¦¬ê² ìŠµë‹ˆë‹¤. ğŸ˜Š' },
+      { type: 'bot', message: 'ì–´ë–¤ ì¥í•™ê¸ˆì— ëŒ€í•´ ë¬¸ì˜í•˜ì‹œë‚˜ìš”?' }
     ],
-    "?•™?ƒ ë³µì??": [
-      {
-        type: "bot",
-        message:
-          "?•ˆ?…•?•˜?„¸?š”! ?•™?ƒ ë³µì?? ê´?? ¨ ë¬¸ì˜ë¥? ?„????“œë¦¬ê² ?Šµ?‹ˆ?‹¤. ?Ÿ˜?",
-      },
-      { type: "bot", message: "?–´?–¤ ?‹œ?„¤?— ????•´ ë¬¸ì˜?•˜?‹œ?‚˜?š”?" },
+    'í•™ìƒ ë³µì§€': [
+      { type: 'bot', message: 'ì•ˆë…•í•˜ì„¸ìš”! í•™ìƒ ë³µì§€ ê´€ë ¨ ë¬¸ì˜ë¥¼ ë„ì™€ë“œë¦¬ê² ìŠµë‹ˆë‹¤. ğŸ˜Š' },
+      { type: 'bot', message: 'ì–´ë–¤ ì‹œì„¤ì— ëŒ€í•´ ë¬¸ì˜í•˜ì‹œë‚˜ìš”?' }
     ],
-    "?ˆ˜?—… ë°? ?•™?‚¬": [
-      {
-        type: "bot",
-        message:
-          "?•ˆ?…•?•˜?„¸?š”! ?ˆ˜?—… ë°? ?•™?‚¬ ê´?? ¨ ë¬¸ì˜ë¥? ?„????“œë¦¬ê² ?Šµ?‹ˆ?‹¤. ?Ÿ˜?",
-      },
-      { type: "bot", message: "?–´?–¤ ?‚´?š©?— ????•´ ë¬¸ì˜?•˜?‹œ?‚˜?š”?" },
-    ],
-  };
-  return (
-    messages[category] || [
-      {
-        type: "bot",
-        message: "?•ˆ?…•?•˜?„¸?š”! ë¬¸ì˜ë¥? ?„????“œë¦¬ê² ?Šµ?‹ˆ?‹¤. ?Ÿ˜?",
-      },
+    'ìˆ˜ì—… ë° í•™ì‚¬': [
+      { type: 'bot', message: 'ì•ˆë…•í•˜ì„¸ìš”! ìˆ˜ì—… ë° í•™ì‚¬ ê´€ë ¨ ë¬¸ì˜ë¥¼ ë„ì™€ë“œë¦¬ê² ìŠµë‹ˆë‹¤. ğŸ˜Š' },
+      { type: 'bot', message: 'ì–´ë–¤ ë‚´ìš©ì— ëŒ€í•´ ë¬¸ì˜í•˜ì‹œë‚˜ìš”?' }
     ]
-  );
+  };
+  return messages[category] || [
+    { type: 'bot', message: 'ì•ˆë…•í•˜ì„¸ìš”! ë¬¸ì˜ë¥¼ ë„ì™€ë“œë¦¬ê² ìŠµë‹ˆë‹¤. ğŸ˜Š' }
+  ];
 };
 
-export default function ChatModal({
-  isOpen,
-  onClose,
-  category,
-  onSuccess,
-}: ChatModalProps) {
+export default function ChatModal({ isOpen, onClose, category, onSuccess }: ChatModalProps) {
   // ì±„íŒ… state
   const [chatStep, setChatStep] = useState(0);
   const [chatAnswers, setChatAnswers] = useState<ChatAnswers>({});
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
-  const [userInput, setUserInput] = useState("");
+  const [userInput, setUserInput] = useState('');
   const chatScrollRef = useRef<HTMLDivElement>(null);
 
-  // ëª¨ë‹¬?´ ?—´ë¦? ?•Œ ì´ˆê¸°?™”
+  // ëª¨ë‹¬ì´ ì—´ë¦´ ë•Œ ì´ˆê¸°í™”
   useEffect(() => {
     if (isOpen && category) {
       setChatStep(0);
       setChatAnswers({});
       setChatHistory(getInitialMessages(category));
-      setUserInput("");
+      setUserInput('');
     }
   }, [isOpen, category]);
 
-  // ì±„íŒ… ??™ ?Š¤?¬ë¡?
+  // ì±„íŒ… ìë™ ìŠ¤í¬ë¡¤
   useEffect(() => {
     if (chatScrollRef.current) {
       chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
     }
   }, [chatHistory]);
 
-  // ëª¨ë‹¬ ?‹«ê¸? ?•¸?“¤?Ÿ¬
+  // ëª¨ë‹¬ ë‹«ê¸° í•¸ë“¤ëŸ¬
   const handleClose = () => {
-    // ?‹œ?„¤ ë°? ?™˜ê²? ?™¸?—?Š” ?™„ë£? ?ƒ?ƒœë¡? ????¥
-    if (
-      category !== "?‹œ?„¤ ë°? ?™˜ê²?" &&
-      chatAnswers &&
-      Object.keys(chatAnswers).length > 0
-    ) {
-      onSuccess("ë¬¸ì˜ê°? ?™„ë£Œë˜?—ˆ?Šµ?‹ˆ?‹¤!", "complete");
+    // ì‹œì„¤ ë° í™˜ê²½ ì™¸ì—ëŠ” ì™„ë£Œ ìƒíƒœë¡œ ì €ì¥
+    if (category !== 'ì‹œì„¤ ë° í™˜ê²½' && chatAnswers && Object.keys(chatAnswers).length > 0) {
+      onSuccess('ë¬¸ì˜ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤!', 'complete');
     }
-    // ?ƒ?ƒœ ì´ˆê¸°?™”
+    // ìƒíƒœ ì´ˆê¸°í™”
     setChatStep(0);
     setChatHistory([]);
     setChatAnswers({});
-    setUserInput("");
+    setUserInput('');
     onClose();
   };
 
@@ -218,7 +154,7 @@ export default function ChatModal({
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
       <div className="bg-white w-full max-w-md h-[90vh] flex flex-col rounded-t-3xl animate-slide-up">
-        {/* ?—¤?” */}
+        {/* í—¤ë” */}
         <div className="shrink-0 p-4 border-b border-gray-200 bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white rounded-t-3xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -227,7 +163,7 @@ export default function ChatModal({
               </div>
               <div>
                 <h3 className="font-bold">{category} ë¬¸ì˜</h3>
-                <p className="text-xs opacity-90">ì±—ë´‡ ?ƒ?‹´</p>
+                <p className="text-xs opacity-90">ì±—ë´‡ ìƒë‹´</p>
               </div>
             </div>
             <button onClick={handleClose}>
@@ -236,47 +172,34 @@ export default function ChatModal({
           </div>
         </div>
 
-        {/* ì±„íŒ… ?˜?—­ */}
-        <div
-          ref={chatScrollRef}
-          className="flex-1 overflow-y-auto p-4 space-y-3"
-        >
+        {/* ì±„íŒ… ì˜ì—­ */}
+        <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
           {chatHistory.map((msg, idx) => (
             <div
               key={idx}
-              className={`flex ${
-                msg.type === "bot" ? "justify-start" : "justify-end"
-              }`}
+              className={`flex ${msg.type === 'bot' ? 'justify-start' : 'justify-end'}`}
             >
-              <div
-                className={`max-w-[80%] ${
-                  msg.type === "bot"
-                    ? "bg-gray-100 text-gray-800"
-                    : "bg-[#FEE500] text-gray-900"
-                } rounded-2xl px-4 py-3`}
-              >
+              <div className={`max-w-[80%] ${
+                msg.type === 'bot'
+                  ? 'bg-gray-100 text-gray-800'
+                  : 'bg-[#FEE500] text-gray-900'
+              } rounded-2xl px-4 py-3`}>
                 <p className="text-sm whitespace-pre-line">{msg.message}</p>
               </div>
             </div>
           ))}
 
-          {/* ?‹œ?„¤ ë°? ?™˜ê²? - Step 0 */}
-          {chatStep === 0 && category === "?‹œ?„¤ ë°? ?™˜ê²?" && (
+          {/* ì‹œì„¤ ë° í™˜ê²½ - Step 0 */}
+          {chatStep === 0 && category === 'ì‹œì„¤ ë° í™˜ê²½' && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {[
-                "ê°•ì˜?‹¤",
-                "?™”?¥?‹¤",
-                "?—˜ë¦¬ë² ?´?„°",
-                "ê¸°í?? ?‹œ?„¤",
-              ].map((option) => (
+              {['ê°•ì˜ì‹¤', 'í™”ì¥ì‹¤', 'ì—˜ë¦¬ë² ì´í„°', 'ê¸°íƒ€ ì‹œì„¤'].map((option) => (
                 <button
                   key={option}
                   onClick={() => {
-                    setChatAnswers({ ...chatAnswers, facilityType: option });
-                    setChatHistory([
-                      ...chatHistory,
-                      { type: "user", message: option },
-                      { type: "bot", message: "?–´?Š ê±´ë¬¼?¸ê°??š”?" },
+                    setChatAnswers({...chatAnswers, facilityType: option});
+                    setChatHistory([...chatHistory,
+                      { type: 'user', message: option },
+                      { type: 'bot', message: 'ì–´ëŠ ê±´ë¬¼ì¸ê°€ìš”?' }
                     ]);
                     setChatStep(1);
                   }}
@@ -288,26 +211,17 @@ export default function ChatModal({
             </div>
           )}
 
-          {/* ?•™?ƒ ?¥?•™ - Step 0 */}
-          {chatStep === 0 && category === "?•™?ƒ ?¥?•™" && (
+          {/* í•™ìƒ ì¥í•™ - Step 0 */}
+          {chatStep === 0 && category === 'í•™ìƒ ì¥í•™' && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {[
-                "?„±? ?¥?•™ê¸?",
-                "ê·¼ë¡œ?¥?•™ê¸?",
-                "êµ?ê°??¥?•™ê¸?",
-                "ê¸°í?? ?¥?•™ê¸?",
-              ].map((option) => (
+              {['ì„±ì ì¥í•™ê¸ˆ', 'ê·¼ë¡œì¥í•™ê¸ˆ', 'êµ­ê°€ì¥í•™ê¸ˆ', 'ê¸°íƒ€ ì¥í•™ê¸ˆ'].map((option) => (
                 <button
                   key={option}
                   onClick={() => {
-                    setChatAnswers({ ...chatAnswers, scholarshipType: option });
-                    setChatHistory([
-                      ...chatHistory,
-                      { type: "user", message: option },
-                      {
-                        type: "bot",
-                        message: "?–´?Š ?•™ê¸°ì— ????•´ ë¬¸ì˜?•˜?‹œ?‚˜?š”?",
-                      },
+                    setChatAnswers({...chatAnswers, scholarshipType: option});
+                    setChatHistory([...chatHistory,
+                      { type: 'user', message: option },
+                      { type: 'bot', message: 'ì–´ëŠ í•™ê¸°ì— ëŒ€í•´ ë¬¸ì˜í•˜ì‹œë‚˜ìš”?' }
                     ]);
                     setChatStep(1);
                   }}
@@ -319,26 +233,17 @@ export default function ChatModal({
             </div>
           )}
 
-          {/* ?•™?ƒ ë³µì?? - Step 0 */}
-          {chatStep === 0 && category === "?•™?ƒ ë³µì??" && (
+          {/* í•™ìƒ ë³µì§€ - Step 0 */}
+          {chatStep === 0 && category === 'í•™ìƒ ë³µì§€' && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {[
-                "ê¸°ìˆ™?‚¬",
-                "?•™?ƒ?‹?‹¹",
-                "ë³´ê±´?„¼?„°",
-                "?ƒ?‹´?„¼?„°",
-              ].map((option) => (
+              {['ê¸°ìˆ™ì‚¬', 'í•™ìƒì‹ë‹¹', 'ë³´ê±´ì„¼í„°', 'ìƒë‹´ì„¼í„°'].map((option) => (
                 <button
                   key={option}
                   onClick={() => {
-                    setChatAnswers({ ...chatAnswers, welfareType: option });
-                    setChatHistory([
-                      ...chatHistory,
-                      { type: "user", message: option },
-                      {
-                        type: "bot",
-                        message: "?–´?–¤ ?‚´?š©?— ????•´ ë¬¸ì˜?•˜?‹œ?‚˜?š”?",
-                      },
+                    setChatAnswers({...chatAnswers, welfareType: option});
+                    setChatHistory([...chatHistory,
+                      { type: 'user', message: option },
+                      { type: 'bot', message: 'ì–´ë–¤ ë‚´ìš©ì— ëŒ€í•´ ë¬¸ì˜í•˜ì‹œë‚˜ìš”?' }
                     ]);
                     setChatStep(1);
                   }}
@@ -350,29 +255,17 @@ export default function ChatModal({
             </div>
           )}
 
-          {/* ?ˆ˜?—… ë°? ?•™?‚¬ - Step 0 */}
-          {chatStep === 0 && category === "?ˆ˜?—… ë°? ?•™?‚¬" && (
+          {/* ìˆ˜ì—… ë° í•™ì‚¬ - Step 0 */}
+          {chatStep === 0 && category === 'ìˆ˜ì—… ë° í•™ì‚¬' && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {[
-                "?„±?  ë¬¸ì˜",
-                "?ˆ˜ê°•ì‹ ì²?",
-                "?œ´/ë³µí•™",
-                "ì¡¸ì—…?š”ê±?",
-              ].map((option) => (
+              {['ì„±ì  ë¬¸ì˜', 'ìˆ˜ê°•ì‹ ì²­', 'íœ´/ë³µí•™', 'ì¡¸ì—…ìš”ê±´'].map((option) => (
                 <button
                   key={option}
                   onClick={() => {
-                    setChatAnswers({ ...chatAnswers, academicType: option });
-                    setChatHistory([
-                      ...chatHistory,
-                      { type: "user", message: option },
-                      {
-                        type: "bot",
-                        message:
-                          option === "?„±?  ë¬¸ì˜"
-                            ? "ê³¼ëª©ëª…ì„ ?…? ¥?•´ì£¼ì„¸?š”"
-                            : "??„¸?•œ ?‚´?š©?„ ë§ì???•´ì£¼ì„¸?š”",
-                      },
+                    setChatAnswers({...chatAnswers, academicType: option});
+                    setChatHistory([...chatHistory,
+                      { type: 'user', message: option },
+                      { type: 'bot', message: option === 'ì„±ì  ë¬¸ì˜' ? 'ê³¼ëª©ëª…ì„ ì…ë ¥í•´ì£¼ì„¸ìš”' : 'ìì„¸í•œ ë‚´ìš©ì„ ë§ì”€í•´ì£¼ì„¸ìš”' }
                     ]);
                     setChatStep(1);
                   }}
@@ -384,163 +277,131 @@ export default function ChatModal({
             </div>
           )}
 
-          {/* ?‹œ?„¤ ë°? ?™˜ê²? - Step 1 */}
-          {chatStep === 1 && category === "?‹œ?„¤ ë°? ?™˜ê²?" && (
+          {/* ì‹œì„¤ ë° í™˜ê²½ - Step 1 */}
+          {chatStep === 1 && category === 'ì‹œì„¤ ë° í™˜ê²½' && (
             <div className="pt-2">
               <input
                 type="text"
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
                 onKeyPress={(e) => {
-                  if (e.key === "Enter" && userInput.trim()) {
-                    setChatAnswers({ ...chatAnswers, building: userInput });
-                    setChatHistory([
-                      ...chatHistory,
-                      { type: "user", message: userInput },
-                      { type: "bot", message: "ëª? ì¸µì¸ê°??š”?" },
+                  if (e.key === 'Enter' && userInput.trim()) {
+                    setChatAnswers({...chatAnswers, building: userInput});
+                    setChatHistory([...chatHistory,
+                      { type: 'user', message: userInput },
+                      { type: 'bot', message: 'ëª‡ ì¸µì¸ê°€ìš”?' }
                     ]);
-                    setUserInput("");
+                    setUserInput('');
                     setChatStep(2);
                   }
                 }}
-                placeholder="ê±´ë¬¼ëª…ì„ ?…? ¥?•˜?„¸?š” (?˜ˆ: A?™, ê³µí•™ê´?)"
+                placeholder="ê±´ë¬¼ëª…ì„ ì…ë ¥í•˜ì„¸ìš” (ì˜ˆ: Aë™, ê³µí•™ê´€)"
                 className="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-400"
               />
               <button
                 onClick={() => {
                   if (userInput.trim()) {
-                    setChatAnswers({ ...chatAnswers, building: userInput });
-                    setChatHistory([
-                      ...chatHistory,
-                      { type: "user", message: userInput },
-                      { type: "bot", message: "ëª? ì¸µì¸ê°??š”?" },
+                    setChatAnswers({...chatAnswers, building: userInput});
+                    setChatHistory([...chatHistory,
+                      { type: 'user', message: userInput },
+                      { type: 'bot', message: 'ëª‡ ì¸µì¸ê°€ìš”?' }
                     ]);
-                    setUserInput("");
+                    setUserInput('');
                     setChatStep(2);
                   }
                 }}
                 className="mt-2 w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
               >
-                ?‹¤?Œ
+                ë‹¤ìŒ
               </button>
             </div>
           )}
 
-          {/* ?•™?ƒ ?¥?•™ - Step 1 */}
-          {chatStep === 1 && category === "?•™?ƒ ?¥?•™" && (
+          {/* í•™ìƒ ì¥í•™ - Step 1 */}
+          {chatStep === 1 && category === 'í•™ìƒ ì¥í•™' && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {["2025-1?•™ê¸?", "2024-2?•™ê¸?", "2024-1?•™ê¸?", "ê¸°í??"].map(
-                (option) => (
-                  <button
-                    key={option}
-                    onClick={() => {
-                      setChatAnswers({ ...chatAnswers, semester: option });
-                      setChatHistory([
-                        ...chatHistory,
-                        { type: "user", message: option },
-                        {
-                          type: "bot",
-                          message:
-                            "?–´?–¤ ?‚´?š©?— ????•´ ë¬¸ì˜?•˜?‹œ?‚˜?š”?",
-                        },
-                      ]);
-                      setChatStep(2);
-                    }}
-                    className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
-                  >
-                    {option}
-                  </button>
-                )
-              )}
+              {['2025-1í•™ê¸°', '2024-2í•™ê¸°', '2024-1í•™ê¸°', 'ê¸°íƒ€'].map((option) => (
+                <button
+                  key={option}
+                  onClick={() => {
+                    setChatAnswers({...chatAnswers, semester: option});
+                    setChatHistory([...chatHistory,
+                      { type: 'user', message: option },
+                      { type: 'bot', message: 'ì–´ë–¤ ë‚´ìš©ì— ëŒ€í•´ ë¬¸ì˜í•˜ì‹œë‚˜ìš”?' }
+                    ]);
+                    setChatStep(2);
+                  }}
+                  className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
+                >
+                  {option}
+                </button>
+              ))}
             </div>
           )}
 
-          {/* ?•™?ƒ ë³µì?? - Step 1 */}
-          {chatStep === 1 && category === "?•™?ƒ ë³µì??" && (
+          {/* í•™ìƒ ë³µì§€ - Step 1 */}
+          {chatStep === 1 && category === 'í•™ìƒ ë³µì§€' && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {["?´?š© ?‹œê°?", "?‹ ì²? ë°©ë²•", "?‹œ?„¤ ë¬¸ì˜", "ê¸°í??"].map(
-                (option) => (
-                  <button
-                    key={option}
-                    onClick={() => {
-                      setChatAnswers({
-                        ...chatAnswers,
-                        welfareInquiry: option,
-                      });
-                      const answer = getWelfareAnswer(
-                        chatAnswers.welfareType || "",
-                        option
-                      );
-                      setChatHistory([
-                        ...chatHistory,
-                        { type: "user", message: option },
-                        { type: "bot", message: answer },
-                      ]);
-                      setChatStep(99); // ?™„ë£? ?‹¨ê³?
-                    }}
-                    className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
-                  >
-                    {option}
-                  </button>
-                )
-              )}
+              {['ì´ìš© ì‹œê°„', 'ì‹ ì²­ ë°©ë²•', 'ì‹œì„¤ ë¬¸ì˜', 'ê¸°íƒ€'].map((option) => (
+                <button
+                  key={option}
+                  onClick={() => {
+                    setChatAnswers({...chatAnswers, welfareInquiry: option});
+                    const answer = getWelfareAnswer(chatAnswers.welfareType || '', option);
+                    setChatHistory([...chatHistory,
+                      { type: 'user', message: option },
+                      { type: 'bot', message: answer }
+                    ]);
+                    setChatStep(99);
+                  }}
+                  className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
+                >
+                  {option}
+                </button>
+              ))}
             </div>
           )}
 
-          {/* ?ˆ˜?—… ë°? ?•™?‚¬ - Step 1 */}
-          {chatStep === 1 && category === "?ˆ˜?—… ë°? ?•™?‚¬" && (
+          {/* ìˆ˜ì—… ë° í•™ì‚¬ - Step 1 */}
+          {chatStep === 1 && category === 'ìˆ˜ì—… ë° í•™ì‚¬' && (
             <div className="pt-2">
-              {chatAnswers.academicType === "?„±?  ë¬¸ì˜" ? (
+              {chatAnswers.academicType === 'ì„±ì  ë¬¸ì˜' ? (
                 <>
                   <input
                     type="text"
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                     onKeyPress={(e) => {
-                      if (e.key === "Enter" && userInput.trim()) {
-                        setChatAnswers({
-                          ...chatAnswers,
-                          courseName: userInput,
-                        });
-                        const answer = getAcademicAnswer(
-                          chatAnswers.academicType || "",
-                          userInput
-                        );
-                        setChatHistory([
-                          ...chatHistory,
-                          { type: "user", message: userInput },
-                          { type: "bot", message: answer },
+                      if (e.key === 'Enter' && userInput.trim()) {
+                        setChatAnswers({...chatAnswers, courseName: userInput});
+                        const answer = getAcademicAnswer(chatAnswers.academicType || '', userInput);
+                        setChatHistory([...chatHistory,
+                          { type: 'user', message: userInput },
+                          { type: 'bot', message: answer }
                         ]);
-                        setUserInput("");
+                        setUserInput('');
                         setChatStep(99);
                       }
                     }}
-                    placeholder="ê³¼ëª©ëª…ì„ ?…? ¥?•˜?„¸?š” (?˜ˆ: ?°?´?„°êµ¬ì¡°ë¡?)"
+                    placeholder="ê³¼ëª©ëª…ì„ ì…ë ¥í•˜ì„¸ìš” (ì˜ˆ: ë°ì´í„°êµ¬ì¡°ë¡ )"
                     className="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-400"
                   />
                   <button
                     onClick={() => {
                       if (userInput.trim()) {
-                        setChatAnswers({
-                          ...chatAnswers,
-                          courseName: userInput,
-                        });
-                        const answer = getAcademicAnswer(
-                          chatAnswers.academicType || "",
-                          userInput
-                        );
-                        setChatHistory([
-                          ...chatHistory,
-                          { type: "user", message: userInput },
-                          { type: "bot", message: answer },
+                        setChatAnswers({...chatAnswers, courseName: userInput});
+                        const answer = getAcademicAnswer(chatAnswers.academicType || '', userInput);
+                        setChatHistory([...chatHistory,
+                          { type: 'user', message: userInput },
+                          { type: 'bot', message: answer }
                         ]);
-                        setUserInput("");
+                        setUserInput('');
                         setChatStep(99);
                       }
                     }}
                     className="mt-2 w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
                   >
-                    ?™•?¸
+                    í™•ì¸
                   </button>
                 </>
               ) : (
@@ -548,102 +409,90 @@ export default function ChatModal({
                   <textarea
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
-                    placeholder="??„¸?•œ ?‚´?š©?„ ?…? ¥?•´ì£¼ì„¸?š”"
+                    placeholder="ìì„¸í•œ ë‚´ìš©ì„ ì…ë ¥í•´ì£¼ì„¸ìš”"
                     rows={4}
                     className="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-400 resize-none"
                   />
                   <button
                     onClick={() => {
                       if (userInput.trim()) {
-                        setChatAnswers({ ...chatAnswers, detail: userInput });
-                        const answer = getAcademicAnswer(
-                          chatAnswers.academicType || "",
-                          userInput
-                        );
-                        setChatHistory([
-                          ...chatHistory,
-                          { type: "user", message: userInput },
-                          { type: "bot", message: answer },
+                        setChatAnswers({...chatAnswers, detail: userInput});
+                        const answer = getAcademicAnswer(chatAnswers.academicType || '', userInput);
+                        setChatHistory([...chatHistory,
+                          { type: 'user', message: userInput },
+                          { type: 'bot', message: answer }
                         ]);
-                        setUserInput("");
+                        setUserInput('');
                         setChatStep(99);
                       }
                     }}
                     className="mt-2 w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
                   >
-                    ?™•?¸
+                    í™•ì¸
                   </button>
                 </>
               )}
             </div>
           )}
 
-          {/* ?‹œ?„¤ ë°? ?™˜ê²? - Step 2 */}
-          {chatStep === 2 && category === "?‹œ?„¤ ë°? ?™˜ê²?" && (
+          {/* ì‹œì„¤ ë° í™˜ê²½ - Step 2 */}
+          {chatStep === 2 && category === 'ì‹œì„¤ ë° í™˜ê²½' && (
             <div className="pt-2">
               <input
                 type="text"
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
                 onKeyPress={(e) => {
-                  if (e.key === "Enter" && userInput.trim()) {
-                    setChatAnswers({ ...chatAnswers, floor: userInput });
-                    setChatHistory([
-                      ...chatHistory,
-                      { type: "user", message: userInput },
-                      { type: "bot", message: "?–´?–¤ ë¬¸ì œ?¸ê°??š”?" },
+                  if (e.key === 'Enter' && userInput.trim()) {
+                    setChatAnswers({...chatAnswers, floor: userInput});
+                    setChatHistory([...chatHistory,
+                      { type: 'user', message: userInput },
+                      { type: 'bot', message: 'ì–´ë–¤ ë¬¸ì œì¸ê°€ìš”?' }
                     ]);
-                    setUserInput("");
+                    setUserInput('');
                     setChatStep(3);
                   }
                 }}
-                placeholder="ì¸µìˆ˜ë¥? ?…? ¥?•˜?„¸?š” (?˜ˆ: 3ì¸?)"
+                placeholder="ì¸µìˆ˜ë¥¼ ì…ë ¥í•˜ì„¸ìš” (ì˜ˆ: 3ì¸µ)"
                 className="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-400"
               />
               <button
                 onClick={() => {
                   if (userInput.trim()) {
-                    setChatAnswers({ ...chatAnswers, floor: userInput });
-                    setChatHistory([
-                      ...chatHistory,
-                      { type: "user", message: userInput },
-                      { type: "bot", message: "?–´?–¤ ë¬¸ì œ?¸ê°??š”?" },
+                    setChatAnswers({...chatAnswers, floor: userInput});
+                    setChatHistory([...chatHistory,
+                      { type: 'user', message: userInput },
+                      { type: 'bot', message: 'ì–´ë–¤ ë¬¸ì œì¸ê°€ìš”?' }
                     ]);
-                    setUserInput("");
+                    setUserInput('');
                     setChatStep(3);
                   }
                 }}
                 className="mt-2 w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
               >
-                ?‹¤?Œ
+                ë‹¤ìŒ
               </button>
             </div>
           )}
 
-          {/* ?•™?ƒ ?¥?•™ - Step 2 */}
-          {chatStep === 2 && category === "?•™?ƒ ?¥?•™" && (
+          {/* í•™ìƒ ì¥í•™ - Step 2 */}
+          {chatStep === 2 && category === 'í•™ìƒ ì¥í•™' && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {[
-                "?‹ ì²? ê¸°ê°„",
-                "?„ ë°? ê¸°ì??",
-                "ì§?ê¸? ?¼? •",
-                "ê¸°í?? ë¬¸ì˜",
-              ].map((option) => (
+              {['ì‹ ì²­ ê¸°ê°„', 'ì„ ë°œ ê¸°ì¤€', 'ì§€ê¸‰ ì¼ì •', 'ê¸°íƒ€ ë¬¸ì˜'].map((option) => (
                 <button
                   key={option}
                   onClick={() => {
-                    setChatAnswers({ ...chatAnswers, inquiryType: option });
+                    setChatAnswers({...chatAnswers, inquiryType: option});
                     const answer = getScholarshipAnswer(
-                      chatAnswers.scholarshipType || "",
-                      chatAnswers.semester || "",
+                      chatAnswers.scholarshipType || '',
+                      chatAnswers.semester || '',
                       option
                     );
-                    setChatHistory([
-                      ...chatHistory,
-                      { type: "user", message: option },
-                      { type: "bot", message: answer },
+                    setChatHistory([...chatHistory,
+                      { type: 'user', message: option },
+                      { type: 'bot', message: answer }
                     ]);
-                    setChatStep(99); // ?™„ë£? ?‹¨ê³?
+                    setChatStep(99);
                   }}
                   className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
                 >
@@ -653,26 +502,17 @@ export default function ChatModal({
             </div>
           )}
 
-          {/* ?‹œ?„¤ ë°? ?™˜ê²? - Step 3 */}
-          {chatStep === 3 && category === "?‹œ?„¤ ë°? ?™˜ê²?" && (
+          {/* ì‹œì„¤ ë° í™˜ê²½ - Step 3 */}
+          {chatStep === 3 && category === 'ì‹œì„¤ ë° í™˜ê²½' && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {[
-                "ê³ ì¥/?ŒŒ?†",
-                "ì²?ê²? ë¬¸ì œ",
-                "?•ˆ? „ ë¬¸ì œ",
-                "ê¸°í??",
-              ].map((option) => (
+              {['ê³ ì¥/íŒŒì†', 'ì²­ê²° ë¬¸ì œ', 'ì•ˆì „ ë¬¸ì œ', 'ê¸°íƒ€'].map((option) => (
                 <button
                   key={option}
                   onClick={() => {
-                    setChatAnswers({ ...chatAnswers, problemType: option });
-                    setChatHistory([
-                      ...chatHistory,
-                      { type: "user", message: option },
-                      {
-                        type: "bot",
-                        message: "?ƒ?„¸ ?‚´?š©?„ ë§ì???•´ì£¼ì„¸?š”",
-                      },
+                    setChatAnswers({...chatAnswers, problemType: option});
+                    setChatHistory([...chatHistory,
+                      { type: 'user', message: option },
+                      { type: 'bot', message: 'ìƒì„¸ ë‚´ìš©ì„ ë§ì”€í•´ì£¼ì„¸ìš”' }
                     ]);
                     setChatStep(4);
                   }}
@@ -684,98 +524,82 @@ export default function ChatModal({
             </div>
           )}
 
-          {/* ?‹œ?„¤ ë°? ?™˜ê²? - Step 4 */}
-          {chatStep === 4 && category === "?‹œ?„¤ ë°? ?™˜ê²?" && (
+          {/* ì‹œì„¤ ë° í™˜ê²½ - Step 4 */}
+          {chatStep === 4 && category === 'ì‹œì„¤ ë° í™˜ê²½' && (
             <div className="pt-2">
               <textarea
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
-                placeholder="ë¬¸ì œ ?ƒ?™©?„ ??„¸?ˆ ?„¤ëª…í•´ì£¼ì„¸?š”"
+                placeholder="ë¬¸ì œ ìƒí™©ì„ ìì„¸íˆ ì„¤ëª…í•´ì£¼ì„¸ìš”"
                 rows={4}
                 className="w-full p-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-400 resize-none"
               />
               <button
                 onClick={() => {
                   if (userInput.trim()) {
-                    const finalAnswers = { ...chatAnswers, detail: userInput };
+                    const finalAnswers = {...chatAnswers, detail: userInput};
                     setChatAnswers(finalAnswers);
-                    setChatHistory([
-                      ...chatHistory,
-                      { type: "user", message: userInput },
-                      {
-                        type: "bot",
-                        message:
-                          "?…? ¥?•˜?‹  ?‚´?š©?„ ?™•?¸?•´ì£¼ì„¸?š” ?œ…",
-                      },
-                      {
-                        type: "bot",
-                        message: `
-?‹œ?„¤: ${finalAnswers.facilityType}
-?œ„ì¹?: ${finalAnswers.building} ${finalAnswers.floor}
-ë¬¸ì œ: ${finalAnswers.problemType}
-?ƒ?„¸: ${finalAnswers.detail}
-                      `.trim(),
-                      },
+                    setChatHistory([...chatHistory,
+                      { type: 'user', message: userInput },
+                      { type: 'bot', message: 'ì…ë ¥í•˜ì‹  ë‚´ìš©ì„ í™•ì¸í•´ì£¼ì„¸ìš” âœ…' },
+                      { type: 'bot', message: `ì‹œì„¤: ${finalAnswers.facilityType}\nìœ„ì¹˜: ${finalAnswers.building} ${finalAnswers.floor}\në¬¸ì œ: ${finalAnswers.problemType}\nìƒì„¸: ${finalAnswers.detail}` }
                     ]);
-                    setUserInput("");
+                    setUserInput('');
                     setChatStep(5);
                   }
                 }}
                 className="mt-2 w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
               >
-                ?™•?¸
+                í™•ì¸
               </button>
             </div>
           )}
 
-          {/* ?‹œ?„¤ ë°? ?™˜ê²? - Step 5 (? œì¶? ?™•?¸) */}
-          {chatStep === 5 && category === "?‹œ?„¤ ë°? ?™˜ê²?" && (
+          {/* ì‹œì„¤ ë° í™˜ê²½ - Step 5 (ì œì¶œ í™•ì¸) */}
+          {chatStep === 5 && category === 'ì‹œì„¤ ë° í™˜ê²½' && (
             <div className="grid grid-cols-2 gap-3 pt-2">
               <button
                 onClick={() => {
                   setChatStep(0);
                   setChatHistory(getInitialMessages(category));
                   setChatAnswers({});
-                  setUserInput("");
+                  setUserInput('');
                 }}
                 className="py-3 px-4 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all"
               >
-                ?‹¤?‹œ ?‘?„±
+                ë‹¤ì‹œ ì‘ì„±
               </button>
               <button
                 onClick={() => {
-                  onSuccess(
-                    "ë¯¼ì›?´ ? ‘?ˆ˜?˜?—ˆ?Šµ?‹ˆ?‹¤!\nì²˜ë¦¬ ê²°ê³¼?Š” ?•Œë¦¼ìœ¼ë¡? ?•ˆ?‚´?“œë¦¬ê² ?Šµ?‹ˆ?‹¤.",
-                    "submit"
-                  );
+                  onSuccess('ë¯¼ì›ì´ ì ‘ìˆ˜ë˜ì—ˆìŠµë‹ˆë‹¤!\nì²˜ë¦¬ ê²°ê³¼ëŠ” ì•Œë¦¼ìœ¼ë¡œ ì•ˆë‚´ë“œë¦¬ê² ìŠµë‹ˆë‹¤.', 'submit');
                   setChatStep(0);
                   setChatHistory([]);
                   setChatAnswers({});
-                  setUserInput("");
+                  setUserInput('');
                   onClose();
                 }}
                 className="py-3 px-4 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
               >
-                ? œì¶œí•˜ê¸?
+                ì œì¶œí•˜ê¸°
               </button>
             </div>
           )}
 
-          {/* ?‹¤ë¥? ì¹´í…Œê³ ë¦¬ ?™„ë£? ?‹¨ê³? (Step 99) */}
-          {chatStep === 99 && category !== "?‹œ?„¤ ë°? ?™˜ê²?" && (
+          {/* ë‹¤ë¥¸ ì¹´í…Œê³ ë¦¬ ì™„ë£Œ ë‹¨ê³„ (Step 99) */}
+          {chatStep === 99 && category !== 'ì‹œì„¤ ë° í™˜ê²½' && (
             <div className="pt-2">
               <button
                 onClick={() => {
-                  onSuccess("ë¬¸ì˜ê°? ?™„ë£Œë˜?—ˆ?Šµ?‹ˆ?‹¤!", "complete");
+                  onSuccess('ë¬¸ì˜ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤!', 'complete');
                   setChatStep(0);
                   setChatHistory([]);
                   setChatAnswers({});
-                  setUserInput("");
+                  setUserInput('');
                   onClose();
                 }}
                 className="w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
               >
-                ?™•?¸
+                í™•ì¸
               </button>
             </div>
           )}
