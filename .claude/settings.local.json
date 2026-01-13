@@ -3,7 +3,14 @@
     "allow": [
       "Bash(mkdir:*)",
       "Bash(npx tsc:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(python fix_encoding.py:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(npm install:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\n챗봇 컴포넌트 분리 완료 (App.tsx → ChatModal.tsx)\n\n- App.tsx에서 채팅 관련 로직 제거 (~480줄 감소)\n- ChatModal 컴포넌트로 채팅 기능 분리\n- 한글 인코딩 문제 해결\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push)",
+      "Bash(xxd:*)"
     ],
     "deny": [],
     "ask": []
