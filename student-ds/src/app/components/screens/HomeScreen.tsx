@@ -7,9 +7,11 @@ import {
   PolarRadiusAxis,
   ResponsiveContainer,
 } from "recharts";
-import { Trophy, Star, Check, TrendingUp, X } from "lucide-react";
+import { Trophy, Star, Check, TrendingUp } from "lucide-react";
 import Header from "../layout/Header";
 import CompetencyDetailModal from "../dashboard/CompetencyDetailModal";
+import WelcomeCard from "../dashboard/WelcomeCard";
+import EvidenceListModal from "../modals/home/EvidenceListModal";
 import {
   radarData,
   radarDataPO,
@@ -49,29 +51,10 @@ export default function HomeScreen({
     미흡: { bg: "bg-[#C5006F]", icon: <TrendingUp className="w-3 h-3" /> },
   };
 
-  // Welcome Card Component
-  const WelcomeCard = () => (
-    <div className="bg-white/20 backdrop-blur rounded-2xl p-4 mt-2">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <p className="text-sm opacity-90">환영합니다</p>
-          <p className="font-bold text-lg text-[24px]">김수성 님</p>
-        </div>
-        <div className="text-right">
-          <p className="text-sm opacity-90 mb-1">핵심 역량 점수</p>
-          <div className="flex items-end gap-2 justify-end">
-            <span className="text-4xl font-bold text-[32px]">81.3</span>
-            <span className="text-lg mb-1 text-[16px]">/ 100</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div className="pb-4">
       <Header onShareClick={onShareClick} onSearchClick={onSearchClick}>
-        <WelcomeCard />
+        <WelcomeCard userName="김수성" score={81.3} />
       </Header>
 
       {/* Radar Chart Section */}
@@ -274,7 +257,7 @@ export default function HomeScreen({
         </div>
       </div>
 
-      {/* Star Detail Modal */}
+      {/* Modals */}
       <CompetencyDetailModal
         type="star"
         selectedKey={selectedStar}
@@ -282,7 +265,6 @@ export default function HomeScreen({
         onClose={() => setSelectedStar(null)}
       />
 
-      {/* PO Detail Modal */}
       <CompetencyDetailModal
         type="po"
         selectedKey={selectedPO}
@@ -290,47 +272,11 @@ export default function HomeScreen({
         onClose={() => setSelectedPO(null)}
       />
 
-      {/* Evidence Modal */}
-      {showEvidenceModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto animate-slide-up">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-xl">Evidence 활동 내역</h3>
-              <button onClick={() => setShowEvidenceModal(false)}>
-                <X className="w-6 h-6 text-gray-400" />
-              </button>
-            </div>
-            <div className="space-y-3">
-              {evidenceData.map((item, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold"
-                      style={{
-                        backgroundColor:
-                          starDetails[item.competency as keyof typeof starDetails].color,
-                      }}
-                    >
-                      {item.competency}
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-800">{item.course}</p>
-                      <p className="text-sm text-gray-500">{item.task}</p>
-                      <p className="text-xs text-gray-400 mt-1">
-                        {item.semester} · {item.date}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="font-bold text-green-600 text-lg">{item.score}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+      <EvidenceListModal
+        isOpen={showEvidenceModal}
+        onClose={() => setShowEvidenceModal(false)}
+        evidenceData={evidenceData}
+      />
     </div>
   );
 }
