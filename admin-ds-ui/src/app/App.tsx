@@ -79,7 +79,8 @@ import {
   teachingMethodData,
 } from "../data/mockData";
 
-const logo = "https://placehold.co/40x40";
+import logoImage from '../assets/logo.png';
+
 
 export default function AdminDashboard() {
   const [activeCategory, setActiveCategory] = useState("dashboard"); // 대분류

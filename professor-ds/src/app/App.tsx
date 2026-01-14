@@ -11,7 +11,7 @@ import {
 } from '../data/mockData';
 import { getStudentRadarSTAR, getStudentRadarPO } from '../utils/studentRadarUtils';
 
-const logoImage = "https://placehold.co/40x40";
+import logoImage from '../assets/logo.png';
 
 export default function ProfessorDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
