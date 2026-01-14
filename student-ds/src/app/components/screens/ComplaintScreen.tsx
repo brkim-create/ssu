@@ -5,6 +5,7 @@ import StatsOverview from "../dashboard/StatsOverview";
 import ComplaintList from "../dashboard/ComplaintList";
 import WriteComplaintModal from "../dashboard/WriteComplaintModal";
 import FAQModal from "../dashboard/FAQModal";
+import ChatModal from "../chatbot/ChatModal"; // [추가] 챗봇 모달 import
 import {
   complaintCategories,
   complaints,
@@ -26,6 +27,7 @@ interface ComplaintScreenProps {
  * - 민원 카테고리 및 목록
  * - 민원 작성 모달
  * - FAQ 모달
+ * - 챗봇 상담 연결 (학사/진로 카테고리)
  */
 export default function ComplaintScreen({
   onShareClick,
@@ -34,23 +36,37 @@ export default function ComplaintScreen({
 }: ComplaintScreenProps) {
   // Modal States
   const [showComplaintModal, setShowComplaintModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<ComplaintCategory | null>(null);
+  const [selectedCategory, setSelectedCategory] =
+    useState<ComplaintCategory | null>(null);
   const [showFAQ, setShowFAQ] = useState(false);
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
   const [showComplaintListModal, setShowComplaintListModal] = useState(false);
   const [complaintDetailModal, setComplaintDetailModal] = useState<any>(null);
 
+  // [추가] Chatbot States
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+  const [chatCategory, setChatCategory] = useState("학사 및 수업");
+
   // Filter States
-  const [complaintStatusFilter, setComplaintStatusFilter] = useState<string>("전체");
+  const [complaintStatusFilter, setComplaintStatusFilter] =
+    useState<string>("전체");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [periodFilter, setPeriodFilter] = useState("전체");
 
   // Rating States
   const [showRatingModal, setShowRatingModal] = useState(false);
-  const [complaintReadStatus, setComplaintReadStatus] = useState<{ [key: number]: boolean }>({});
-  const [complaintRatedStatus, setComplaintRatedStatus] = useState<{ [key: number]: boolean }>({});
-  const [complaintRatings, setComplaintRatings] = useState<{ [key: number]: number }>({});
-  const [ratingComplaintId, setRatingComplaintId] = useState<number | null>(null);
+  const [complaintReadStatus, setComplaintReadStatus] = useState<{
+    [key: number]: boolean;
+  }>({});
+  const [complaintRatedStatus, setComplaintRatedStatus] = useState<{
+    [key: number]: boolean;
+  }>({});
+  const [complaintRatings, setComplaintRatings] = useState<{
+    [key: number]: number;
+  }>({});
+  const [ratingComplaintId, setRatingComplaintId] = useState<number | null>(
+    null
+  );
   const [selectedRating, setSelectedRating] = useState<number>(0);
   const [ratingComment, setRatingComment] = useState("");
 
@@ -60,7 +76,9 @@ export default function ComplaintScreen({
     처리중: complaints.filter((c) => c.status === "처리중").length,
     완료: complaints.filter((c) => c.status === "완료").length,
   };
-  const completionRate = Math.round((complaintStats.완료 / complaints.length) * 100);
+  const completionRate = Math.round(
+    (complaintStats.완료 / complaints.length) * 100
+  );
 
   // Handlers
   const handleCloseComplaintListModal = () => {
@@ -76,8 +94,14 @@ export default function ComplaintScreen({
 
   const handleRatingSubmit = () => {
     if (ratingComplaintId && selectedRating > 0) {
-      setComplaintRatedStatus({ ...complaintRatedStatus, [ratingComplaintId]: true });
-      setComplaintRatings({ ...complaintRatings, [ratingComplaintId]: selectedRating });
+      setComplaintRatedStatus({
+        ...complaintRatedStatus,
+        [ratingComplaintId]: true,
+      });
+      setComplaintRatings({
+        ...complaintRatings,
+        [ratingComplaintId]: selectedRating,
+      });
       setShowRatingModal(false);
       setShowComplaintListModal(false);
       setRatingComplaintId(null);
@@ -87,9 +111,21 @@ export default function ComplaintScreen({
     }
   };
 
+  // [수정] 카테고리 클릭 핸들러: 특정 카테고리는 챗봇, 나머지는 글쓰기 창 연결
   const handleCategoryClick = (cat: ComplaintCategory) => {
-    setSelectedCategory(cat);
-    onChatOpen(cat.name);
+    // 챗봇으로 연결할 카테고리 목록
+    const chatEnabledCategories = ["학사 및 수업", "진로 및 취업"];
+
+    if (chatEnabledCategories.includes(cat.name)) {
+      // 1. 학사/진로 -> Gemini 챗봇 열기
+      setChatCategory(cat.name);
+      setIsChatModalOpen(true);
+      onChatOpen(cat.name);
+    } else {
+      // 2. 그 외 -> 기존 글쓰기 모달 열기
+      setSelectedCategory(cat);
+      setShowComplaintModal(true);
+    }
   };
 
   const handleStatClick = (status: string) => {
@@ -137,6 +173,7 @@ export default function ComplaintScreen({
         complaintRatings={complaintRatings}
       />
 
+      {/* 민원 작성 모달 (시설, 일반 등) */}
       <WriteComplaintModal
         isOpen={showComplaintModal}
         category={selectedCategory}
@@ -147,7 +184,7 @@ export default function ComplaintScreen({
         onSubmit={handleComplaintSubmit}
       />
 
-      {/* Floating Action Button */}
+      {/* Floating Action Button (기본 글쓰기) */}
       <button
         onClick={() => {
           setSelectedCategory(complaintCategories[0]);
@@ -165,6 +202,14 @@ export default function ComplaintScreen({
         expandedId={expandedFAQ}
         onExpandChange={setExpandedFAQ}
         onClose={() => setShowFAQ(false)}
+      />
+
+      {/* [추가] 챗봇 모달 (학사, 진로 -> Gemini AI) */}
+      <ChatModal
+        isOpen={isChatModalOpen}
+        onClose={() => setIsChatModalOpen(false)}
+        category={chatCategory}
+        onSuccess={(msg) => console.log("AI 응답:", msg)}
       />
     </div>
   );
