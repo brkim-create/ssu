@@ -1,5 +1,250 @@
+// ============================================================
+// Admin Dashboard Mock Data
+// Supabase 연동을 위한 순수 데이터 파일 (컴포넌트/로직 제외)
+// ============================================================
+
+// ============================================================
+// Type Definitions (Supabase 스키마 매칭용)
+// ============================================================
+
+export interface TicketReply {
+  content: string;
+  author: string;
+  date: string;
+}
+
+export interface Ticket {
+  id: number;
+  title: string;
+  category: string;
+  status: '접수' | '처리중' | '완료' | '반려됨';
+  date: string;
+  author: string;
+  priority: 'high' | 'medium' | 'low';
+  assignee: string | null;
+  replies: TicketReply[];
+  draftReply: string | null;
+  rejectedReason: string | null;
+}
+
+export interface Template {
+  id: number;
+  category: string;
+  title: string;
+  content: string;
+}
+
+export interface CategoryStat {
+  name: string;
+  value: number;
+  color: string;
+}
+
+export interface SpeedDataItem {
+  day: string;
+  time: number;
+}
+
+export interface KeywordItem {
+  word: string;
+  size: string;
+  weight: string;
+}
+
+export interface UserData {
+  id: number;
+  name: string;
+  dept: string;
+  role: '슈퍼관리자' | '일반관리자';
+  status: '활성' | '비활성';
+}
+
+export interface FAQScenario {
+  id: number;
+  category: string;
+  question: string;
+  answer: string;
+}
+
+export interface CompetencyTrendItem {
+  year: string;
+  S: number;
+  T: number;
+  A: number;
+  R: number;
+}
+
+export interface CollegeHeatmapItem {
+  college: string;
+  기획: number;
+  실행: number;
+  화합: number;
+  통섭: number;
+  전공지식: number;
+  전공기술: number;
+  정보화: number;
+  신기술활용: number;
+  공감: number;
+  판단: number;
+  사명감: number;
+  조직이해: number;
+  도전성: number;
+  자기학습: number;
+  경청: number;
+  협상: number;
+  외국어: number;
+  세계시민: number;
+}
+
+export interface CertificationItem {
+  level: string;
+  count: number;
+  color: string;
+  name: string;
+}
+
+export interface DepartmentGapItem {
+  dept: string;
+  current: number;
+  target: number;
+  gap: number;
+}
+
+export interface GradeGrowthItem {
+  grade: string;
+  S: number;
+  T: number;
+  A: number;
+  R: number;
+}
+
+export interface CQIStatusItem {
+  dept: string;
+  total: number;
+  completed: number;
+  rate: number;
+  lowGrade: number;
+}
+
+export interface CompetencyDistribution {
+  competency: 'S' | 'T' | 'A' | 'R';
+  count: number;
+  percentage: number;
+}
+
+export interface UnmappedCourse {
+  id: number;
+  courseName: string;
+  professor: string;
+  dept: string;
+}
+
+export interface CurriculumIssues {
+  unmappedCourses: number;
+  totalCourses: number;
+  competencyDistribution: CompetencyDistribution[];
+  unmappedCoursesList: UnmappedCourse[];
+}
+
+export interface StudentData {
+  id: number;
+  name: string;
+  studentId: string;
+  dept: string;
+  grade: number;
+  S: number;
+  T: number;
+  A: number;
+  R: number;
+  avg: number;
+  badge: '마스터' | '우수' | '보통' | '노력요망';
+  jobMatch: number;
+}
+
+export interface StudentRadarItem {
+  subject: string;
+  student: number;
+  deptAvg: number;
+  totalAvg: number;
+  fullMark: number;
+}
+
+export interface BehaviorIndicator {
+  code: string;
+  name: string;
+  achievement: number;
+  status: 'excellent' | 'good' | 'poor';
+}
+
+export interface EvidenceItem {
+  competency: 'S' | 'T' | 'A' | 'R';
+  course: string;
+  assignment: string;
+  score: number;
+  semester: string;
+}
+
+export interface CourseData {
+  id: number;
+  code: string;
+  name: string;
+  professor: string;
+  students: number;
+  targetCompetency: 'S' | 'T' | 'A' | 'R';
+  avgScore: number;
+}
+
+export interface AchievementDistribution {
+  range: string;
+  count: number;
+}
+
+export interface AssessmentToolItem {
+  tool: string;
+  S: number;
+  T: number;
+  A: number;
+  R: number;
+}
+
+export interface UnderperformingStudent {
+  name: string;
+  studentId: string;
+  targetComp: 'S' | 'T' | 'A' | 'R';
+  score: number;
+  threshold: number;
+  gap: number;
+}
+
+export interface WeakArea {
+  area: string;
+  score: number;
+  improvement: string;
+}
+
+export interface CQIPerformanceData {
+  targetAchievement: number;
+  currentAchievement: number;
+  achievementRate: number;
+  yearOverYear: number;
+  weakAreas: WeakArea[];
+}
+
+export interface TeachingMethodItem {
+  method: string;
+  S: number;
+  T: number;
+  A: number;
+  R: number;
+  satisfaction: number;
+}
+
+// ============================================================
+// Mock Data
+// ============================================================
+
 // 민원 티켓 데이터
-export const ticketsData = [
+export const ticketsData: Ticket[] = [
   {
     id: 1,
     title: "도서관 냉방 문제",
@@ -142,7 +387,7 @@ export const ticketsData = [
 ];
 
 // 템플릿 데이터
-export const templatesData = [
+export const templatesData: Template[] = [
   {
     id: 1,
     category: "시설 관련",
@@ -171,7 +416,7 @@ export const templatesData = [
 ];
 
 // 카테고리 통계
-export const categoryStats = [
+export const categoryStats: CategoryStat[] = [
   { name: "시설", value: 45, color: "#E94E3C" },
   { name: "장학", value: 25, color: "#F7941D" },
   { name: "복지", value: 18, color: "#C13584" },
@@ -179,7 +424,7 @@ export const categoryStats = [
 ];
 
 // 처리 속도 데이터
-export const speedData = [
+export const speedData: SpeedDataItem[] = [
   { day: "월", time: 1.2 },
   { day: "화", time: 2.1 },
   { day: "수", time: 1.8 },
@@ -188,7 +433,7 @@ export const speedData = [
 ];
 
 // 키워드 데이터
-export const keywordsData = [
+export const keywordsData: KeywordItem[] = [
   { word: "민원", size: "text-6xl", weight: "font-bold" },
   { word: "처리", size: "text-5xl", weight: "font-bold" },
   { word: "시설", size: "text-5xl", weight: "font-bold" },
@@ -218,7 +463,7 @@ export const keywordsData = [
 ];
 
 // 사용자 데이터
-export const usersData = [
+export const usersData: UserData[] = [
   { id: 1, name: "김관리", dept: "교무처", role: "슈퍼관리자", status: "활성" },
   {
     id: 2,
@@ -237,10 +482,10 @@ export const usersData = [
 ];
 
 // 금지어 목록
-export const bannedWords = ["욕설1", "비방어1", "욕설2"];
+export const bannedWords: string[] = ["욕설1", "비방어1", "욕설2"];
 
 // FAQ 시나리오
-export const faqScenarios = [
+export const faqScenarios: FAQScenario[] = [
   {
     id: 1,
     category: "장학",
@@ -262,7 +507,7 @@ export const faqScenarios = [
 ];
 
 // S-T-A-R 역량 추이 데이터
-export const competencyTrendData = [
+export const competencyTrendData: CompetencyTrendItem[] = [
   { year: "2021", S: 65, T: 62, A: 68, R: 60 },
   { year: "2022", S: 68, T: 65, A: 70, R: 63 },
   { year: "2023", S: 71, T: 68, A: 73, R: 67 },
@@ -271,7 +516,7 @@ export const competencyTrendData = [
 ];
 
 // 과별 역량 히트맵 데이터
-export const collegeHeatmapData = [
+export const collegeHeatmapData: CollegeHeatmapItem[] = [
   {
     college: "AI빅데이터과",
     기획: 92, 실행: 88, 화합: 15, 통섭: 67,
@@ -411,7 +656,7 @@ export const collegeHeatmapData = [
 ];
 
 // 인증 현황 데이터
-export const certificationData = [
+export const certificationData: CertificationItem[] = [
   { level: "Advanced", count: 245, color: "#E94E3C", name: "Advanced (245명)" },
   {
     level: "Intermediate",
@@ -424,7 +669,7 @@ export const certificationData = [
 ];
 
 // 과별 역량 달성도 (Gap Analysis)
-export const departmentGapData = [
+export const departmentGapData: DepartmentGapItem[] = [
   { dept: "AI빅데이터과", current: 85, target: 90, gap: -5 },
   { dept: "간호학과", current: 88, target: 90, gap: -2 },
   { dept: "치위생과", current: 86, target: 85, gap: 1 },
@@ -433,7 +678,7 @@ export const departmentGapData = [
 ];
 
 // 학년별 성장 추이
-export const gradeGrowthData = [
+export const gradeGrowthData: GradeGrowthItem[] = [
   { grade: "1학년", S: 62, T: 60, A: 65, R: 58 },
   { grade: "2학년", S: 70, T: 68, A: 72, R: 66 },
   { grade: "3학년", S: 76, T: 74, A: 78, R: 72 },
@@ -441,7 +686,7 @@ export const gradeGrowthData = [
 ];
 
 // CQI 운영 현황
-export const cqiStatusData = [
+export const cqiStatusData: CQIStatusItem[] = [
   { dept: "AI빅데이터과", total: 28, completed: 26, rate: 92.9, lowGrade: 2 },
   { dept: "간호학과", total: 35, completed: 34, rate: 97.1, lowGrade: 1 },
   { dept: "치위생과", total: 30, completed: 29, rate: 96.7, lowGrade: 1 },
@@ -453,7 +698,7 @@ export const cqiStatusData = [
 ];
 
 // 교육과정 적절성 데이터
-export const curriculumIssues = {
+export const curriculumIssues: CurriculumIssues = {
   unmappedCourses: 12,
   totalCourses: 245,
   competencyDistribution: [
@@ -479,7 +724,7 @@ export const curriculumIssues = {
 };
 
 // 학생 목록 데이터
-export const studentsData = [
+export const studentsData: StudentData[] = [
   {
     id: 1, name: "김학생", studentId: "20210001", dept: "AI빅데이터과",
     grade: 3, S: 78, T: 82, A: 75, R: 80, avg: 78.75, badge: "우수", jobMatch: 87,
@@ -503,7 +748,7 @@ export const studentsData = [
 ];
 
 // 학생 개인 레이더 차트 데이터
-export const studentRadarData = [
+export const studentRadarData: StudentRadarItem[] = [
   { subject: "Self-directed", student: 78, deptAvg: 72, totalAvg: 70, fullMark: 100 },
   { subject: "Teamwork", student: 82, deptAvg: 75, totalAvg: 73, fullMark: 100 },
   { subject: "Analytical", student: 75, deptAvg: 70, totalAvg: 68, fullMark: 100 },
@@ -511,7 +756,7 @@ export const studentRadarData = [
 ];
 
 // 행동지표 달성도 데이터
-export const behaviorIndicators = [
+export const behaviorIndicators: BehaviorIndicator[] = [
   { code: "S1", name: "자기주도 학습", achievement: 85, status: "excellent" },
   { code: "S2", name: "시간 관리", achievement: 72, status: "good" },
   { code: "S3", name: "목표 설정", achievement: 76, status: "good" },
@@ -521,7 +766,7 @@ export const behaviorIndicators = [
 ];
 
 // Evidence 트래킹 데이터
-export const evidenceData = [
+export const evidenceData: EvidenceItem[] = [
   { competency: "S", course: "데이터구조", assignment: "프로젝트 1", score: 92, semester: "2024-1" },
   { competency: "S", course: "알고리즘", assignment: "중간고사", score: 85, semester: "2024-1" },
   { competency: "T", course: "소프트웨어공학", assignment: "팀 프로젝트", score: 88, semester: "2024-2" },
@@ -530,7 +775,7 @@ export const evidenceData = [
 ];
 
 // 교수 앱 관리 - 강의 목록 데이터
-export const coursesData = [
+export const coursesData: CourseData[] = [
   { id: 1, code: "CS301", name: "데이터구조", professor: "김교수", students: 45, targetCompetency: "S", avgScore: 76.5 },
   { id: 2, code: "CS302", name: "알고리즘", professor: "이교수", students: 38, targetCompetency: "S", avgScore: 72.3 },
   { id: 3, code: "CS401", name: "소프트웨어공학", professor: "박교수", students: 42, targetCompetency: "T", avgScore: 81.2 },
@@ -538,7 +783,7 @@ export const coursesData = [
 ];
 
 // 교과목 역량 성취도 분포 (히스토그램용)
-export const courseAchievementDistribution = [
+export const courseAchievementDistribution: AchievementDistribution[] = [
   { range: "0-60", count: 3 },
   { range: "60-70", count: 8 },
   { range: "70-80", count: 15 },
@@ -547,7 +792,7 @@ export const courseAchievementDistribution = [
 ];
 
 // 평가도구별 역량 점수
-export const assessmentToolData = [
+export const assessmentToolData: AssessmentToolItem[] = [
   { tool: "중간고사", S: 72, T: 68, A: 75, R: 70 },
   { tool: "기말고사", S: 75, T: 71, A: 78, R: 73 },
   { tool: "과제", S: 82, T: 85, A: 79, R: 81 },
@@ -556,14 +801,14 @@ export const assessmentToolData = [
 ];
 
 // 역량 미달 학생 리스트
-export const underperformingStudents = [
+export const underperformingStudents: UnderperformingStudent[] = [
   { name: "최학생", studentId: "20210004", targetComp: "S", score: 52, threshold: 60, gap: -8 },
   { name: "박학생", studentId: "20220015", targetComp: "T", score: 58, threshold: 65, gap: -7 },
   { name: "정학생", studentId: "20220023", targetComp: "A", score: 61, threshold: 70, gap: -9 },
 ];
 
 // CQI 성과 분석 데이터
-export const cqiPerformanceData = {
+export const cqiPerformanceData: CQIPerformanceData = {
   targetAchievement: 85,
   currentAchievement: 78.5,
   achievementRate: 92.4,
@@ -575,7 +820,7 @@ export const cqiPerformanceData = {
 };
 
 // 교수법 연계 진단 데이터
-export const teachingMethodData = [
+export const teachingMethodData: TeachingMethodItem[] = [
   { method: "PBL", S: 82, T: 88, A: 79, R: 85, satisfaction: 4.2 },
   { method: "Flipped", S: 78, T: 75, A: 82, R: 76, satisfaction: 3.8 },
   { method: "강의식", S: 70, T: 68, A: 72, R: 69, satisfaction: 3.5 },

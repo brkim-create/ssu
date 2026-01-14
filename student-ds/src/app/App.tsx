@@ -15,6 +15,7 @@ import {
   faqData,
   evidenceData
 } from '../data/mockData';
+import { getIcon } from '../utils/iconMapper';
 
 const logoImage = "https://placehold.co/40x40";
 
@@ -566,7 +567,7 @@ export default function StudentDashboard() {
               className="bg-gray-50 rounded-2xl shadow p-5 text-left hover:shadow-lg transition-all"
             >
               <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
-                <cat.icon className="w-6 h-6 text-gray-500" />
+                {(() => { const Icon = getIcon(cat.icon); return <Icon className="w-6 h-6 text-gray-500" />; })()}
               </div>
               <p className="font-bold text-gray-800 mb-1">{cat.name}</p>
               <p className="text-xs text-gray-500">{cat.items.length}개 세부항목</p>
@@ -582,7 +583,7 @@ export default function StudentDashboard() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${selectedCategory.color}20` }}>
-                    <selectedCategory.icon className="w-5 h-5" style={{ color: selectedCategory.color }} />
+                    {(() => { const Icon = getIcon(selectedCategory.icon); return <Icon className="w-5 h-5" style={{ color: selectedCategory.color }} />; })()}
                   </div>
                   <h3 className="font-bold text-lg">{selectedCategory.name}</h3>
                 </div>

@@ -8,9 +8,8 @@ import {
   performanceReport,
   courses,
   studentList,
-  getStudentRadarSTAR,
-  getStudentRadarPO
 } from '../data/mockData';
+import { getStudentRadarSTAR, getStudentRadarPO } from '../utils/studentRadarUtils';
 
 const logoImage = "https://placehold.co/40x40";
 

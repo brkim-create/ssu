@@ -10,7 +10,8 @@
       "Bash(git add:*)",
       "Bash(git commit -m \"$(cat <<''EOF''\n챗봇 컴포넌트 분리 완료 (App.tsx → ChatModal.tsx)\n\n- App.tsx에서 채팅 관련 로직 제거 (~480줄 감소)\n- ChatModal 컴포넌트로 채팅 기능 분리\n- 한글 인코딩 문제 해결\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git push)",
-      "Bash(xxd:*)"
+      "Bash(xxd:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nDB/아키텍처 리팩토링: 타입 정의 및 로직 분리\n\n- Student-DS: 아이콘을 문자열로 변경, iconMapper.tsx 유틸 생성\n- Professor-DS: getStudentRadarSTAR/PO 함수를 utils로 분리\n- Admin-DS-UI: 26개 TypeScript 인터페이스 정의 추가\n- 전 프로젝트: mockData에 타입 어노테이션 적용\n\nSupabase DB 연동을 위한 순수 데이터 구조화 완료\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
     ],
     "deny": [],
     "ask": []

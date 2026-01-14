@@ -1,7 +1,99 @@
-import { Building, GraduationCap, Heart, BookOpen } from 'lucide-react';
+// ============================================================
+// Student Dashboard Mock Data
+// Supabase 연동을 위한 순수 데이터 파일 (컴포넌트/로직 제외)
+// ============================================================
+
+// ============================================================
+// Type Definitions (Supabase 스키마 매칭용)
+// ============================================================
+
+export interface RadarDataItem {
+  subject: string;
+  myScore: number;
+  deptAvg: number;
+  totalAvg: number;
+  fullMark: number;
+}
+
+export interface StarDetail {
+  name: string;
+  score: number;
+  grade: string;
+  skills: string[];
+  color: string;
+}
+
+export interface PODetail {
+  name: string;
+  score: number;
+  grade: string;
+  category: string;
+  skills: string[];
+  color: string;
+}
+
+export interface ComplaintCategory {
+  id: number;
+  icon: string; // 문자열로 저장 (DB 호환)
+  name: string;
+  items: string[];
+  color: string;
+}
+
+export interface ComplaintAttachment {
+  id: number;
+  name: string;
+  size: string;
+  url: string;
+}
+
+export interface Complaint {
+  id: number;
+  title: string;
+  status: '접수' | '처리중' | '완료';
+  date: string;
+  category: string;
+  content: string;
+  currentStep?: number;
+  department?: string;
+  assignee?: string;
+  adminResponse?: string;
+  responseDate?: string;
+  attachments?: ComplaintAttachment[];
+  isRead: boolean;
+  isRated: boolean;
+  rating?: number;
+}
+
+export interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  time: string;
+  read: boolean;
+}
+
+export interface FAQ {
+  id: number;
+  question: string;
+  answer: string;
+}
+
+export interface Evidence {
+  course: string;
+  task: string;
+  score: string;
+  competency: string;
+  semester: string;
+  date: string;
+}
+
+// ============================================================
+// Mock Data
+// ============================================================
 
 // STAR 핵심역량 진단 데이터 (S:창의, T:실무, A:인성, R:소통)
-export const radarData = [
+export const radarData: RadarDataItem[] = [
   { subject: 'S (창의)', myScore: 85, deptAvg: 72, totalAvg: 68, fullMark: 100 },
   { subject: 'T (실무)', myScore: 78, deptAvg: 75, totalAvg: 70, fullMark: 100 },
   { subject: 'A (인성)', myScore: 92, deptAvg: 80, totalAvg: 75, fullMark: 100 },
@@ -9,7 +101,7 @@ export const radarData = [
 ];
 
 // 전공능력(PO) 핵심역량 진단 데이터
-export const radarDataPO = [
+export const radarDataPO: RadarDataItem[] = [
   { subject: '창의적문제해결', myScore: 87, deptAvg: 74, totalAvg: 70, fullMark: 100 },
   { subject: '전공실무기술', myScore: 83, deptAvg: 70, totalAvg: 66, fullMark: 100 },
   { subject: '정보활용능력', myScore: 82, deptAvg: 78, totalAvg: 73, fullMark: 100 },
@@ -22,7 +114,7 @@ export const radarDataPO = [
 ];
 
 // 역량 상세 데이터
-export const starDetails = {
+export const starDetails: Record<string, StarDetail> = {
   S: { name: '창의역량', score: 85, grade: '우수', skills: ['창의적사고', '문제해결', '통찰력', '혁신'], color: '#E94E3C' },
   T: { name: '실무역량', score: 78, grade: '보통', skills: ['전공지식', '실무기술', '현장적응', '정보활용', '분석', '기획'], color: '#F7941D' },
   A: { name: '인성역량', score: 92, grade: '최우수', skills: ['책임감', '성실성', '윤리의식', '협동심'], color: '#C13584' },
@@ -30,7 +122,7 @@ export const starDetails = {
 };
 
 // 전공능력(PO) 상세 데이터
-export const poDetails = {
+export const poDetails: Record<string, PODetail> = {
   '창의적문제해결': { name: '창의적문제해결', score: 87, grade: '우수', category: 'S', skills: ['대안도출', '문제정의', '창의적접근'], color: '#E94E3C' },
   '전공실무기술': { name: '전공실무기술', score: 83, grade: '우수', category: 'S', skills: ['장비운용', '실무적용', '기술활용'], color: '#E94E3C' },
   '정보활용능력': { name: '정보활용능력', score: 82, grade: '우수', category: 'T', skills: ['정보검색', '데이터분석', '문서작성'], color: '#F7941D' },
@@ -42,16 +134,16 @@ export const poDetails = {
   '의사소통': { name: '의사소통', score: 68, grade: '보통', category: 'R', skills: ['경청', '발표', '문서이해'], color: '#E94E3C' },
 };
 
-// 민원 카테고리
-export const complaintCategories = [
-  { id: 1, icon: Building, name: '시설 및 환경', items: ['강의실', '도서관', '화장실', '휴게실'], color: '#E94E3C' },
-  { id: 2, icon: GraduationCap, name: '학사 및 수업', items: ['수강신청', '성적', '휴복학', '졸업'], color: '#4A90E2' },
-  { id: 3, icon: Heart, name: '학생 복지', items: ['장학금', '기숙사', '식당', '보건'], color: '#C13584' },
-  { id: 4, icon: BookOpen, name: '진로 및 취업', items: ['취업상담', '현장실습', '자격증', '멘토링'], color: '#F7941D' },
+// 민원 카테고리 (icon은 문자열로 저장 - DB 호환)
+export const complaintCategories: ComplaintCategory[] = [
+  { id: 1, icon: 'Building', name: '시설 및 환경', items: ['강의실', '도서관', '화장실', '휴게실'], color: '#E94E3C' },
+  { id: 2, icon: 'GraduationCap', name: '학사 및 수업', items: ['수강신청', '성적', '휴복학', '졸업'], color: '#4A90E2' },
+  { id: 3, icon: 'Heart', name: '학생 복지', items: ['장학금', '기숙사', '식당', '보건'], color: '#C13584' },
+  { id: 4, icon: 'BookOpen', name: '진로 및 취업', items: ['취업상담', '현장실습', '자격증', '멘토링'], color: '#F7941D' },
 ];
 
 // 민원 목록 데이터
-export const complaints = [
+export const complaints: Complaint[] = [
   {
     id: 1,
     title: '강의실 에어컨 고장',
@@ -128,7 +220,7 @@ export const complaints = [
 ];
 
 // 알림 데이터
-export const notifications = [
+export const notifications: Notification[] = [
   { id: 1, title: '민원 처리 완료', message: '장학금 신청 기간 문의에 대한 답변이 등록되었습니다.', time: '10분 전', read: false },
   { id: 2, title: '학사 공지사항', message: '2025학년도 1학기 수강신청 안내', time: '1시간 전', read: false },
   { id: 3, title: '민원 접수 확인', message: '강의실 에어컨 고장 민원이 접수되었습니다.', time: '3시간 전', read: true },
@@ -136,7 +228,7 @@ export const notifications = [
 ];
 
 // FAQ 데이터
-export const faqData = [
+export const faqData: FAQ[] = [
   { id: 1, question: '장학금 신청 기간은 언제인가요?', answer: '매 학기 시작 1달 전 공지사항을 확인해주세요.' },
   { id: 2, question: '휴학 신청 방법은?', answer: '학생 포털 시스템 > 학적 변동 메뉴에서 가능합니다.' },
   { id: 3, question: '증명서 발급은 어디서 하나요?', answer: '본관 1층 무인발급기 또는 인터넷 증명발급 사이트를 이용해주세요.' },
@@ -145,7 +237,7 @@ export const faqData = [
 ];
 
 // Evidence 데이터
-export const evidenceData = [
+export const evidenceData: Evidence[] = [
   { course: '창의적문제해결', task: '팀 프로젝트 과제', score: 'A+', competency: 'S', semester: '2024-2학기', date: '2024.12.10' },
   { course: '전공실무기초', task: '실습 과제', score: 'A', competency: 'T', semester: '2024-2학기', date: '2024.12.08' },
   { course: '리더십과 소통', task: '발표 과제', score: 'A+', competency: 'R', semester: '2024-2학기', date: '2024.11.25' },
