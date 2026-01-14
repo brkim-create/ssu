@@ -98,6 +98,7 @@ export default function StudentDashboard() {
       {/* Screen Content */}
       {activeTab === "home" && (
         <HomeScreen
+          authTokens={authTokens}
           onShareClick={handleShareClick}
           onSearchClick={handleSearchClick}
         />
