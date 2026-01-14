@@ -111,18 +111,25 @@ export default function ComplaintScreen({
     }
   };
 
-  // [수정] 카테고리 클릭 핸들러: 특정 카테고리는 챗봇, 나머지는 글쓰기 창 연결
+  // [수정] 카테고리 클릭 핸들러: 챗봇 플로우 vs 글쓰기 모달
   const handleCategoryClick = (cat: ComplaintCategory) => {
-    // 챗봇으로 연결할 카테고리 목록
-    const chatEnabledCategories = ["학사 및 수업", "진로 및 취업"];
+    // 챗봇으로 연결할 카테고리 목록 (Gemini API + 기존 단계별 플로우 모두 포함)
+    const chatEnabledCategories = [
+      "학사 및 수업",   // Gemini API
+      "진로 및 취업",   // Gemini API
+      "시설 및 환경",   // 기존 단계별 플로우
+      "학생 장학",      // 기존 단계별 플로우
+      "학생 복지",      // 기존 단계별 플로우
+      "수업 및 학사"    // 기존 단계별 플로우
+    ];
 
     if (chatEnabledCategories.includes(cat.name)) {
-      // 1. 학사/진로 -> Gemini 챗봇 열기
+      // 챗봇 모달 열기
       setChatCategory(cat.name);
       setIsChatModalOpen(true);
       onChatOpen(cat.name);
     } else {
-      // 2. 그 외 -> 기존 글쓰기 모달 열기
+      // 그 외 -> 기존 글쓰기 모달 열기
       setSelectedCategory(cat);
       setShowComplaintModal(true);
     }
