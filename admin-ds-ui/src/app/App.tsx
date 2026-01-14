@@ -79,8 +79,7 @@ import {
   teachingMethodData,
 } from "../data/mockData";
 
-import logoImage from '../assets/logo.png';
-
+import logoImage from "../assets/logo.png";
 
 export default function AdminDashboard() {
   const [activeCategory, setActiveCategory] = useState("dashboard"); // 대분류
