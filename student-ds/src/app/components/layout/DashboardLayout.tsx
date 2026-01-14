@@ -4,31 +4,28 @@ import {
   FileText,
   Bell,
   User,
-  Share2,
-  Search,
 } from "lucide-react";
-import logoImage from "../../../assets/logo.png";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
   activeTab: string;
   onTabChange: (tab: string) => void;
-  onShareClick: () => void;
-  onSearchClick: () => void;
-  title?: string;
-  subtitle?: string;
-  headerContent?: React.ReactNode;
 }
 
+/**
+ * DashboardLayout - 앱의 기본 레이아웃 컴포넌트
+ *
+ * 역할:
+ * - 최상위 컨테이너 래퍼 (max-width, 배경색 등)
+ * - 하단 네비게이션 바 (Bottom Tab Navigation)
+ * - 각 화면의 콘텐츠는 children으로 전달
+ *
+ * 헤더는 각 화면별로 다르므로 children에 포함됩니다.
+ */
 export default function DashboardLayout({
   children,
   activeTab,
   onTabChange,
-  onShareClick,
-  onSearchClick,
-  title,
-  subtitle,
-  headerContent,
 }: DashboardLayoutProps) {
   const tabs = [
     { id: "home", icon: Home, label: "홈" },
@@ -39,43 +36,8 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-gray-100 max-w-md mx-auto relative overflow-hidden">
+      {/* Main Content Area */}
       <div className="pb-20">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1">
-              <img
-                src={logoImage}
-                alt="Logo"
-                className="w-7 h-7 object-contain"
-              />
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={onShareClick}
-                className="p-2 hover:bg-white/20 rounded-lg transition-all"
-              >
-                <Share2 className="w-6 h-6" />
-              </button>
-              <button
-                onClick={onSearchClick}
-                className="p-2 hover:bg-white/20 rounded-lg transition-all"
-              >
-                <Search className="w-6 h-6" />
-              </button>
-              <button className="p-2 hover:bg-white/20 rounded-lg transition-all">
-                <Bell className="w-6 h-6" />
-              </button>
-            </div>
-          </div>
-
-          {title && <h2 className="font-bold text-xl">{title}</h2>}
-          {subtitle && <p className="text-sm opacity-90">{subtitle}</p>}
-
-          {headerContent}
-        </div>
-
-        {/* Main Content */}
         {children}
       </div>
 

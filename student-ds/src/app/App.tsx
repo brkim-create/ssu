@@ -8,7 +8,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import {
-  Home,
   FileText,
   Bell,
   User,
@@ -16,22 +15,28 @@ import {
   ChevronRight,
   ChevronDown,
   X,
-  Search,
   Settings,
   Download,
   Trophy,
   Star,
   Check,
   TrendingUp,
-  Share2,
   LogOut,
 } from "lucide-react";
 import Login from "./Login";
 import { checkAutoLogin, clearAuthTokens, AuthTokens } from "./utils/auth";
+
+// Layout Components
+import DashboardLayout from "./components/layout/DashboardLayout";
+import Header from "./components/layout/Header";
+
+// Dashboard Components
 import ChatModal from "./components/chatbot/ChatModal";
 import StatsOverview from "./components/dashboard/StatsOverview";
 import ComplaintList from "./components/dashboard/ComplaintList";
 import WriteComplaintModal from "./components/dashboard/WriteComplaintModal";
+
+// Data
 import {
   radarData,
   radarDataPO,
@@ -43,8 +48,6 @@ import {
   faqData,
   evidenceData,
 } from "../data/mockData";
-
-import logoImage from "../assets/logo.png";
 
 export default function StudentDashboard() {
   // ============================================================
@@ -96,28 +99,15 @@ export default function StudentDashboard() {
   // ============================================================
   // Filter States
   // ============================================================
-  const [evidenceFilter, setEvidenceFilter] = useState<string>("전체");
-  const [evidenceSort, setEvidenceSort] = useState<string>("최신순");
   const [complaintStatusFilter, setComplaintStatusFilter] = useState<string>("전체");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [periodFilter, setPeriodFilter] = useState("전체");
-  const [downloadPeriod, setDownloadPeriod] = useState("전체");
-  const [downloadFormat, setDownloadFormat] = useState("PDF");
 
   // ============================================================
   // Success Modal State
   // ============================================================
   const [successMessage, setSuccessMessage] = useState("");
   const [successType, setSuccessType] = useState<"complete" | "submit">("complete");
-
-  // ============================================================
-  // Notification Settings
-  // ============================================================
-  const [notificationChannels, setNotificationChannels] = useState({
-    pwa: true,
-    kakao: false,
-    email: true,
-  });
 
   // ============================================================
   // Complaint Rating State
@@ -157,8 +147,11 @@ export default function StudentDashboard() {
   };
 
   // ============================================================
-  // Event Handlers
+  // Common Handler Functions
   // ============================================================
+  const handleShareClick = () => setShowShareModal(true);
+  const handleSearchClick = () => setShowSearchModal(true);
+
   const handleCloseComplaintListModal = () => {
     setShowComplaintListModal(false);
     setSearchKeyword("");
@@ -201,44 +194,34 @@ export default function StudentDashboard() {
   };
 
   // ============================================================
-  // Home Screen Component
+  // Home Screen Content
   // ============================================================
-  const HomeScreen = () => (
-    <div className="pb-4">
-      <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4 rounded-[0px]">
-        <div className="flex items-center justify-between mb-4">
-          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1">
-            <img src={logoImage} alt="Logo" className="w-7 h-7 object-contain" />
+  const HomeScreenContent = () => (
+    <>
+      {/* Welcome Card */}
+      <div className="bg-white/20 backdrop-blur rounded-2xl p-4 mt-2">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm opacity-90">환영합니다</p>
+            <p className="font-bold text-lg text-[24px]">김수성 님</p>
           </div>
-          <div className="flex items-center gap-3">
-            <button onClick={() => setShowShareModal(true)} className="p-2 hover:bg-white/20 rounded-lg transition-all">
-              <Share2 className="w-6 h-6" />
-            </button>
-            <button onClick={() => setShowSearchModal(true)} className="p-2 hover:bg-white/20 rounded-lg transition-all">
-              <Search className="w-6 h-6" />
-            </button>
-            <button className="p-2 hover:bg-white/20 rounded-lg transition-all">
-              <Bell className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-
-        <div className="bg-white/20 backdrop-blur rounded-2xl p-4 mt-2">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-sm opacity-90">환영합니다</p>
-              <p className="font-bold text-lg text-[24px]">김수성 님</p>
-            </div>
-            <div className="text-right">
-              <p className="text-sm opacity-90 mb-1">핵심 역량 점수</p>
-              <div className="flex items-end gap-2 justify-end">
-                <span className="text-4xl font-bold text-[32px]">81.3</span>
-                <span className="text-lg mb-1 text-[16px]">/ 100</span>
-              </div>
+          <div className="text-right">
+            <p className="text-sm opacity-90 mb-1">핵심 역량 점수</p>
+            <div className="flex items-end gap-2 justify-end">
+              <span className="text-4xl font-bold text-[32px]">81.3</span>
+              <span className="text-lg mb-1 text-[16px]">/ 100</span>
             </div>
           </div>
         </div>
       </div>
+    </>
+  );
+
+  const HomeScreen = () => (
+    <div className="pb-4">
+      <Header onShareClick={handleShareClick} onSearchClick={handleSearchClick}>
+        <HomeScreenContent />
+      </Header>
 
       {/* Radar Chart Section */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
@@ -464,36 +447,22 @@ export default function StudentDashboard() {
   );
 
   // ============================================================
-  // Complaint Screen Component (Refactored)
+  // Complaint Screen
   // ============================================================
   const ComplaintScreen = () => (
     <div className="pb-4">
-      <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1">
-            <img src={logoImage} alt="Logo" className="w-7 h-7 object-contain" />
-          </div>
-          <div className="flex items-center gap-3">
-            <button onClick={() => setShowShareModal(true)} className="p-2 hover:bg-white/20 rounded-lg transition-all">
-              <Share2 className="w-6 h-6" />
-            </button>
-            <button onClick={() => setShowSearchModal(true)} className="p-2 hover:bg-white/20 rounded-lg transition-all">
-              <Search className="w-6 h-6" />
-            </button>
-            <button className="p-2 hover:bg-white/20 rounded-lg transition-all">
-              <Bell className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-        <h2 className="font-bold text-xl">민원 센터</h2>
-        <p className="text-sm opacity-90 mb-3">문제가 있다면 알려주세요.</p>
-
+      <Header
+        onShareClick={handleShareClick}
+        onSearchClick={handleSearchClick}
+        title="민원 센터"
+        subtitle="문제가 있다면 알려주세요."
+      >
         <StatsOverview
           stats={complaintStats}
           completionRate={completionRate}
           onStatClick={handleStatClick}
         />
-      </div>
+      </Header>
 
       <ComplaintList
         categories={complaintCategories}
@@ -568,30 +537,16 @@ export default function StudentDashboard() {
   );
 
   // ============================================================
-  // Notification Screen Component
+  // Notification Screen
   // ============================================================
   const NotificationScreen = () => (
     <div className="pb-4">
-      <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1">
-            <img src={logoImage} alt="Logo" className="w-7 h-7 object-contain" />
-          </div>
-          <div className="flex items-center gap-3">
-            <button onClick={() => setShowShareModal(true)} className="p-2 hover:bg-white/20 rounded-lg transition-all">
-              <Share2 className="w-6 h-6" />
-            </button>
-            <button onClick={() => setShowSearchModal(true)} className="p-2 hover:bg-white/20 rounded-lg transition-all">
-              <Search className="w-6 h-6" />
-            </button>
-            <button className="p-2 hover:bg-white/20 rounded-lg transition-all">
-              <Bell className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-        <h2 className="font-bold text-xl">알림</h2>
-        <p className="text-sm opacity-90">주요 소식을 확인하세요</p>
-      </div>
+      <Header
+        onShareClick={handleShareClick}
+        onSearchClick={handleSearchClick}
+        title="알림"
+        subtitle="주요 소식을 확인하세요"
+      />
 
       <div className="mx-4 mt-4 space-y-3">
         {notifications.map((notif) => (
@@ -616,29 +571,16 @@ export default function StudentDashboard() {
   );
 
   // ============================================================
-  // MyPage Screen Component
+  // MyPage Screen
   // ============================================================
   const MyPageScreen = () => (
     <div className="pb-4">
-      <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4 pb-16">
-        <div className="flex items-center justify-between mb-4">
-          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1">
-            <img src={logoImage} alt="Logo" className="w-7 h-7 object-contain" />
-          </div>
-          <div className="flex items-center gap-3">
-            <button onClick={() => setShowShareModal(true)} className="p-2 hover:bg-white/20 rounded-lg transition-all">
-              <Share2 className="w-6 h-6" />
-            </button>
-            <button onClick={() => setShowSearchModal(true)} className="p-2 hover:bg-white/20 rounded-lg transition-all">
-              <Search className="w-6 h-6" />
-            </button>
-            <button className="p-2 hover:bg-white/20 rounded-lg transition-all">
-              <Bell className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-        <h2 className="font-bold text-xl">마이페이지</h2>
-      </div>
+      <Header
+        onShareClick={handleShareClick}
+        onSearchClick={handleSearchClick}
+        title="마이페이지"
+        extraPadding="pb-16"
+      />
 
       <div className="mx-4 -mt-10 bg-white rounded-2xl shadow-lg p-4">
         <div className="flex items-center gap-4">
@@ -710,18 +652,17 @@ export default function StudentDashboard() {
   }
 
   // ============================================================
-  // Main Render
+  // Main Render - Using DashboardLayout
   // ============================================================
   return (
-    <div className="min-h-screen bg-gray-100 max-w-md mx-auto relative overflow-hidden">
-      <div className="pb-20">
-        {activeTab === "home" && <HomeScreen />}
-        {activeTab === "complaint" && <ComplaintScreen />}
-        {activeTab === "notification" && <NotificationScreen />}
-        {activeTab === "mypage" && <MyPageScreen />}
-      </div>
+    <DashboardLayout activeTab={activeTab} onTabChange={setActiveTab}>
+      {/* Screen Content */}
+      {activeTab === "home" && <HomeScreen />}
+      {activeTab === "complaint" && <ComplaintScreen />}
+      {activeTab === "notification" && <NotificationScreen />}
+      {activeTab === "mypage" && <MyPageScreen />}
 
-      {/* ChatModal */}
+      {/* Global Modals */}
       <ChatModal
         isOpen={showChatModal}
         onClose={() => {
@@ -735,32 +676,6 @@ export default function StudentDashboard() {
           setShowSuccessModal(true);
         }}
       />
-
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 max-w-md mx-auto">
-        <div className="flex items-center justify-around py-2">
-          {[
-            { id: "home", icon: Home, label: "홈" },
-            { id: "complaint", icon: FileText, label: "민원" },
-            { id: "notification", icon: Bell, label: "알림", badge: 2 },
-            { id: "mypage", icon: User, label: "MY" },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex flex-col items-center py-2 px-4 relative ${activeTab === tab.id ? "text-pink-500" : "text-gray-400"}`}
-            >
-              <tab.icon className="w-6 h-6" />
-              <span className="text-xs mt-1">{tab.label}</span>
-              {tab.badge && (
-                <div className="absolute -top-1 right-2 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs">{tab.badge}</span>
-                </div>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
+    </DashboardLayout>
   );
 }
