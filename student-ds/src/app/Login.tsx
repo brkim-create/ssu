@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { Eye, EyeOff, LogIn } from 'lucide-react';
-import logoImage from 'figma:asset/a5f360b8c95401cf229a69f0c0d2de04cefbe043.png';
-import { mockSSOLogin, saveAuthTokens, AuthTokens } from './utils/auth';
+import React, { useState } from "react";
+import { Eye, EyeOff, LogIn } from "lucide-react";
+import logoImage from '../assets/logo.png';
+import { mockSSOLogin, saveAuthTokens, AuthTokens } from "./utils/auth";
 
 interface LoginProps {
   onLoginSuccess: (tokens: AuthTokens) => void;
 }
 
 export default function Login({ onLoginSuccess }: LoginProps) {
-  const [userType, setUserType] = useState<'student' | 'professor'>('student');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState<"student" | "professor">("student");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setIsLoading(true);
 
     try {
@@ -29,10 +29,10 @@ export default function Login({ onLoginSuccess }: LoginProps) {
         saveAuthTokens(tokens);
         onLoginSuccess(tokens);
       } else {
-        setError(result.error || '로그인에 실패했습니다.');
+        setError(result.error || "로그인에 실패했습니다.");
       }
     } catch (err) {
-      setError('서버와의 연결에 실패했습니다.');
+      setError("서버와의 연결에 실패했습니다.");
     } finally {
       setIsLoading(false);
     }
@@ -44,7 +44,11 @@ export default function Login({ onLoginSuccess }: LoginProps) {
         {/* 헤더 */}
         <div className="text-center mb-8">
           <div className="mb-4 flex justify-center">
-            <img src={logoImage} alt="대학교 로고" className="h-20 w-20 object-contain" />
+            <img
+              src={logoImage}
+              alt="대학교 로고"
+              className="h-20 w-20 object-contain"
+            />
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-red-500 via-pink-500 to-orange-500 bg-clip-text text-transparent mb-2">
             대학교 통합 포털
@@ -58,25 +62,29 @@ export default function Login({ onLoginSuccess }: LoginProps) {
           <div className="flex border-b border-gray-200 mb-6">
             <button
               type="button"
-              onClick={() => setUserType('student')}
+              onClick={() => setUserType("student")}
               className={`relative flex-1 px-4 py-3 font-medium transition-all ${
-                userType === 'student' ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700'
+                userType === "student"
+                  ? "text-gray-900"
+                  : "text-gray-500 hover:text-gray-700"
               }`}
             >
               학생
-              {userType === 'student' && (
+              {userType === "student" && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-500 to-orange-500"></div>
               )}
             </button>
             <button
               type="button"
-              onClick={() => setUserType('professor')}
+              onClick={() => setUserType("professor")}
               className={`relative flex-1 px-4 py-3 font-medium transition-all ${
-                userType === 'professor' ? 'text-gray-900' : 'text-gray-500 hover:text-gray-700'
+                userType === "professor"
+                  ? "text-gray-900"
+                  : "text-gray-500 hover:text-gray-700"
               }`}
             >
               교수
-              {userType === 'professor' && (
+              {userType === "professor" && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-500 to-orange-500"></div>
               )}
             </button>
@@ -87,13 +95,17 @@ export default function Login({ onLoginSuccess }: LoginProps) {
             {/* 아이디 입력 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {userType === 'student' ? '학번' : '교번'}
+                {userType === "student" ? "학번" : "교번"}
               </label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder={userType === 'student' ? '학번을 입력하세요' : '교번을 입력하세요'}
+                placeholder={
+                  userType === "student"
+                    ? "학번을 입력하세요"
+                    : "교번을 입력하세요"
+                }
                 className="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-all"
                 required
               />
@@ -106,7 +118,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
               </label>
               <div className="relative">
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="비밀번호를 입력하세요"
@@ -118,7 +130,11 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
@@ -132,7 +148,10 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 className="w-4 h-4 text-red-500 border-gray-300 rounded focus:ring-red-500"
               />
-              <label htmlFor="rememberMe" className="ml-2 text-sm text-gray-600 cursor-pointer">
+              <label
+                htmlFor="rememberMe"
+                className="ml-2 text-sm text-gray-600 cursor-pointer"
+              >
                 자동 로그인
               </label>
             </div>
