@@ -7,7 +7,7 @@ import {
   PolarRadiusAxis,
   ResponsiveContainer,
 } from "recharts";
-import { Trophy, Star, Check, TrendingUp } from "lucide-react";
+import { Trophy, Star, Check, TrendingUp, X } from "lucide-react";
 import Header from "../layout/Header";
 import CompetencyDetailModal from "../dashboard/CompetencyDetailModal";
 import {
@@ -21,7 +21,6 @@ import {
 interface HomeScreenProps {
   onShareClick: () => void;
   onSearchClick: () => void;
-  onShowEvidenceModal: () => void;
 }
 
 /**
@@ -35,11 +34,12 @@ interface HomeScreenProps {
 export default function HomeScreen({
   onShareClick,
   onSearchClick,
-  onShowEvidenceModal,
 }: HomeScreenProps) {
+  // Local States
   const [radarToggle, setRadarToggle] = useState<"core" | "po">("core");
   const [selectedStar, setSelectedStar] = useState<string | null>(null);
   const [selectedPO, setSelectedPO] = useState<string | null>(null);
+  const [showEvidenceModal, setShowEvidenceModal] = useState(false);
 
   // Grade Badge Config
   const gradeBadge: Record<string, { bg: string; icon: React.ReactNode }> = {
@@ -241,7 +241,7 @@ export default function HomeScreen({
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-bold text-gray-800">Evidence 활동 내역</h3>
           <button
-            onClick={onShowEvidenceModal}
+            onClick={() => setShowEvidenceModal(true)}
             className="text-sm text-pink-500 font-medium"
           >
             전체 보기
@@ -289,6 +289,48 @@ export default function HomeScreen({
         details={poDetails}
         onClose={() => setSelectedPO(null)}
       />
+
+      {/* Evidence Modal */}
+      {showEvidenceModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
+          <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto animate-slide-up">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-xl">Evidence 활동 내역</h3>
+              <button onClick={() => setShowEvidenceModal(false)}>
+                <X className="w-6 h-6 text-gray-400" />
+              </button>
+            </div>
+            <div className="space-y-3">
+              {evidenceData.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold"
+                      style={{
+                        backgroundColor:
+                          starDetails[item.competency as keyof typeof starDetails].color,
+                      }}
+                    >
+                      {item.competency}
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-800">{item.course}</p>
+                      <p className="text-sm text-gray-500">{item.task}</p>
+                      <p className="text-xs text-gray-400 mt-1">
+                        {item.semester} · {item.date}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="font-bold text-green-600 text-lg">{item.score}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
