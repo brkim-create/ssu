@@ -74,6 +74,7 @@ export default function StudentDashboard() {
   // ============================================================
   const handleShareClick = () => setShowShareModal(true);
   const handleSearchClick = () => setShowSearchModal(true);
+  const handleBellClick = () => setActiveTab("notification");
 
   const handleChatOpen = (category: string) => {
     setCurrentCategory(category);
@@ -121,12 +122,14 @@ export default function StudentDashboard() {
           authTokens={authTokens}
           onShareClick={handleShareClick}
           onSearchClick={handleSearchClick}
+          onBellClick={handleBellClick}
         />
       )}
       {activeTab === "complaint" && (
         <ComplaintScreen
           onShareClick={handleShareClick}
           onSearchClick={handleSearchClick}
+          onBellClick={handleBellClick}
           onChatOpen={handleChatOpen}
         />
       )}
@@ -134,6 +137,7 @@ export default function StudentDashboard() {
         <NotificationScreen
           onShareClick={handleShareClick}
           onSearchClick={handleSearchClick}
+          onBellClick={handleBellClick}
         />
       )}
       {activeTab === "mypage" && (
@@ -141,6 +145,7 @@ export default function StudentDashboard() {
           authTokens={authTokens}
           onShareClick={handleShareClick}
           onSearchClick={handleSearchClick}
+          onBellClick={handleBellClick}
           onLogout={handleLogout}
           complaints={complaints}
           onComplaintClick={handleComplaintClick}

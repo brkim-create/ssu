@@ -6,6 +6,7 @@ import { notifications } from "../../../data/mockData";
 interface NotificationScreenProps {
   onShareClick: () => void;
   onSearchClick: () => void;
+  onBellClick: () => void;
 }
 
 /**
@@ -18,12 +19,14 @@ interface NotificationScreenProps {
 export default function NotificationScreen({
   onShareClick,
   onSearchClick,
+  onBellClick,
 }: NotificationScreenProps) {
   return (
     <div className="pb-4">
       <Header
         onShareClick={onShareClick}
         onSearchClick={onSearchClick}
+        onBellClick={onBellClick}
         title="알림"
         subtitle="주요 소식을 확인하세요"
       />

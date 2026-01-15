@@ -21,6 +21,7 @@ interface MyPageScreenProps {
   authTokens: AuthTokens | null;
   onShareClick: () => void;
   onSearchClick: () => void;
+  onBellClick: () => void;
   onLogout: () => void;
   complaints: Complaint[];
   onComplaintClick: (complaint: Complaint) => void;
@@ -41,6 +42,7 @@ export default function MyPageScreen({
   authTokens,
   onShareClick,
   onSearchClick,
+  onBellClick,
   onLogout,
   complaints,
   onComplaintClick,
@@ -66,6 +68,7 @@ export default function MyPageScreen({
       <Header
         onShareClick={onShareClick}
         onSearchClick={onSearchClick}
+        onBellClick={onBellClick}
         title="마이페이지"
         extraPadding="pb-16"
       />

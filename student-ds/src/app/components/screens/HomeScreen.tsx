@@ -23,6 +23,7 @@ import {
 interface HomeScreenProps {
   onShareClick: () => void;
   onSearchClick: () => void;
+  onBellClick: () => void;
 }
 
 /**
@@ -36,6 +37,7 @@ interface HomeScreenProps {
 export default function HomeScreen({
   onShareClick,
   onSearchClick,
+  onBellClick,
 }: HomeScreenProps) {
   // Local States
   const [radarToggle, setRadarToggle] = useState<"core" | "po">("core");
@@ -92,7 +94,10 @@ export default function HomeScreen({
               <PolarGrid stroke="#e5e7eb" />
               <PolarAngleAxis
                 dataKey="subject"
-                tick={{ fontSize: radarToggle === "po" ? 10 : 12, fill: "#374151" }}
+                tick={{
+                  fontSize: radarToggle === "po" ? 10 : 12,
+                  fill: "#374151",
+                }}
               />
               <PolarRadiusAxis
                 angle={90}
@@ -164,7 +169,10 @@ export default function HomeScreen({
                     <p className="text-sm text-gray-600">{value.name}</p>
                   </div>
                   <div className="flex flex-col items-center justify-center gap-2">
-                    <p className="text-2xl font-bold" style={{ color: "#0f172a" }}>
+                    <p
+                      className="text-2xl font-bold"
+                      style={{ color: "#0f172a" }}
+                    >
                       {value.score}점
                     </p>
                     <div
@@ -199,10 +207,14 @@ export default function HomeScreen({
                     >
                       {value.category}
                     </div>
-                    <p className="text-sm font-medium text-gray-800">{value.name}</p>
+                    <p className="text-sm font-medium text-gray-800">
+                      {value.name}
+                    </p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <p className="text-lg font-bold text-gray-800">{value.score}점</p>
+                    <p className="text-lg font-bold text-gray-800">
+                      {value.score}점
+                    </p>
                     <div
                       className={`${gradeBadge[value.grade].bg} ${
                         value.grade === "보통" ? "text-[#0f172a]" : "text-white"
@@ -241,13 +253,16 @@ export default function HomeScreen({
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
                   style={{
                     backgroundColor:
-                      starDetails[item.competency as keyof typeof starDetails].color,
+                      starDetails[item.competency as keyof typeof starDetails]
+                        .color,
                   }}
                 >
                   {item.competency}
                 </div>
                 <div>
-                  <p className="font-medium text-gray-800 text-sm">{item.course}</p>
+                  <p className="font-medium text-gray-800 text-sm">
+                    {item.course}
+                  </p>
                   <p className="text-xs text-gray-500">{item.task}</p>
                 </div>
               </div>
