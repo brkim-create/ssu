@@ -1,4 +1,4 @@
-import { X, Share2 } from "lucide-react";
+import { X, MessageCircle, Copy, Download } from "lucide-react";
 
 interface ShareModalProps {
   isOpen: boolean;
@@ -9,74 +9,53 @@ interface ShareModalProps {
  * ShareModal - 공유하기 모달
  *
  * 역할:
- * - 카카오톡, 페이스북, 트위터, 링크복사 공유 옵션 제공
+ * - 내 역량 리포트 공유 (카카오톡, 링크복사, PDF 다운로드)
  */
 export default function ShareModal({ isOpen, onClose }: ShareModalProps) {
   if (!isOpen) return null;
 
-  const handleShare = (platform: string) => {
-    if (platform === "link") {
-      navigator.clipboard.writeText(window.location.href);
-      alert("링크가 복사되었습니다.");
-    } else {
-      alert(`${platform}으로 공유합니다.`);
-    }
-    onClose();
-  };
-
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
       <div className="bg-white w-full max-w-md rounded-t-3xl p-6 animate-slide-up">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="font-bold text-xl">공유하기</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-bold text-xl">내 역량 리포트 공유</h3>
           <button onClick={onClose}>
             <X className="w-6 h-6 text-gray-400" />
           </button>
         </div>
-        <div className="grid grid-cols-4 gap-4">
-          <button
-            onClick={() => handleShare("카카오톡")}
-            className="flex flex-col items-center gap-2"
-          >
-            <div className="w-14 h-14 bg-yellow-400 rounded-full flex items-center justify-center">
-              <span className="text-2xl">💬</span>
-            </div>
-            <span className="text-xs text-gray-600">카카오톡</span>
+
+        <p className="text-sm text-gray-600 mb-6">역량 점수와 리포트를 공유하세요</p>
+
+        <div className="space-y-3">
+          <button className="w-full py-4 bg-yellow-400 text-gray-800 rounded-xl font-bold flex items-center justify-center gap-3 hover:bg-yellow-500 transition-all">
+            <MessageCircle className="w-5 h-5" />
+            카카오톡으로 공유
           </button>
+
           <button
-            onClick={() => handleShare("페이스북")}
-            className="flex flex-col items-center gap-2"
+            onClick={() => {
+              navigator.clipboard.writeText(
+                "https://student-dashboard.example.com/report/김수성"
+              );
+              alert("링크가 복사되었습니다!");
+            }}
+            className="w-full py-4 bg-blue-50 text-blue-600 rounded-xl font-bold flex items-center justify-center gap-3 hover:bg-blue-100 transition-all"
           >
-            <div className="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center">
-              <span className="text-2xl text-white">f</span>
-            </div>
-            <span className="text-xs text-gray-600">페이스북</span>
+            <Copy className="w-5 h-5" />
+            링크 복사
           </button>
-          <button
-            onClick={() => handleShare("트위터")}
-            className="flex flex-col items-center gap-2"
-          >
-            <div className="w-14 h-14 bg-sky-500 rounded-full flex items-center justify-center">
-              <span className="text-2xl text-white">𝕏</span>
-            </div>
-            <span className="text-xs text-gray-600">트위터</span>
-          </button>
-          <button
-            onClick={() => handleShare("link")}
-            className="flex flex-col items-center gap-2"
-          >
-            <div className="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center">
-              <Share2 className="w-6 h-6 text-gray-600" />
-            </div>
-            <span className="text-xs text-gray-600">링크 복사</span>
+
+          <button className="w-full py-4 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-bold flex items-center justify-center gap-3 hover:opacity-90 transition-all">
+            <Download className="w-5 h-5" />
+            PDF로 다운로드
           </button>
         </div>
-        <button
-          onClick={onClose}
-          className="w-full mt-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium"
-        >
-          취소
-        </button>
+
+        <div className="mt-6 p-4 bg-gray-50 rounded-xl">
+          <p className="text-xs text-gray-500">
+            💡 공유된 리포트는 7일간 유효합니다
+          </p>
+        </div>
       </div>
     </div>
   );
