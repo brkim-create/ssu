@@ -97,7 +97,7 @@ export default function HomeScreen({
       {/* Radar Chart Section */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-gray-800">핵심 역량 진단</h3>
+          <h3 className="font-bold text-gray-800">종합 현황 레이더</h3>
         </div>
 
         <div className="flex gap-2 mb-4">
