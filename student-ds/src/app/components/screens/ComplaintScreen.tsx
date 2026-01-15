@@ -115,12 +115,10 @@ export default function ComplaintScreen({
   const handleCategoryClick = (cat: ComplaintCategory) => {
     // 챗봇으로 연결할 카테고리 목록 (Gemini API + 기존 단계별 플로우 모두 포함)
     const chatEnabledCategories = [
-      "학사 및 수업",   // Gemini API
-      "진로 및 취업",   // Gemini API
-      "시설 및 환경",   // 기존 단계별 플로우
-      "학생 장학",      // 기존 단계별 플로우
-      "학생 복지",      // 기존 단계별 플로우
-      "수업 및 학사"    // 기존 단계별 플로우
+      "학생 장학", // Gemini API
+      "수업 및 학사", // Gemini API
+      "시설 및 환경", // 기존 단계별 플로우
+      "학생 복지", // 기존 단계별 플로우
     ];
 
     if (chatEnabledCategories.includes(cat.name)) {

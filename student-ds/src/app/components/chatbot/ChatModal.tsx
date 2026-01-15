@@ -33,7 +33,7 @@ interface ChatMessage {
 }
 
 // Gemini API를 사용할 카테고리
-const GEMINI_CATEGORIES = ["학사 및 수업", "진로 및 취업"];
+const GEMINI_CATEGORIES = ["학생 장학", "수업 및 학사"];
 
 // ========== 기존 플로우용 정적 응답 함수들 ==========
 const getScholarshipAnswer = (
@@ -279,7 +279,10 @@ export default function ChatModal({
           <div className="bg-gradient-to-r from-orange-500 to-red-500 p-4 flex justify-between items-center text-white flex-shrink-0">
             <div className="flex items-center gap-2">
               <MessageCircle className="w-6 h-6" />
-              <h3 className="font-bold text-lg">{category} AI 상담</h3>
+              <div className="flex flex-col leading-tight">
+                <span className="font-bold text-lg">{category}</span>
+                <span className="text-sm opacity-90">챗봇</span>
+              </div>
             </div>
             <button
               onClick={handleClose}
