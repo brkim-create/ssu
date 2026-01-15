@@ -231,6 +231,7 @@ export default function ChatModal({
         },
         body: JSON.stringify({
           message: currentMessage,
+          category,
           history: validHistory.map((msg) => ({
             role: msg.type === "user" ? "user" : "model",
             parts: [{ text: msg.message }],

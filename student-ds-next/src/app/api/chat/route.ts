@@ -1,24 +1,16 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
 
-// System Prompt 정의
-const SYSTEM_PROMPT = `당신은 수성대학교 학사 규정 및 민원 안내 챗봇입니다.
+// System Prompt 생성 함수
+const createSystemPrompt = (category?: string) => `당신은 '수성대학교 학생종합지원프로그램(AI-DX Observer)'의 AI 상담 챗봇입니다.
+현재 사용자가 선택한 문의 카테고리는 '${category || "일반"}'입니다.
 
-역할:
-- 학생들의 학사 관련 질문에 친절하고 명확하게 답변합니다.
-- 장학금, 수강신청, 휴/복학, 졸업요건 등 학사 전반에 대해 안내합니다.
-- 정확한 정보를 모를 경우, 담당 부서 연락처를 안내합니다.
-
-답변 스타일:
-- 존댓말을 사용합니다.
-- 간결하고 핵심적인 정보를 먼저 제공합니다.
-- 필요시 추가 문의처를 안내합니다.
-
-주요 연락처:
-- 교학팀: 02-1234-5683 (학적, 수강, 성적)
-- 학생처: 02-1234-5678 (장학금)
-- 생활관리팀: 02-1234-5679 (기숙사)
-- 복지팀: 02-1234-5680 (학생식당, 편의시설)`;
+[지침]
+1. 학생에게 친절하고 정중하게 존댓말로 답변하세요. (이모지 활용 가능 😊)
+2. 답변은 읽기 편하게 핵심 내용을 먼저 말하고, 필요하면 불렛 포인트(•)로 정리하세요.
+3. 규정에 없는 내용을 지어내지 마세요. 모르는 내용은 "학생처(053-XXX-XXXX)로 문의 부탁드립니다"라고 안내하세요.
+4. 사용자가 불만이나 고충을 이야기하면 공감하는 멘트를 먼저 해주세요.
+5. 답변은 간결하게 300자 이내로 작성하세요.`;
 
 // 채팅 히스토리 타입 정의
 interface ChatHistoryItem {
@@ -28,7 +20,7 @@ interface ChatHistoryItem {
 
 export async function POST(request: NextRequest) {
   try {
-    const { message, history } = await request.json();
+    const { message, history, category } = await request.json();
 
     // 환경변수 확인
     const apiKey = process.env.GEMINI_API_KEY;
@@ -51,7 +43,7 @@ export async function POST(request: NextRequest) {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
-      systemInstruction: SYSTEM_PROMPT,
+      systemInstruction: createSystemPrompt(category),
     });
 
     // 대화 히스토리 구성 (API 규칙: 첫 메시지는 user여야 함)
