@@ -85,7 +85,7 @@ export default function HomeScreen({
     마스터: { bg: "bg-[#FAAF40]", icon: <Trophy className="w-3 h-3" /> },
     우수: { bg: "bg-[#EE3E42]", icon: <Star className="w-3 h-3" /> },
     보통: { bg: "bg-[#e2e8f0]", icon: <Check className="w-3 h-3" /> },
-    미흡: { bg: "bg-[#C5006F]", icon: <TrendingUp className="w-3 h-3" /> },
+    노력요망: { bg: "bg-[#C5006F]", icon: <TrendingUp className="w-3 h-3" /> },
   };
 
   return (
