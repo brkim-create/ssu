@@ -119,7 +119,7 @@ export default function HomeScreen({
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            전공능력(PO)
+            하위역량(PO)
           </button>
         </div>
 
