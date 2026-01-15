@@ -1,6 +1,6 @@
 // supabase/functions/gemini-chat/index.ts
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.1.3";
+import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.21.0";
 
 // CORS 헤더 설정 (모든 도메인 허용)
 const corsHeaders = {
@@ -49,7 +49,7 @@ serve(async (req: Request) => {
 
     // 5. Gemini 모델 초기화
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // 6. 시스템 프롬프트 (AI 페르소나 및 규칙)
     const systemPrompt = `
@@ -92,7 +92,7 @@ serve(async (req: Request) => {
     return new Response(
       JSON.stringify({
         error: '죄송합니다. 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
-        details: errorMessage
+        code: errorMessage
       }),
       {
         status: 500,

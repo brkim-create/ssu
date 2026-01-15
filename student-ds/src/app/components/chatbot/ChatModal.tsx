@@ -161,14 +161,23 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
     setChatHistory(newHistory);
 
     try {
+      // Gemini API History 규칙: 첫 번째 메시지는 반드시 'user' role이어야 함
+      // 현재 입력한 메시지는 제외 (API가 별도 처리)
+      const pastHistory = newHistory.slice(0, -1);
+
+      // 첫 메시지가 봇의 인사말이면 제거 (API 규칙 위반 방지)
+      const validHistory = pastHistory.length > 0 && pastHistory[0].type === 'bot'
+        ? pastHistory.slice(1)
+        : pastHistory;
+
       const { data, error } = await supabase.functions.invoke('gemini-chat', {
         body: {
           message: currentMessage,
           category: category,
-          history: newHistory.map(msg => ({
+          history: validHistory.map(msg => ({
             role: msg.type === 'user' ? 'user' : 'model',
             parts: [{ text: msg.message }]
-          })).slice(0, -1)
+          }))
         },
       });
 
