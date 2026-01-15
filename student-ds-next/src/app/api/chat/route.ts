@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     // Google Generative AI 클라이언트 초기화
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.5-flash",
       systemInstruction: SYSTEM_PROMPT,
     });
 
@@ -91,10 +91,7 @@ export async function POST(request: NextRequest) {
 
     // 에러 타입에 따른 응답
     if (error instanceof Error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json(
