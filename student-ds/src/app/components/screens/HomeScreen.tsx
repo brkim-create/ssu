@@ -272,10 +272,10 @@ export default function HomeScreen({
         </div>
       </div>
 
-      {/* Evidence Section */}
+      {/* Evidence 트래킹 */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4 mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-gray-800">Evidence 활동 내역</h3>
+          <h3 className="font-bold text-gray-800">Evidence 트래킹</h3>
           <button
             onClick={() => setShowEvidenceModal(true)}
             className="text-sm text-pink-500 font-medium"
