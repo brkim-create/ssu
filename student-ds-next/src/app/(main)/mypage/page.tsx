@@ -32,9 +32,20 @@ export default function MyPagePage() {
     { icon: LogOut, label: "로그아웃" },
   ];
 
+  // Header 아이콘 핸들러
+  const handleShareClick = () => console.log("Share clicked");
+  const handleSearchClick = () => console.log("Search clicked");
+  const handleBellClick = () => console.log("Bell clicked");
+
   return (
     <div className="pb-4">
-      <Header title="마이페이지" subtitle="내 정보를 관리하세요." />
+      <Header
+        title="마이페이지"
+        subtitle="내 정보를 관리하세요."
+        onShareClick={handleShareClick}
+        onSearchClick={handleSearchClick}
+        onBellClick={handleBellClick}
+      />
 
       {/* Profile Card */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-6">

@@ -1,6 +1,6 @@
 "use client";
 
-import { Share2, Search } from "lucide-react";
+import { Share2, Search, Bell } from "lucide-react";
 
 interface HeaderProps {
   children?: React.ReactNode;
@@ -8,12 +8,16 @@ interface HeaderProps {
   subtitle?: string;
   onShareClick?: () => void;
   onSearchClick?: () => void;
+  onBellClick?: () => void;
 }
 
 /**
  * Header - 공통 헤더 컴포넌트
  *
- * 각 화면별 커스텀 콘텐츠(children)를 포함할 수 있음
+ * 역할:
+ * - 로고 및 액션 버튼 (공유, 검색, 알림)
+ * - 선택적 제목/부제목
+ * - 선택적 커스텀 콘텐츠 (children)
  */
 export default function Header({
   children,
@@ -21,9 +25,10 @@ export default function Header({
   subtitle,
   onShareClick,
   onSearchClick,
+  onBellClick,
 }: HeaderProps) {
   return (
-    <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white px-4 py-6 rounded-b-3xl">
+    <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4">
       {/* Top Bar */}
       <div className="flex items-center justify-between mb-4">
         <div>
@@ -47,19 +52,28 @@ export default function Header({
           {onShareClick && (
             <button
               onClick={onShareClick}
-              className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
+              className="p-2 hover:bg-white/20 rounded-lg transition-all"
               aria-label="공유"
             >
-              <Share2 className="w-5 h-5" />
+              <Share2 className="w-6 h-6" />
             </button>
           )}
           {onSearchClick && (
             <button
               onClick={onSearchClick}
-              className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
+              className="p-2 hover:bg-white/20 rounded-lg transition-all"
               aria-label="검색"
             >
-              <Search className="w-5 h-5" />
+              <Search className="w-6 h-6" />
+            </button>
+          )}
+          {onBellClick && (
+            <button
+              onClick={onBellClick}
+              className="p-2 hover:bg-white/20 rounded-lg transition-all"
+              aria-label="알림"
+            >
+              <Bell className="w-6 h-6" />
             </button>
           )}
         </div>

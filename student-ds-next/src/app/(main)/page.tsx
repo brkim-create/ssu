@@ -31,6 +31,10 @@ export default function HomePage() {
     console.log("Search clicked");
   };
 
+  const handleBellClick = () => {
+    console.log("Bell clicked");
+  };
+
   const handleToggleChange = (toggle: "core" | "po") => {
     setRadarToggle(toggle);
   };
@@ -53,7 +57,11 @@ export default function HomePage() {
   return (
     <div className="pb-4">
       {/* Header with Welcome Card */}
-      <Header onShareClick={handleShareClick} onSearchClick={handleSearchClick}>
+      <Header
+        onShareClick={handleShareClick}
+        onSearchClick={handleSearchClick}
+        onBellClick={handleBellClick}
+      >
         <WelcomeCard userName="김수성" score={81.3} />
       </Header>
 

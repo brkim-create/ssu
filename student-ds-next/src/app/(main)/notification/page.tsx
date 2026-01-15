@@ -14,9 +14,20 @@ export default function NotificationPage() {
     { id: 4, title: "역량 진단 알림", message: "S(창의) 역량 진단이 시작되었습니다.", time: "1일 전", read: true },
   ];
 
+  // Header 아이콘 핸들러
+  const handleShareClick = () => console.log("Share clicked");
+  const handleSearchClick = () => console.log("Search clicked");
+  const handleBellClick = () => console.log("Bell clicked");
+
   return (
     <div className="pb-4">
-      <Header title="알림" subtitle="새로운 소식을 확인하세요." />
+      <Header
+        title="알림"
+        subtitle="새로운 소식을 확인하세요."
+        onShareClick={handleShareClick}
+        onSearchClick={handleSearchClick}
+        onBellClick={handleBellClick}
+      />
 
       <div className="mx-4 mt-4 space-y-3">
         {notifications.map((notification) => (

@@ -50,10 +50,21 @@ export default function ComplaintsPage() {
     // 민원 접수 완료 시 추가 처리 가능
   };
 
+  // Header 아이콘 핸들러
+  const handleShareClick = () => console.log("Share clicked");
+  const handleSearchClick = () => console.log("Search clicked");
+  const handleBellClick = () => console.log("Bell clicked");
+
   return (
     <div className="pb-4">
       {/* Header with Progress Bar */}
-      <Header title="민원 센터" subtitle="문제가 있다면 알려주세요.">
+      <Header
+        title="민원 센터"
+        subtitle="문제가 있다면 알려주세요."
+        onShareClick={handleShareClick}
+        onSearchClick={handleSearchClick}
+        onBellClick={handleBellClick}
+      >
         <ProgressBar completionRate={completionRate} />
       </Header>
 
