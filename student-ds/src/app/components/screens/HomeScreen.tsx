@@ -231,6 +231,47 @@ export default function HomeScreen({
         )}
       </div>
 
+      {/* 표준직무 적합도 */}
+      <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
+        <h3 className="font-bold text-gray-800 mb-3">표준직무 적합도</h3>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-gray-600">학과 취업자 평균 대비</span>
+          <span className="text-2xl font-bold text-orange-500">78%</span>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-3">
+          <div className="bg-gradient-to-r from-orange-400 to-red-500 h-3 rounded-full" style={{ width: '78%' }}></div>
+        </div>
+        <p className="text-xs text-gray-500 mt-2 mb-4">※ 나의 이수 역량과 학과 졸업생(취업자) 평균 역량 일치도</p>
+
+        {/* 추천 직무 적합도 */}
+        <div className="pt-4 border-t border-gray-100">
+          <h4 className="font-bold text-gray-800 mb-3">추천 직무</h4>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+              <div>
+                <div className="text-sm text-gray-600 mb-1">소프트웨어 개발자</div>
+                <div className="text-2xl font-bold text-gray-600">92%</div>
+              </div>
+              <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">적합</div>
+            </div>
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200/20">
+              <div>
+                <div className="text-sm text-gray-600 mb-1">데이터 분석가</div>
+                <div className="text-2xl font-bold text-gray-500">85%</div>
+              </div>
+              <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">적합</div>
+            </div>
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200/20">
+              <div>
+                <div className="text-sm text-gray-600 mb-1">IT 컨설턴트</div>
+                <div className="text-2xl font-bold text-gray-500">78%</div>
+              </div>
+              <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">보통</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Evidence Section */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4 mb-4">
         <div className="flex items-center justify-between mb-3">
