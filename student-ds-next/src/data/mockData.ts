@@ -49,6 +49,7 @@ export interface ComplaintAttachment {
 
 export interface Complaint {
   id: number;
+  studentId: string; // 작성자 학번
   title: string;
   status: "접수" | "처리중" | "완료";
   date: string;
@@ -64,6 +65,9 @@ export interface Complaint {
   isRated: boolean;
   rating?: number;
 }
+
+// 현재 로그인한 사용자 (더미)
+export const CURRENT_STUDENT_ID = "202012345";
 
 export interface Notification {
   id: number;
@@ -346,6 +350,7 @@ export const complaintCategories: ComplaintCategory[] = [
 export const complaints: Complaint[] = [
   {
     id: 1,
+    studentId: "202012345", // 현재 사용자
     title: "강의실 에어컨 고장",
     status: "처리중",
     date: "2025.01.15",
@@ -361,6 +366,7 @@ export const complaints: Complaint[] = [
   },
   {
     id: 2,
+    studentId: "202012345", // 현재 사용자
     title: "장학금 신청 기간 문의",
     status: "완료",
     date: "2025.01.14",
@@ -380,6 +386,7 @@ export const complaints: Complaint[] = [
   },
   {
     id: 3,
+    studentId: "202098765", // 다른 사용자
     title: "휴학 신청 방법",
     status: "접수",
     date: "2025.01.13",
@@ -393,6 +400,7 @@ export const complaints: Complaint[] = [
   },
   {
     id: 4,
+    studentId: "202012345", // 현재 사용자
     title: "기숙사 식당 메뉴",
     status: "처리중",
     date: "2025.01.12",
@@ -408,6 +416,7 @@ export const complaints: Complaint[] = [
   },
   {
     id: 5,
+    studentId: "202012345", // 현재 사용자
     title: "도서관 와이파이 연결",
     status: "완료",
     date: "2025.01.11",

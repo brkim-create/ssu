@@ -1,17 +1,35 @@
 "use client";
 
+import { useState } from "react";
 import { User, Settings, FileText, LogOut, ChevronRight } from "lucide-react";
 import Header from "@/components/common/Header";
+import ComplaintListModal from "@/components/modals/ComplaintListModal";
+import { complaints, CURRENT_STUDENT_ID } from "@/data/mockData";
 
 /**
  * MyPagePage - 마이페이지
  */
 export default function MyPagePage() {
+  const [showComplaintModal, setShowComplaintModal] = useState(false);
+
+  // 현재 사용자의 민원만 필터링
+  const myComplaints = complaints.filter(
+    (c) => c.studentId === CURRENT_STUDENT_ID
+  );
+
+  const handleMenuClick = (label: string) => {
+    if (label === "민원 내역") {
+      setShowComplaintModal(true);
+    } else {
+      console.log(`Clicked: ${label}`);
+    }
+  };
+
   const menuItems = [
-    { icon: User, label: "내 정보 수정", href: "#" },
-    { icon: FileText, label: "민원 내역", href: "#" },
-    { icon: Settings, label: "알림 설정", href: "#" },
-    { icon: LogOut, label: "로그아웃", href: "#" },
+    { icon: User, label: "내 정보 수정" },
+    { icon: FileText, label: "민원 내역" },
+    { icon: Settings, label: "알림 설정" },
+    { icon: LogOut, label: "로그아웃" },
   ];
 
   return (
@@ -38,7 +56,7 @@ export default function MyPagePage() {
           <button
             key={idx}
             className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
-            onClick={() => console.log(`Clicked: ${item.label}`)}
+            onClick={() => handleMenuClick(item.label)}
           >
             <div className="flex items-center gap-3">
               <item.icon className="w-5 h-5 text-gray-500" />
@@ -54,6 +72,13 @@ export default function MyPagePage() {
         <p className="text-xs text-gray-400">Student Dashboard v1.0.0</p>
         <p className="text-xs text-gray-400 mt-1">수성대학교 AI-DX Observer</p>
       </div>
+
+      {/* Modals */}
+      <ComplaintListModal
+        isOpen={showComplaintModal}
+        onClose={() => setShowComplaintModal(false)}
+        complaints={myComplaints}
+      />
     </div>
   );
 }
