@@ -182,9 +182,9 @@ export default function HomeScreen({
         </div>
       </div>
 
-      {/* Skill Detail Cards */}
+      {/* 역량 등급 Badge */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
-        <h3 className="font-bold text-gray-800 mb-3">역량 상세</h3>
+        <h3 className="font-bold text-gray-800 mb-3">역량 등급</h3>
         {radarToggle === "core" ? (
           <div className="grid grid-cols-2 gap-3">
             {Object.entries(starDetails).map(([key, value]) => (
