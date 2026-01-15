@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { Plus, Building, GraduationCap, Heart, BookOpen } from "lucide-react";
 import Header from "@/components/common/Header";
+import ChatModal from "@/components/chatbot/ChatModal";
 import { complaintCategories, complaints } from "@/data/mockData";
 
 // 아이콘 매핑
@@ -21,6 +23,10 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
  * - 민원 목록은 마이페이지에서 확인
  */
 export default function ComplaintsPage() {
+  // ChatModal 상태
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
   // 통계 계산
   const stats = {
     접수: complaints.filter((c) => c.status === "접수").length,
@@ -30,9 +36,18 @@ export default function ComplaintsPage() {
   const completionRate = Math.round((stats.완료 / complaints.length) * 100);
 
   const handleCategoryClick = (categoryName: string) => {
-    console.log("Category clicked:", categoryName);
-    // TODO: 민원 작성 모달 또는 챗봇 연동
-    alert(`${categoryName} 카테고리가 선택되었습니다.`);
+    setSelectedCategory(categoryName);
+    setIsChatOpen(true);
+  };
+
+  const handleChatClose = () => {
+    setIsChatOpen(false);
+    setSelectedCategory("");
+  };
+
+  const handleChatSuccess = (message: string, type?: "complete" | "submit") => {
+    console.log("Chat success:", message, type);
+    // 민원 접수 완료 시 추가 처리 가능
   };
 
   return (
@@ -79,6 +94,14 @@ export default function ComplaintsPage() {
       >
         <Plus className="w-6 h-6" />
       </button>
+
+      {/* ChatModal */}
+      <ChatModal
+        isOpen={isChatOpen}
+        onClose={handleChatClose}
+        category={selectedCategory}
+        onSuccess={handleChatSuccess}
+      />
     </div>
   );
 }
