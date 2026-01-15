@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, HelpCircle } from "lucide-react";
 import Header from "../layout/Header";
 import StatsOverview from "../dashboard/StatsOverview";
 import ComplaintList from "../dashboard/ComplaintList";
@@ -189,16 +189,24 @@ export default function ComplaintScreen({
         onSubmit={handleComplaintSubmit}
       />
 
-      {/* Floating Action Button (기본 글쓰기) */}
-      <button
-        onClick={() => {
-          setSelectedCategory(complaintCategories[0]);
-          setShowComplaintModal(true);
-        }}
-        className="fixed bottom-24 right-4 w-14 h-14 bg-gradient-to-r from-red-500 to-orange-500 rounded-full shadow-lg flex items-center justify-center text-white z-40"
-      >
-        <Plus className="w-6 h-6" />
-      </button>
+      {/* Floating Action Buttons */}
+      <div className="fixed bottom-24 right-4 flex flex-col gap-3 z-40">
+        <button
+          onClick={() => setShowFAQ(true)}
+          className="w-12 h-12 bg-white border border-gray-200 rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:bg-gray-50 transition-all"
+        >
+          <HelpCircle className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => {
+            setSelectedCategory(complaintCategories[0]);
+            setShowComplaintModal(true);
+          }}
+          className="w-14 h-14 bg-gradient-to-r from-red-500 to-orange-500 rounded-full shadow-lg flex items-center justify-center text-white"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
+      </div>
 
       {/* FAQ Modal */}
       <FAQModal

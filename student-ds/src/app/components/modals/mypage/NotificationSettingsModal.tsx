@@ -1,37 +1,36 @@
-import { X, Bell, Shield, FileText } from "lucide-react";
+import { X, Smartphone, MessageSquare, Mail } from "lucide-react";
 
-interface NotificationSettings {
-  complaintStatus: boolean;
-  competencyAlert: boolean;
-  announcement: boolean;
-  marketing: boolean;
+interface NotificationChannels {
+  pwa: boolean;
+  kakao: boolean;
+  email: boolean;
 }
 
 interface NotificationSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  settings: NotificationSettings;
-  onSettingsChange: (settings: NotificationSettings) => void;
+  channels: NotificationChannels;
+  onChannelsChange: (channels: NotificationChannels) => void;
 }
 
 /**
  * NotificationSettingsModal - 알림 설정 모달
  *
  * 역할:
- * - 민원 처리 상태, 역량 진단, 공지사항 알림 토글
+ * - PWA 푸시, 카카오톡, 이메일 알림 채널 토글
  */
 export default function NotificationSettingsModal({
   isOpen,
   onClose,
-  settings,
-  onSettingsChange,
+  channels,
+  onChannelsChange,
 }: NotificationSettingsModalProps) {
   if (!isOpen) return null;
 
-  const handleToggle = (key: keyof NotificationSettings) => {
-    onSettingsChange({
-      ...settings,
-      [key]: !settings[key],
+  const handleToggle = (key: keyof NotificationChannels) => {
+    onChannelsChange({
+      ...channels,
+      [key]: !channels[key],
     });
   };
 
@@ -44,62 +43,105 @@ export default function NotificationSettingsModal({
             <X className="w-6 h-6 text-gray-400" />
           </button>
         </div>
+
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-            <div className="flex items-center gap-3">
-              <Bell className="w-5 h-5 text-pink-500" />
-              <div>
-                <p className="font-medium">민원 처리 상태</p>
-                <p className="text-sm text-gray-500">민원 접수, 처리중, 완료 알림</p>
+          {/* 알림 채널 선택 */}
+          <div className="bg-gray-50 rounded-xl p-4">
+            <h4 className="font-bold text-gray-800 mb-4">알림 수신 채널</h4>
+            <div className="space-y-3">
+              {/* PWA 푸시 알림 */}
+              <div className="flex items-center justify-between p-3 bg-white rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <Smartphone className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-800">PWA 푸시 알림</p>
+                    <p className="text-xs text-gray-500">
+                      브라우저 푸시 알림 수신
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleToggle("pwa")}
+                  className={`relative w-12 h-6 rounded-full transition-colors ${
+                    channels.pwa ? "bg-blue-500" : "bg-gray-300"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                      channels.pwa ? "translate-x-6" : "translate-x-0"
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* 카카오톡 알림 */}
+              <div className="flex items-center justify-between p-3 bg-white rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <MessageSquare className="w-5 h-5 text-yellow-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-800">카카오톡 알림</p>
+                    <p className="text-xs text-gray-500">
+                      카카오톡 알림톡 수신
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleToggle("kakao")}
+                  className={`relative w-12 h-6 rounded-full transition-colors ${
+                    channels.kakao ? "bg-yellow-500" : "bg-gray-300"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                      channels.kakao ? "translate-x-6" : "translate-x-0"
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* 이메일 알림 */}
+              <div className="flex items-center justify-between p-3 bg-white rounded-xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                    <Mail className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-800">이메일 알림</p>
+                    <p className="text-xs text-gray-500">학교 이메일로 수신</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleToggle("email")}
+                  className={`relative w-12 h-6 rounded-full transition-colors ${
+                    channels.email ? "bg-green-500" : "bg-gray-300"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                      channels.email ? "translate-x-6" : "translate-x-0"
+                    }`}
+                  />
+                </button>
               </div>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={settings.complaintStatus}
-                onChange={() => handleToggle("complaintStatus")}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-pink-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
-            </label>
           </div>
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-            <div className="flex items-center gap-3">
-              <Shield className="w-5 h-5 text-orange-500" />
-              <div>
-                <p className="font-medium">역량 진단 알림</p>
-                <p className="text-sm text-gray-500">역량 점수 변동, 진단 시작 알림</p>
-              </div>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={settings.competencyAlert}
-                onChange={() => handleToggle("competencyAlert")}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-pink-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
-            </label>
-          </div>
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-            <div className="flex items-center gap-3">
-              <FileText className="w-5 h-5 text-blue-500" />
-              <div>
-                <p className="font-medium">공지사항</p>
-                <p className="text-sm text-gray-500">학교 및 학과 공지사항</p>
-              </div>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={settings.announcement}
-                onChange={() => handleToggle("announcement")}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-pink-500 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
-            </label>
+
+          {/* 안내 */}
+          <div className="bg-blue-50 rounded-xl p-4">
+            <p className="text-xs text-blue-700">
+              💡 최소 1개 이상의 알림 채널을 선택해주세요. 민원 처리 상태 및 중요
+              공지사항을 받아보실 수 있습니다.
+            </p>
           </div>
         </div>
+
         <button
           onClick={onClose}
           className="w-full mt-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
