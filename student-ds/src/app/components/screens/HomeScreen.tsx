@@ -55,7 +55,7 @@ export default function HomeScreen({
 
   return (
     <div className="pb-4">
-      <Header onShareClick={onShareClick} onSearchClick={onSearchClick}>
+      <Header onShareClick={onShareClick} onSearchClick={onSearchClick} onBellClick={onBellClick}>
         <WelcomeCard userName="김수성" score={81.3} />
       </Header>
 
