@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { X, MessageCircle, Send, Loader2 } from 'lucide-react';
-import { supabase } from '../../utils/supabaseClient';
+import React, { useState, useRef, useEffect } from "react";
+import { X, MessageCircle, Send, Loader2 } from "lucide-react";
+import { supabase } from "../../utils/supabaseClient";
 
 // Props Interface
 interface ChatModalProps {
   isOpen: boolean;
   onClose: () => void;
   category: string;
-  onSuccess?: (message: string, type?: 'complete' | 'submit') => void;
+  onSuccess?: (message: string, type?: "complete" | "submit") => void;
 }
 
 // 채팅 답변 타입 (기존 플로우용)
@@ -28,7 +28,7 @@ interface ChatAnswers {
 
 // 채팅 히스토리 타입
 interface ChatMessage {
-  type: 'bot' | 'user';
+  type: "bot" | "user";
   message: string;
 }
 
@@ -36,91 +36,139 @@ interface ChatMessage {
 const GEMINI_CATEGORIES = ["학사 및 수업", "진로 및 취업"];
 
 // ========== 기존 플로우용 정적 응답 함수들 ==========
-const getScholarshipAnswer = (scholarshipType: string, semester: string, inquiryType: string): string => {
+const getScholarshipAnswer = (
+  scholarshipType: string,
+  semester: string,
+  inquiryType: string
+): string => {
   const answers: Record<string, string> = {
-    '신청 기간': `${scholarshipType}의 ${semester} 신청 기간은 학기 시작 2주 전부터 1주간입니다. 학생포털에서 신청하실 수 있으며, 자세한 일정은 학생처 공지사항을 확인해주세요.`,
-    '선발 기준': `${scholarshipType} 선발 기준은 다음과 같습니다:\n• 직전학기 평점 3.0 이상\n• 이수학점 12학점 이상\n• 가정 경제 수준 (국가장학금의 경우)\n자세한 기준은 학생처(02-1234-5678)로 문의하시기 바랍니다.`,
-    '지급 일정': `${semester} ${scholarshipType} 지급 일정은 학기 개시 후 1개월 이내입니다. 정확한 지급일은 학생포털 마이페이지에서 확인하실 수 있습니다.`,
-    '기타 문의': `${scholarshipType}에 대한 추가 문의는 학생처 장학담당(scholarship@university.ac.kr / 02-1234-5678)으로 연락 주시기 바랍니다. 상담 시간은 평일 09:00~18:00입니다.`
+    "신청 기간": `${scholarshipType}의 ${semester} 신청 기간은 학기 시작 2주 전부터 1주간입니다. 학생포털에서 신청하실 수 있으며, 자세한 일정은 학생처 공지사항을 확인해주세요.`,
+    "선발 기준": `${scholarshipType} 선발 기준은 다음과 같습니다:\n• 직전학기 평점 3.0 이상\n• 이수학점 12학점 이상\n• 가정 경제 수준 (국가장학금의 경우)\n자세한 기준은 학생처(02-1234-5678)로 문의하시기 바랍니다.`,
+    "지급 일정": `${semester} ${scholarshipType} 지급 일정은 학기 개시 후 1개월 이내입니다. 정확한 지급일은 학생포털 마이페이지에서 확인하실 수 있습니다.`,
+    "기타 문의": `${scholarshipType}에 대한 추가 문의는 학생처 장학담당(scholarship@university.ac.kr / 02-1234-5678)으로 연락 주시기 바랍니다. 상담 시간은 평일 09:00~18:00입니다.`,
   };
-  return answers[inquiryType] || '문의하신 내용에 대한 답변을 준비 중입니다. 학생처로 직접 문의해주세요.';
+  return (
+    answers[inquiryType] ||
+    "문의하신 내용에 대한 답변을 준비 중입니다. 학생처로 직접 문의해주세요."
+  );
 };
 
-const getWelfareAnswer = (welfareType: string, welfareInquiry: string): string => {
+const getWelfareAnswer = (
+  welfareType: string,
+  welfareInquiry: string
+): string => {
   const answers: Record<string, Record<string, string>> = {
-    '기숙사': {
-      '이용 시간': '기숙사 출입은 24시간 가능하며, 외박 시에는 사전 신청이 필요합니다. 문의: 생활관리팀(02-1234-5679)',
-      '신청 방법': '기숙사 신청은 매 학기 학생포털 > 생활 > 기숙사 신청 메뉴에서 가능합니다. 신청 기간은 방학 중 2주간입니다.',
-      '시설 문의': '기숙사 시설 문의 및 고장 신고는 생활관리팀(02-1234-5679)으로 연락 주시기 바랍니다.',
-      '기타': '기타 기숙사 관련 문의는 생활관리팀(dorm@university.ac.kr)으로 연락해주세요.'
+    기숙사: {
+      "이용 시간":
+        "기숙사 출입은 24시간 가능하며, 외박 시에는 사전 신청이 필요합니다. 문의: 생활관리팀(02-1234-5679)",
+      "신청 방법":
+        "기숙사 신청은 매 학기 학생포털 > 생활 > 기숙사 신청 메뉴에서 가능합니다. 신청 기간은 방학 중 2주간입니다.",
+      "시설 문의":
+        "기숙사 시설 문의 및 고장 신고는 생활관리팀(02-1234-5679)으로 연락 주시기 바랍니다.",
+      기타: "기타 기숙사 관련 문의는 생활관리팀(dorm@university.ac.kr)으로 연락해주세요.",
     },
-    '학생식당': {
-      '이용 시간': '학생식당 운영 시간:\n• 조식: 08:00~09:30\n• 중식: 11:30~13:30\n• 석식: 17:30~19:00',
-      '신청 방법': '학생식당은 별도 신청 없이 이용 가능합니다. 식권은 현장에서 구매하거나 학생증으로 결제하실 수 있습니다.',
-      '시설 문의': '식당 시설 및 메뉴 문의는 복지팀(02-1234-5680)으로 연락해주세요.',
-      '기타': '기타 학생식당 관련 문의는 복지팀(welfare@university.ac.kr)으로 연락해주세요.'
+    학생식당: {
+      "이용 시간":
+        "학생식당 운영 시간:\n• 조식: 08:00~09:30\n• 중식: 11:30~13:30\n• 석식: 17:30~19:00",
+      "신청 방법":
+        "학생식당은 별도 신청 없이 이용 가능합니다. 식권은 현장에서 구매하거나 학생증으로 결제하실 수 있습니다.",
+      "시설 문의":
+        "식당 시설 및 메뉴 문의는 복지팀(02-1234-5680)으로 연락해주세요.",
+      기타: "기타 학생식당 관련 문의는 복지팀(welfare@university.ac.kr)으로 연락해주세요.",
     },
-    '보건센터': {
-      '이용 시간': '보건센터 운영 시간:\n• 평일: 09:00~18:00\n• 점심시간: 12:00~13:00\n• 응급상황 시 24시간 연락 가능',
-      '신청 방법': '보건센터 이용은 방문 접수 또는 전화 예약(02-1234-5681) 가능합니다.',
-      '시설 문의': '보건센터 시설 및 진료 문의: 02-1234-5681',
-      '기타': '기타 건강 관련 문의는 보건센터(health@university.ac.kr)로 연락해주세요.'
+    보건센터: {
+      "이용 시간":
+        "보건센터 운영 시간:\n• 평일: 09:00~18:00\n• 점심시간: 12:00~13:00\n• 응급상황 시 24시간 연락 가능",
+      "신청 방법":
+        "보건센터 이용은 방문 접수 또는 전화 예약(02-1234-5681) 가능합니다.",
+      "시설 문의": "보건센터 시설 및 진료 문의: 02-1234-5681",
+      기타: "기타 건강 관련 문의는 보건센터(health@university.ac.kr)로 연락해주세요.",
     },
-    '상담센터': {
-      '이용 시간': '학생상담센터 운영 시간:\n• 평일: 09:00~18:00\n• 상담 예약제 운영\n• 비대면 상담 가능',
-      '신청 방법': '상담 신청은 학생포털 또는 전화(02-1234-5682)로 예약하실 수 있습니다. 모든 상담 내용은 비밀이 보장됩니다.',
-      '시설 문의': '상담센터 위치 및 프로그램 문의: 02-1234-5682',
-      '기타': '기타 상담 관련 문의는 학생상담센터(counsel@university.ac.kr)로 연락해주세요.'
-    }
+    상담센터: {
+      "이용 시간":
+        "학생상담센터 운영 시간:\n• 평일: 09:00~18:00\n• 상담 예약제 운영\n• 비대면 상담 가능",
+      "신청 방법":
+        "상담 신청은 학생포털 또는 전화(02-1234-5682)로 예약하실 수 있습니다. 모든 상담 내용은 비밀이 보장됩니다.",
+      "시설 문의": "상담센터 위치 및 프로그램 문의: 02-1234-5682",
+      기타: "기타 상담 관련 문의는 학생상담센터(counsel@university.ac.kr)로 연락해주세요.",
+    },
   };
-  return answers[welfareType]?.[welfareInquiry] || '문의하신 내용에 대한 답변을 준비 중입니다. 학생복지팀으로 직접 문의해주세요.';
+  return (
+    answers[welfareType]?.[welfareInquiry] ||
+    "문의하신 내용에 대한 답변을 준비 중입니다. 학생복지팀으로 직접 문의해주세요."
+  );
 };
 
 const getAcademicAnswer = (academicType: string, detail: string): string => {
   const answers: Record<string, string> = {
-    '성적 문의': `${detail} 과목의 성적 문의는 다음과 같이 진행됩니다:\n1. 성적 공개 후 1주일 이내 정정 신청 가능\n2. 학생포털 > 학사 > 성적정정신청\n3. 담당 교수 확인 후 처리\n문의: 교학팀(02-1234-5683)`,
-    '수강신청': `수강신청 관련 안내:\n• 수강신청 기간: 학기 시작 2주 전\n• 정정 기간: 개강 후 1주\n• 포기 기간: 중간고사 이후 1주\n자세한 일정은 학생포털 학사일정을 확인해주세요.\n문의: 교학팀(02-1234-5683)`,
-    '휴/복학': `휴학 및 복학 신청 안내:\n• 휴학: 학기 시작 전 또는 개강 후 2주 이내\n• 복학: 복학 학기 시작 1개월 전\n• 신청: 학생포털 > 학적 > 휴학/복학 신청\n문의: 교학팀(02-1234-5683)`,
-    '졸업요건': `졸업요건 확인:\n• 총 이수학점: 130학점 이상\n• 전공학점: 60학점 이상\n• 교양학점: 30학점 이상\n• STAR 역량 기준 충족\n자세한 졸업요건은 학생포털 > 학사 > 졸업요건조회에서 확인하실 수 있습니다.\n문의: 교학팀(academic@university.ac.kr)`
+    "성적 문의": `${detail} 과목의 성적 문의는 다음과 같이 진행됩니다:\n1. 성적 공개 후 1주일 이내 정정 신청 가능\n2. 학생포털 > 학사 > 성적정정신청\n3. 담당 교수 확인 후 처리\n문의: 교학팀(02-1234-5683)`,
+    수강신청: `수강신청 관련 안내:\n• 수강신청 기간: 학기 시작 2주 전\n• 정정 기간: 개강 후 1주\n• 포기 기간: 중간고사 이후 1주\n자세한 일정은 학생포털 학사일정을 확인해주세요.\n문의: 교학팀(02-1234-5683)`,
+    "휴/복학": `휴학 및 복학 신청 안내:\n• 휴학: 학기 시작 전 또는 개강 후 2주 이내\n• 복학: 복학 학기 시작 1개월 전\n• 신청: 학생포털 > 학적 > 휴학/복학 신청\n문의: 교학팀(02-1234-5683)`,
+    졸업요건: `졸업요건 확인:\n• 총 이수학점: 130학점 이상\n• 전공학점: 60학점 이상\n• 교양학점: 30학점 이상\n• STAR 역량 기준 충족\n자세한 졸업요건은 학생포털 > 학사 > 졸업요건조회에서 확인하실 수 있습니다.\n문의: 교학팀(academic@university.ac.kr)`,
   };
-  return answers[academicType] || '문의하신 내용에 대한 답변을 준비 중입니다. 교학팀으로 직접 문의해주세요.';
+  return (
+    answers[academicType] ||
+    "문의하신 내용에 대한 답변을 준비 중입니다. 교학팀으로 직접 문의해주세요."
+  );
 };
 
 // 카테고리별 초기 메시지 생성
 const getInitialMessages = (category: string): ChatMessage[] => {
   if (GEMINI_CATEGORIES.includes(category)) {
     return [
-      { type: 'bot', message: `안녕하세요! '${category}' 관련 궁금한 점을 물어보세요. 😊` }
+      {
+        type: "bot",
+        message: `안녕하세요! '${category}' 관련 궁금한 점을 물어보세요. 😊`,
+      },
     ];
   }
 
   const messages: Record<string, ChatMessage[]> = {
-    '시설 및 환경': [
-      { type: 'bot', message: '안녕하세요! 시설 및 환경 관련 문의를 도와드리겠습니다. 😊' },
-      { type: 'bot', message: '어떤 시설에 문제가 있나요?' }
+    "시설 및 환경": [
+      {
+        type: "bot",
+        message: "안녕하세요! 시설 및 환경 관련 문의를 도와드리겠습니다. 😊",
+      },
+      { type: "bot", message: "어떤 시설에 문제가 있나요?" },
     ],
-    '학생 장학': [
-      { type: 'bot', message: '안녕하세요! 장학금 관련 문의를 도와드리겠습니다. 😊' },
-      { type: 'bot', message: '어떤 장학금에 대해 문의하시나요?' }
+    "학생 장학": [
+      {
+        type: "bot",
+        message: "안녕하세요! 장학금 관련 문의를 도와드리겠습니다. 😊",
+      },
+      { type: "bot", message: "어떤 장학금에 대해 문의하시나요?" },
     ],
-    '학생 복지': [
-      { type: 'bot', message: '안녕하세요! 학생 복지 관련 문의를 도와드리겠습니다. 😊' },
-      { type: 'bot', message: '어떤 시설에 대해 문의하시나요?' }
+    "학생 복지": [
+      {
+        type: "bot",
+        message: "안녕하세요! 학생 복지 관련 문의를 도와드리겠습니다. 😊",
+      },
+      { type: "bot", message: "어떤 시설에 대해 문의하시나요?" },
     ],
-    '수업 및 학사': [
-      { type: 'bot', message: '안녕하세요! 수업 및 학사 관련 문의를 도와드리겠습니다. 😊' },
-      { type: 'bot', message: '어떤 내용에 대해 문의하시나요?' }
-    ]
+    "수업 및 학사": [
+      {
+        type: "bot",
+        message: "안녕하세요! 수업 및 학사 관련 문의를 도와드리겠습니다. 😊",
+      },
+      { type: "bot", message: "어떤 내용에 대해 문의하시나요?" },
+    ],
   };
-  return messages[category] || [
-    { type: 'bot', message: '안녕하세요! 문의를 도와드리겠습니다. 😊' }
-  ];
+  return (
+    messages[category] || [
+      { type: "bot", message: "안녕하세요! 문의를 도와드리겠습니다. 😊" },
+    ]
+  );
 };
 
-export default function ChatModal({ isOpen, onClose, category, onSuccess }: ChatModalProps) {
+export default function ChatModal({
+  isOpen,
+  onClose,
+  category,
+  onSuccess,
+}: ChatModalProps) {
   // 공통 state
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
-  const [userInput, setUserInput] = useState('');
+  const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const chatScrollRef = useRef<HTMLDivElement>(null);
 
@@ -137,7 +185,7 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
       setChatStep(0);
       setChatAnswers({});
       setChatHistory(getInitialMessages(category));
-      setUserInput('');
+      setUserInput("");
       setIsLoading(false);
     }
   }, [isOpen, category]);
@@ -154,10 +202,13 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
     if (!userInput.trim() || isLoading) return;
 
     const currentMessage = userInput;
-    setUserInput('');
+    setUserInput("");
     setIsLoading(true);
 
-    const newHistory = [...chatHistory, { type: 'user' as const, message: currentMessage }];
+    const newHistory = [
+      ...chatHistory,
+      { type: "user" as const, message: currentMessage },
+    ];
     setChatHistory(newHistory);
 
     try {
@@ -166,34 +217,35 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
       const pastHistory = newHistory.slice(0, -1);
 
       // 첫 메시지가 봇의 인사말이면 제거 (API 규칙 위반 방지)
-      const validHistory = pastHistory.length > 0 && pastHistory[0].type === 'bot'
-        ? pastHistory.slice(1)
-        : pastHistory;
+      const validHistory =
+        pastHistory.length > 0 && pastHistory[0].type === "bot"
+          ? pastHistory.slice(1)
+          : pastHistory;
 
-      const { data, error } = await supabase.functions.invoke('gemini-chat', {
+      const { data, error } = await supabase.functions.invoke("gemini-chat", {
         body: {
           message: currentMessage,
           category: category,
-          history: validHistory.map(msg => ({
-            role: msg.type === 'user' ? 'user' : 'model',
-            parts: [{ text: msg.message }]
-          }))
+          history: validHistory.map((msg) => ({
+            role: msg.type === "user" ? "user" : "model",
+            parts: [{ text: msg.message }],
+          })),
         },
       });
 
       if (error) throw error;
 
-      setChatHistory(prev => [...prev, { type: 'bot', message: data.reply }]);
-
-      if (onSuccess) {
-        onSuccess(data.reply);
-      }
+      setChatHistory((prev) => [...prev, { type: "bot", message: data.reply }]);
     } catch (error) {
-      console.error('Chat Error:', error);
-      setChatHistory(prev => [...prev, {
-        type: 'bot',
-        message: '죄송합니다. 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
-      }]);
+      console.error("Chat Error:", error);
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          type: "bot",
+          message:
+            "죄송합니다. 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
@@ -201,13 +253,18 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
 
   // 모달 닫기 핸들러
   const handleClose = () => {
-    if (!useGeminiAPI && category !== '시설 및 환경' && chatAnswers && Object.keys(chatAnswers).length > 0) {
-      onSuccess?.('문의가 완료되었습니다!', 'complete');
+    if (
+      !useGeminiAPI &&
+      category !== "시설 및 환경" &&
+      chatAnswers &&
+      Object.keys(chatAnswers).length > 0
+    ) {
+      onSuccess?.("문의가 완료되었습니다!", "complete");
     }
     setChatStep(0);
     setChatHistory([]);
     setChatAnswers({});
-    setUserInput('');
+    setUserInput("");
     onClose();
   };
 
@@ -224,20 +281,33 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
               <MessageCircle className="w-6 h-6" />
               <h3 className="font-bold text-lg">{category} AI 상담</h3>
             </div>
-            <button onClick={handleClose} className="hover:bg-white/20 rounded-full p-1 transition">
+            <button
+              onClick={handleClose}
+              className="hover:bg-white/20 rounded-full p-1 transition"
+            >
               <X className="w-6 h-6" />
             </button>
           </div>
 
           {/* 채팅 영역 */}
-          <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+          <div
+            ref={chatScrollRef}
+            className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
+          >
             {chatHistory.map((msg, idx) => (
-              <div key={idx} className={`flex ${msg.type === 'bot' ? 'justify-start' : 'justify-end'}`}>
-                <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm shadow-sm ${
-                  msg.type === 'bot'
-                    ? 'bg-white text-gray-800 border border-gray-100 rounded-tl-none'
-                    : 'bg-orange-500 text-white rounded-tr-none'
-                }`}>
+              <div
+                key={idx}
+                className={`flex ${
+                  msg.type === "bot" ? "justify-start" : "justify-end"
+                }`}
+              >
+                <div
+                  className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm shadow-sm ${
+                    msg.type === "bot"
+                      ? "bg-white text-gray-800 border border-gray-100 rounded-tl-none"
+                      : "bg-orange-500 text-white rounded-tr-none"
+                  }`}
+                >
                   <p className="whitespace-pre-wrap">{msg.message}</p>
                 </div>
               </div>
@@ -259,7 +329,11 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
                 type="text"
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && !e.nativeEvent.isComposing && handleSendMessageAPI()}
+                onKeyDown={(e) =>
+                  e.key === "Enter" &&
+                  !e.nativeEvent.isComposing &&
+                  handleSendMessageAPI()
+                }
                 placeholder="질문을 입력하세요..."
                 className="flex-1 px-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all text-sm"
                 disabled={isLoading}
@@ -301,33 +375,41 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
         </div>
 
         {/* 채팅 영역 */}
-        <div ref={chatScrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
+        <div
+          ref={chatScrollRef}
+          className="flex-1 overflow-y-auto p-4 space-y-3"
+        >
           {chatHistory.map((msg, idx) => (
             <div
               key={idx}
-              className={`flex ${msg.type === 'bot' ? 'justify-start' : 'justify-end'}`}
+              className={`flex ${
+                msg.type === "bot" ? "justify-start" : "justify-end"
+              }`}
             >
-              <div className={`max-w-[80%] ${
-                msg.type === 'bot'
-                  ? 'bg-gray-100 text-gray-800'
-                  : 'bg-[#FEE500] text-gray-900'
-              } rounded-2xl px-4 py-3`}>
+              <div
+                className={`max-w-[80%] ${
+                  msg.type === "bot"
+                    ? "bg-gray-100 text-gray-800"
+                    : "bg-[#FEE500] text-gray-900"
+                } rounded-2xl px-4 py-3`}
+              >
                 <p className="text-sm whitespace-pre-line">{msg.message}</p>
               </div>
             </div>
           ))}
 
           {/* 시설 및 환경 - Step 0 */}
-          {chatStep === 0 && category === '시설 및 환경' && (
+          {chatStep === 0 && category === "시설 및 환경" && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {['강의실', '화장실', '엘리베이터', '기타 시설'].map((option) => (
+              {["강의실", "화장실", "엘리베이터", "기타 시설"].map((option) => (
                 <button
                   key={option}
                   onClick={() => {
-                    setChatAnswers({...chatAnswers, facilityType: option});
-                    setChatHistory([...chatHistory,
-                      { type: 'user', message: option },
-                      { type: 'bot', message: '어느 건물인가요?' }
+                    setChatAnswers({ ...chatAnswers, facilityType: option });
+                    setChatHistory([
+                      ...chatHistory,
+                      { type: "user", message: option },
+                      { type: "bot", message: "어느 건물인가요?" },
                     ]);
                     setChatStep(1);
                   }}
@@ -340,38 +422,51 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
           )}
 
           {/* 학생 장학 - Step 0 */}
-          {chatStep === 0 && category === '학생 장학' && (
+          {chatStep === 0 && category === "학생 장학" && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {['성적장학금', '근로장학금', '국가장학금', '기타 장학금'].map((option) => (
-                <button
-                  key={option}
-                  onClick={() => {
-                    setChatAnswers({...chatAnswers, scholarshipType: option});
-                    setChatHistory([...chatHistory,
-                      { type: 'user', message: option },
-                      { type: 'bot', message: '어느 학기에 대해 문의하시나요?' }
-                    ]);
-                    setChatStep(1);
-                  }}
-                  className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
-                >
-                  {option}
-                </button>
-              ))}
+              {["성적장학금", "근로장학금", "국가장학금", "기타 장학금"].map(
+                (option) => (
+                  <button
+                    key={option}
+                    onClick={() => {
+                      setChatAnswers({
+                        ...chatAnswers,
+                        scholarshipType: option,
+                      });
+                      setChatHistory([
+                        ...chatHistory,
+                        { type: "user", message: option },
+                        {
+                          type: "bot",
+                          message: "어느 학기에 대해 문의하시나요?",
+                        },
+                      ]);
+                      setChatStep(1);
+                    }}
+                    className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
+                  >
+                    {option}
+                  </button>
+                )
+              )}
             </div>
           )}
 
           {/* 학생 복지 - Step 0 */}
-          {chatStep === 0 && category === '학생 복지' && (
+          {chatStep === 0 && category === "학생 복지" && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {['기숙사', '학생식당', '보건센터', '상담센터'].map((option) => (
+              {["기숙사", "학생식당", "보건센터", "상담센터"].map((option) => (
                 <button
                   key={option}
                   onClick={() => {
-                    setChatAnswers({...chatAnswers, welfareType: option});
-                    setChatHistory([...chatHistory,
-                      { type: 'user', message: option },
-                      { type: 'bot', message: '어떤 내용에 대해 문의하시나요?' }
+                    setChatAnswers({ ...chatAnswers, welfareType: option });
+                    setChatHistory([
+                      ...chatHistory,
+                      { type: "user", message: option },
+                      {
+                        type: "bot",
+                        message: "어떤 내용에 대해 문의하시나요?",
+                      },
                     ]);
                     setChatStep(1);
                   }}
@@ -384,42 +479,52 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
           )}
 
           {/* 수업 및 학사 - Step 0 */}
-          {chatStep === 0 && category === '수업 및 학사' && (
+          {chatStep === 0 && category === "수업 및 학사" && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {['성적 문의', '수강신청', '휴/복학', '졸업요건'].map((option) => (
-                <button
-                  key={option}
-                  onClick={() => {
-                    setChatAnswers({...chatAnswers, academicType: option});
-                    setChatHistory([...chatHistory,
-                      { type: 'user', message: option },
-                      { type: 'bot', message: option === '성적 문의' ? '과목명을 입력해주세요' : '자세한 내용을 말씀해주세요' }
-                    ]);
-                    setChatStep(1);
-                  }}
-                  className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
-                >
-                  {option}
-                </button>
-              ))}
+              {["성적 문의", "수강신청", "휴/복학", "졸업요건"].map(
+                (option) => (
+                  <button
+                    key={option}
+                    onClick={() => {
+                      setChatAnswers({ ...chatAnswers, academicType: option });
+                      setChatHistory([
+                        ...chatHistory,
+                        { type: "user", message: option },
+                        {
+                          type: "bot",
+                          message:
+                            option === "성적 문의"
+                              ? "과목명을 입력해주세요"
+                              : "자세한 내용을 말씀해주세요",
+                        },
+                      ]);
+                      setChatStep(1);
+                    }}
+                    className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
+                  >
+                    {option}
+                  </button>
+                )
+              )}
             </div>
           )}
 
           {/* 시설 및 환경 - Step 1 */}
-          {chatStep === 1 && category === '시설 및 환경' && (
+          {chatStep === 1 && category === "시설 및 환경" && (
             <div className="pt-2">
               <input
                 type="text"
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && userInput.trim()) {
-                    setChatAnswers({...chatAnswers, building: userInput});
-                    setChatHistory([...chatHistory,
-                      { type: 'user', message: userInput },
-                      { type: 'bot', message: '몇 층인가요?' }
+                  if (e.key === "Enter" && userInput.trim()) {
+                    setChatAnswers({ ...chatAnswers, building: userInput });
+                    setChatHistory([
+                      ...chatHistory,
+                      { type: "user", message: userInput },
+                      { type: "bot", message: "몇 층인가요?" },
                     ]);
-                    setUserInput('');
+                    setUserInput("");
                     setChatStep(2);
                   }
                 }}
@@ -429,12 +534,13 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
               <button
                 onClick={() => {
                   if (userInput.trim()) {
-                    setChatAnswers({...chatAnswers, building: userInput});
-                    setChatHistory([...chatHistory,
-                      { type: 'user', message: userInput },
-                      { type: 'bot', message: '몇 층인가요?' }
+                    setChatAnswers({ ...chatAnswers, building: userInput });
+                    setChatHistory([
+                      ...chatHistory,
+                      { type: "user", message: userInput },
+                      { type: "bot", message: "몇 층인가요?" },
                     ]);
-                    setUserInput('');
+                    setUserInput("");
                     setChatStep(2);
                   }
                 }}
@@ -446,39 +552,49 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
           )}
 
           {/* 학생 장학 - Step 1 */}
-          {chatStep === 1 && category === '학생 장학' && (
+          {chatStep === 1 && category === "학생 장학" && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {['2025-1학기', '2024-2학기', '2024-1학기', '기타'].map((option) => (
-                <button
-                  key={option}
-                  onClick={() => {
-                    setChatAnswers({...chatAnswers, semester: option});
-                    setChatHistory([...chatHistory,
-                      { type: 'user', message: option },
-                      { type: 'bot', message: '어떤 내용에 대해 문의하시나요?' }
-                    ]);
-                    setChatStep(2);
-                  }}
-                  className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
-                >
-                  {option}
-                </button>
-              ))}
+              {["2025-1학기", "2024-2학기", "2024-1학기", "기타"].map(
+                (option) => (
+                  <button
+                    key={option}
+                    onClick={() => {
+                      setChatAnswers({ ...chatAnswers, semester: option });
+                      setChatHistory([
+                        ...chatHistory,
+                        { type: "user", message: option },
+                        {
+                          type: "bot",
+                          message: "어떤 내용에 대해 문의하시나요?",
+                        },
+                      ]);
+                      setChatStep(2);
+                    }}
+                    className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
+                  >
+                    {option}
+                  </button>
+                )
+              )}
             </div>
           )}
 
           {/* 학생 복지 - Step 1 */}
-          {chatStep === 1 && category === '학생 복지' && (
+          {chatStep === 1 && category === "학생 복지" && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {['이용 시간', '신청 방법', '시설 문의', '기타'].map((option) => (
+              {["이용 시간", "신청 방법", "시설 문의", "기타"].map((option) => (
                 <button
                   key={option}
                   onClick={() => {
-                    setChatAnswers({...chatAnswers, welfareInquiry: option});
-                    const answer = getWelfareAnswer(chatAnswers.welfareType || '', option);
-                    setChatHistory([...chatHistory,
-                      { type: 'user', message: option },
-                      { type: 'bot', message: answer }
+                    setChatAnswers({ ...chatAnswers, welfareInquiry: option });
+                    const answer = getWelfareAnswer(
+                      chatAnswers.welfareType || "",
+                      option
+                    );
+                    setChatHistory([
+                      ...chatHistory,
+                      { type: "user", message: option },
+                      { type: "bot", message: answer },
                     ]);
                     setChatStep(99);
                   }}
@@ -491,23 +607,30 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
           )}
 
           {/* 수업 및 학사 - Step 1 */}
-          {chatStep === 1 && category === '수업 및 학사' && (
+          {chatStep === 1 && category === "수업 및 학사" && (
             <div className="pt-2">
-              {chatAnswers.academicType === '성적 문의' ? (
+              {chatAnswers.academicType === "성적 문의" ? (
                 <>
                   <input
                     type="text"
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter' && userInput.trim()) {
-                        setChatAnswers({...chatAnswers, courseName: userInput});
-                        const answer = getAcademicAnswer(chatAnswers.academicType || '', userInput);
-                        setChatHistory([...chatHistory,
-                          { type: 'user', message: userInput },
-                          { type: 'bot', message: answer }
+                      if (e.key === "Enter" && userInput.trim()) {
+                        setChatAnswers({
+                          ...chatAnswers,
+                          courseName: userInput,
+                        });
+                        const answer = getAcademicAnswer(
+                          chatAnswers.academicType || "",
+                          userInput
+                        );
+                        setChatHistory([
+                          ...chatHistory,
+                          { type: "user", message: userInput },
+                          { type: "bot", message: answer },
                         ]);
-                        setUserInput('');
+                        setUserInput("");
                         setChatStep(99);
                       }
                     }}
@@ -517,13 +640,20 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
                   <button
                     onClick={() => {
                       if (userInput.trim()) {
-                        setChatAnswers({...chatAnswers, courseName: userInput});
-                        const answer = getAcademicAnswer(chatAnswers.academicType || '', userInput);
-                        setChatHistory([...chatHistory,
-                          { type: 'user', message: userInput },
-                          { type: 'bot', message: answer }
+                        setChatAnswers({
+                          ...chatAnswers,
+                          courseName: userInput,
+                        });
+                        const answer = getAcademicAnswer(
+                          chatAnswers.academicType || "",
+                          userInput
+                        );
+                        setChatHistory([
+                          ...chatHistory,
+                          { type: "user", message: userInput },
+                          { type: "bot", message: answer },
                         ]);
-                        setUserInput('');
+                        setUserInput("");
                         setChatStep(99);
                       }
                     }}
@@ -544,13 +674,17 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
                   <button
                     onClick={() => {
                       if (userInput.trim()) {
-                        setChatAnswers({...chatAnswers, detail: userInput});
-                        const answer = getAcademicAnswer(chatAnswers.academicType || '', userInput);
-                        setChatHistory([...chatHistory,
-                          { type: 'user', message: userInput },
-                          { type: 'bot', message: answer }
+                        setChatAnswers({ ...chatAnswers, detail: userInput });
+                        const answer = getAcademicAnswer(
+                          chatAnswers.academicType || "",
+                          userInput
+                        );
+                        setChatHistory([
+                          ...chatHistory,
+                          { type: "user", message: userInput },
+                          { type: "bot", message: answer },
                         ]);
-                        setUserInput('');
+                        setUserInput("");
                         setChatStep(99);
                       }
                     }}
@@ -564,20 +698,21 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
           )}
 
           {/* 시설 및 환경 - Step 2 */}
-          {chatStep === 2 && category === '시설 및 환경' && (
+          {chatStep === 2 && category === "시설 및 환경" && (
             <div className="pt-2">
               <input
                 type="text"
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && userInput.trim()) {
-                    setChatAnswers({...chatAnswers, floor: userInput});
-                    setChatHistory([...chatHistory,
-                      { type: 'user', message: userInput },
-                      { type: 'bot', message: '어떤 문제인가요?' }
+                  if (e.key === "Enter" && userInput.trim()) {
+                    setChatAnswers({ ...chatAnswers, floor: userInput });
+                    setChatHistory([
+                      ...chatHistory,
+                      { type: "user", message: userInput },
+                      { type: "bot", message: "어떤 문제인가요?" },
                     ]);
-                    setUserInput('');
+                    setUserInput("");
                     setChatStep(3);
                   }
                 }}
@@ -587,12 +722,13 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
               <button
                 onClick={() => {
                   if (userInput.trim()) {
-                    setChatAnswers({...chatAnswers, floor: userInput});
-                    setChatHistory([...chatHistory,
-                      { type: 'user', message: userInput },
-                      { type: 'bot', message: '어떤 문제인가요?' }
+                    setChatAnswers({ ...chatAnswers, floor: userInput });
+                    setChatHistory([
+                      ...chatHistory,
+                      { type: "user", message: userInput },
+                      { type: "bot", message: "어떤 문제인가요?" },
                     ]);
-                    setUserInput('');
+                    setUserInput("");
                     setChatStep(3);
                   }
                 }}
@@ -604,43 +740,47 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
           )}
 
           {/* 학생 장학 - Step 2 */}
-          {chatStep === 2 && category === '학생 장학' && (
+          {chatStep === 2 && category === "학생 장학" && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {['신청 기간', '선발 기준', '지급 일정', '기타 문의'].map((option) => (
-                <button
-                  key={option}
-                  onClick={() => {
-                    setChatAnswers({...chatAnswers, inquiryType: option});
-                    const answer = getScholarshipAnswer(
-                      chatAnswers.scholarshipType || '',
-                      chatAnswers.semester || '',
-                      option
-                    );
-                    setChatHistory([...chatHistory,
-                      { type: 'user', message: option },
-                      { type: 'bot', message: answer }
-                    ]);
-                    setChatStep(99);
-                  }}
-                  className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
-                >
-                  {option}
-                </button>
-              ))}
+              {["신청 기간", "선발 기준", "지급 일정", "기타 문의"].map(
+                (option) => (
+                  <button
+                    key={option}
+                    onClick={() => {
+                      setChatAnswers({ ...chatAnswers, inquiryType: option });
+                      const answer = getScholarshipAnswer(
+                        chatAnswers.scholarshipType || "",
+                        chatAnswers.semester || "",
+                        option
+                      );
+                      setChatHistory([
+                        ...chatHistory,
+                        { type: "user", message: option },
+                        { type: "bot", message: answer },
+                      ]);
+                      setChatStep(99);
+                    }}
+                    className="py-3 px-4 bg-white border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:border-orange-400 hover:bg-orange-50 transition-all"
+                  >
+                    {option}
+                  </button>
+                )
+              )}
             </div>
           )}
 
           {/* 시설 및 환경 - Step 3 */}
-          {chatStep === 3 && category === '시설 및 환경' && (
+          {chatStep === 3 && category === "시설 및 환경" && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {['고장/파손', '청결 문제', '안전 문제', '기타'].map((option) => (
+              {["고장/파손", "청결 문제", "안전 문제", "기타"].map((option) => (
                 <button
                   key={option}
                   onClick={() => {
-                    setChatAnswers({...chatAnswers, problemType: option});
-                    setChatHistory([...chatHistory,
-                      { type: 'user', message: option },
-                      { type: 'bot', message: '상세 내용을 말씀해주세요' }
+                    setChatAnswers({ ...chatAnswers, problemType: option });
+                    setChatHistory([
+                      ...chatHistory,
+                      { type: "user", message: option },
+                      { type: "bot", message: "상세 내용을 말씀해주세요" },
                     ]);
                     setChatStep(4);
                   }}
@@ -653,7 +793,7 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
           )}
 
           {/* 시설 및 환경 - Step 4 */}
-          {chatStep === 4 && category === '시설 및 환경' && (
+          {chatStep === 4 && category === "시설 및 환경" && (
             <div className="pt-2">
               <textarea
                 value={userInput}
@@ -665,14 +805,21 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
               <button
                 onClick={() => {
                   if (userInput.trim()) {
-                    const finalAnswers = {...chatAnswers, detail: userInput};
+                    const finalAnswers = { ...chatAnswers, detail: userInput };
                     setChatAnswers(finalAnswers);
-                    setChatHistory([...chatHistory,
-                      { type: 'user', message: userInput },
-                      { type: 'bot', message: '입력하신 내용을 확인해주세요 ✅' },
-                      { type: 'bot', message: `시설: ${finalAnswers.facilityType}\n위치: ${finalAnswers.building} ${finalAnswers.floor}\n문제: ${finalAnswers.problemType}\n상세: ${finalAnswers.detail}` }
+                    setChatHistory([
+                      ...chatHistory,
+                      { type: "user", message: userInput },
+                      {
+                        type: "bot",
+                        message: "입력하신 내용을 확인해주세요 ✅",
+                      },
+                      {
+                        type: "bot",
+                        message: `시설: ${finalAnswers.facilityType}\n위치: ${finalAnswers.building} ${finalAnswers.floor}\n문제: ${finalAnswers.problemType}\n상세: ${finalAnswers.detail}`,
+                      },
                     ]);
-                    setUserInput('');
+                    setUserInput("");
                     setChatStep(5);
                   }
                 }}
@@ -684,14 +831,14 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
           )}
 
           {/* 시설 및 환경 - Step 5 (제출 확인) */}
-          {chatStep === 5 && category === '시설 및 환경' && (
+          {chatStep === 5 && category === "시설 및 환경" && (
             <div className="grid grid-cols-2 gap-3 pt-2">
               <button
                 onClick={() => {
                   setChatStep(0);
                   setChatHistory(getInitialMessages(category));
                   setChatAnswers({});
-                  setUserInput('');
+                  setUserInput("");
                 }}
                 className="py-3 px-4 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all"
               >
@@ -699,11 +846,14 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
               </button>
               <button
                 onClick={() => {
-                  onSuccess?.('민원이 접수되었습니다!\n처리 결과는 알림으로 안내드리겠습니다.', 'submit');
+                  onSuccess?.(
+                    "민원이 접수되었습니다!\n처리 결과는 알림으로 안내드리겠습니다.",
+                    "submit"
+                  );
                   setChatStep(0);
                   setChatHistory([]);
                   setChatAnswers({});
-                  setUserInput('');
+                  setUserInput("");
                   onClose();
                 }}
                 className="py-3 px-4 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
@@ -714,15 +864,15 @@ export default function ChatModal({ isOpen, onClose, category, onSuccess }: Chat
           )}
 
           {/* 다른 카테고리 완료 단계 (Step 99) */}
-          {chatStep === 99 && category !== '시설 및 환경' && (
+          {chatStep === 99 && category !== "시설 및 환경" && (
             <div className="pt-2">
               <button
                 onClick={() => {
-                  onSuccess?.('문의가 완료되었습니다!', 'complete');
+                  onSuccess?.("문의가 완료되었습니다!", "complete");
                   setChatStep(0);
                   setChatHistory([]);
                   setChatAnswers({});
-                  setUserInput('');
+                  setUserInput("");
                   onClose();
                 }}
                 className="w-full py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-medium"
