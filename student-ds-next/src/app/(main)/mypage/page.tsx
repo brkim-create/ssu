@@ -1,16 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { User, Settings, FileText, LogOut, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { User, Settings, FileText, LogOut, ChevronRight, Download, Bell } from "lucide-react";
 import Header from "@/components/common/Header";
 import ComplaintListModal from "@/components/modals/ComplaintListModal";
+import NotificationSettingsModal from "@/components/modals/mypage/NotificationSettingsModal";
+import DownloadModal from "@/components/modals/mypage/DownloadModal";
 import { complaints, CURRENT_STUDENT_ID } from "@/data/mockData";
+import { clearAuthTokens } from "@/utils/auth";
 
 /**
  * MyPagePage - 마이페이지
  */
 export default function MyPagePage() {
+  const router = useRouter();
+
+  // Modal 상태
   const [showComplaintModal, setShowComplaintModal] = useState(false);
+  const [showNotificationSettings, setShowNotificationSettings] = useState(false);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+
+  // 알림 설정 상태
+  const [notificationChannels, setNotificationChannels] = useState({
+    pwa: true,
+    kakao: false,
+    email: true,
+  });
 
   // 현재 사용자의 민원만 필터링
   const myComplaints = complaints.filter(
@@ -18,24 +34,37 @@ export default function MyPagePage() {
   );
 
   const handleMenuClick = (label: string) => {
-    if (label === "민원 내역") {
-      setShowComplaintModal(true);
-    } else {
-      console.log(`Clicked: ${label}`);
+    switch (label) {
+      case "민원 내역":
+        setShowComplaintModal(true);
+        break;
+      case "알림 설정":
+        setShowNotificationSettings(true);
+        break;
+      case "민원 이력 다운로드":
+        setShowDownloadModal(true);
+        break;
+      case "로그아웃":
+        clearAuthTokens();
+        router.push("/login");
+        break;
+      default:
+        console.log(`Clicked: ${label}`);
     }
   };
 
   const menuItems = [
     { icon: User, label: "내 정보 수정" },
     { icon: FileText, label: "민원 내역" },
-    { icon: Settings, label: "알림 설정" },
+    { icon: Download, label: "민원 이력 다운로드" },
+    { icon: Bell, label: "알림 설정" },
     { icon: LogOut, label: "로그아웃" },
   ];
 
   // Header 아이콘 핸들러
   const handleShareClick = () => console.log("Share clicked");
   const handleSearchClick = () => console.log("Search clicked");
-  const handleBellClick = () => console.log("Bell clicked");
+  const handleBellClick = () => router.push("/notification");
 
   return (
     <div className="pb-4">
@@ -89,6 +118,16 @@ export default function MyPagePage() {
         isOpen={showComplaintModal}
         onClose={() => setShowComplaintModal(false)}
         complaints={myComplaints}
+      />
+      <NotificationSettingsModal
+        isOpen={showNotificationSettings}
+        onClose={() => setShowNotificationSettings(false)}
+        channels={notificationChannels}
+        onChannelsChange={setNotificationChannels}
+      />
+      <DownloadModal
+        isOpen={showDownloadModal}
+        onClose={() => setShowDownloadModal(false)}
       />
     </div>
   );

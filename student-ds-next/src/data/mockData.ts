@@ -225,7 +225,7 @@ export const starDetails: Record<string, StarDetail> = {
   A: {
     name: "인성역량",
     score: 92,
-    grade: "최우수",
+    grade: "마스터",
     skills: ["책임감", "성실성", "윤리의식", "협동심"],
     color: "#C13584",
   },
@@ -283,7 +283,7 @@ export const poDetails: Record<string, PODetail> = {
   자기계발능력: {
     name: "자기계발능력",
     score: 90,
-    grade: "최우수",
+    grade: "마스터",
     category: "A",
     skills: ["자율성", "학습능력", "경력개발"],
     color: "#C13584",
@@ -291,7 +291,7 @@ export const poDetails: Record<string, PODetail> = {
   직업윤리: {
     name: "직업윤리",
     score: 94,
-    grade: "최우수",
+    grade: "마스터",
     category: "A",
     skills: ["준법성", "책임감", "직업의식"],
     color: "#C13584",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 // Components
 import Header from "@/components/common/Header";
@@ -9,6 +10,15 @@ import CompetencyRadar from "@/components/dashboard/CompetencyRadar";
 import CompetencyGrid from "@/components/dashboard/CompetencyGrid";
 import EvidenceSection from "@/components/dashboard/EvidenceSection";
 import JobFitSection from "@/components/dashboard/JobFitSection";
+
+// Modals
+import SearchModal from "@/components/modals/global/SearchModal";
+import ShareModal from "@/components/modals/global/ShareModal";
+import EvidenceListModal from "@/components/modals/home/EvidenceListModal";
+import CompetencyDetailModal from "@/components/modals/home/CompetencyDetailModal";
+
+// Data
+import { evidenceData } from "@/data/mockData";
 
 /**
  * HomePage - 메인 대시보드 페이지
@@ -19,20 +29,27 @@ import JobFitSection from "@/components/dashboard/JobFitSection";
  * - Evidence 활동 내역
  */
 export default function HomePage() {
+  const router = useRouter();
+
   // ========== Local State ==========
   const [radarToggle, setRadarToggle] = useState<"core" | "po">("core");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [isEvidenceListOpen, setIsEvidenceListOpen] = useState(false);
+  const [selectedStar, setSelectedStar] = useState<string | null>(null);
+  const [selectedPO, setSelectedPO] = useState<string | null>(null);
 
   // ========== Handlers ==========
   const handleShareClick = () => {
-    console.log("Share clicked");
+    setIsShareOpen(true);
   };
 
   const handleSearchClick = () => {
-    console.log("Search clicked");
+    setIsSearchOpen(true);
   };
 
   const handleBellClick = () => {
-    console.log("Bell clicked");
+    router.push("/notification");
   };
 
   const handleToggleChange = (toggle: "core" | "po") => {
@@ -40,18 +57,15 @@ export default function HomePage() {
   };
 
   const handleSelectStar = (key: string) => {
-    console.log("Selected STAR:", key);
-    // TODO: 모달 구현 시 활성화
+    setSelectedStar(key);
   };
 
   const handleSelectPO = (key: string) => {
-    console.log("Selected PO:", key);
-    // TODO: 모달 구현 시 활성화
+    setSelectedPO(key);
   };
 
   const handleViewAllEvidence = () => {
-    console.log("View all evidence clicked");
-    // TODO: 모달 구현 시 활성화
+    setIsEvidenceListOpen(true);
   };
 
   return (
@@ -86,6 +100,33 @@ export default function HomePage() {
         {/* Evidence Section */}
         <EvidenceSection limit={3} onViewAll={handleViewAllEvidence} />
       </div>
+
+      {/* Modals */}
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+      />
+      <ShareModal
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+      />
+      <EvidenceListModal
+        isOpen={isEvidenceListOpen}
+        onClose={() => setIsEvidenceListOpen(false)}
+        evidenceData={evidenceData}
+      />
+      <CompetencyDetailModal
+        isOpen={selectedStar !== null}
+        onClose={() => setSelectedStar(null)}
+        type="star"
+        selectedKey={selectedStar}
+      />
+      <CompetencyDetailModal
+        isOpen={selectedPO !== null}
+        onClose={() => setSelectedPO(null)}
+        type="po"
+        selectedKey={selectedPO}
+      />
     </div>
   );
 }

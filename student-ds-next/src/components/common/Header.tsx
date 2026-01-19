@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Share2, Search, Bell } from "lucide-react";
 
 interface HeaderProps {
@@ -31,20 +32,8 @@ export default function Header({
     <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4">
       {/* Top Bar */}
       <div className="flex items-center justify-between mb-4">
-        <div>
-          {title ? (
-            <>
-              <h1 className="text-xl font-bold">{title}</h1>
-              {subtitle && (
-                <p className="text-sm opacity-90 mt-1">{subtitle}</p>
-              )}
-            </>
-          ) : (
-            <>
-              <h1 className="text-xl font-bold">수성대학교</h1>
-              <p className="text-sm opacity-90">AI-DX Observer</p>
-            </>
-          )}
+        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1">
+          <Image src="/logo.png" alt="Logo" width={28} height={28} className="object-contain" />
         </div>
 
         {/* Action Buttons */}
@@ -78,6 +67,10 @@ export default function Header({
           )}
         </div>
       </div>
+
+      {/* Title & Subtitle */}
+      {title && <h2 className="font-bold text-xl">{title}</h2>}
+      {subtitle && <p className="text-sm opacity-90">{subtitle}</p>}
 
       {/* Custom Content */}
       {children}

@@ -23,7 +23,7 @@ interface CompetencyRadarProps {
  *
  * Recharts를 사용하는 Client Component로 분리
  * - STAR 핵심역량 차트
- * - 전공능력(PO) 차트
+ * - 하위역량(PO) 차트
  */
 export default function CompetencyRadar({
   initialToggle = "core",
@@ -58,7 +58,7 @@ export default function CompetencyRadar({
           active={radarToggle === "po"}
           onClick={() => handleToggle("po")}
         >
-          전공능력(PO)
+          하위역량(PO)
         </ToggleButton>
       </div>
 
