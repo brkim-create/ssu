@@ -28,6 +28,8 @@ import type {
   CQIPerformanceData,
   TeachingMethodItem,
   DashboardStatCard,
+  ComplaintStatCard,
+  AssigneeOption,
 } from '../types';
 
 // 민원 티켓 데이터
@@ -344,4 +346,19 @@ export const dashboardStats: DashboardStatCard[] = [
   { label: '평균 역량 점수', value: '76.3', iconType: 'trending', color: 'green', change: '+3.8%' },
   { label: '인증 달성률', value: '87.5%', iconType: 'award', color: 'purple', change: '+2.1%' },
   { label: 'CQI 완료율', value: '92.3%', iconType: 'check', color: 'orange', change: '+1.5%' },
+];
+
+// 민원 통계 카드 데이터
+export const complaintStats: ComplaintStatCard[] = [
+  { label: '전체 민원', value: '156', iconType: 'inbox', color: 'blue' },
+  { label: '평균 처리시간', value: '1.8일', iconType: 'clock', color: 'green' },
+  { label: '처리 완료율', value: '87%', iconType: 'check', color: 'orange' },
+  { label: '지연 건수', value: '5', iconType: 'alert', color: 'red' },
+];
+
+// 담당자 배정 옵션 데이터
+export const assigneeOptions: AssigneeOption[] = [
+  { id: 1, name: '박OO', department: '시설관리팀' },
+  { id: 2, name: '이OO', department: '학생지원팀' },
+  { id: 3, name: '김OO', department: '전산팀' },
 ];

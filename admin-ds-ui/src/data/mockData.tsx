@@ -35,6 +35,8 @@ export type {
   CQIPerformanceData,
   TeachingMethodItem,
   DashboardStatCard,
+  ComplaintStatCard,
+  AssigneeOption,
 } from '@shared/mockData/types';
 
 // Data
@@ -65,4 +67,6 @@ export {
   cqiPerformanceData,
   teachingMethodData,
   dashboardStats,
+  complaintStats,
+  assigneeOptions,
 } from '@shared/mockData/data/admin';

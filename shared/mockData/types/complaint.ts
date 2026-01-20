@@ -95,3 +95,18 @@ export interface KeywordItem {
   size: string;
   weight: string;
 }
+
+// 민원 통계 카드 (admin-ds)
+export interface ComplaintStatCard {
+  label: string;
+  value: string;
+  iconType: 'inbox' | 'clock' | 'check' | 'alert';
+  color: 'blue' | 'green' | 'orange' | 'red';
+}
+
+// 담당자 배정 옵션 (admin-ds)
+export interface AssigneeOption {
+  id: number;
+  name: string;
+  department: string;
+}

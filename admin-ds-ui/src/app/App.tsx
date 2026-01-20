@@ -78,6 +78,8 @@ import {
   cqiPerformanceData,
   teachingMethodData,
   dashboardStats,
+  complaintStats,
+  assigneeOptions,
 } from "../data/mockData";
 
 import logoImage from "../assets/logo.png";
@@ -748,9 +750,9 @@ export default function AdminDashboard() {
               </div>
               <div className="p-4">
                 <select className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option>시설관리팀 박OO</option>
-                  <option>학생지원팀 이OO</option>
-                  <option>전산팀 김OO</option>
+                  {assigneeOptions.map((opt) => (
+                    <option key={opt.id}>{opt.department} {opt.name}</option>
+                  ))}
                 </select>
                 <div className="flex gap-2 justify-end mt-4">
                   <button
@@ -809,25 +811,17 @@ export default function AdminDashboard() {
     </div>
   );
 
+  const complaintIconMap = {
+    inbox: Inbox,
+    clock: Clock,
+    check: CheckCircle,
+    alert: AlertCircle,
+  };
+
   const StatsScreen = () => (
     <div className="p-4 space-y-4 bg-gray-50 h-full overflow-y-auto">
       <div className="grid grid-cols-4 gap-3">
-        {[
-          { label: "전체 민원", value: "156", icon: Inbox, color: "blue" },
-          {
-            label: "평균 처리시간",
-            value: "1.8일",
-            icon: Clock,
-            color: "green",
-          },
-          {
-            label: "처리 완료율",
-            value: "87%",
-            icon: CheckCircle,
-            color: "orange",
-          },
-          { label: "지연 건수", value: "5", icon: AlertCircle, color: "red" },
-        ].map((item, i) => (
+        {complaintStats.map((item, i) => (
           <div
             key={i}
             className="bg-white rounded-lg shadow p-3 border border-gray-200"
