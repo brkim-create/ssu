@@ -2,18 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { X, Search, ChevronRight, Download, Star } from "lucide-react";
-
-// 민원 타입 정의
-interface Complaint {
-  id: number;
-  studentId: string;
-  title: string;
-  content: string;
-  category: string;
-  status: string;
-  date: string;
-  isRead: boolean;
-}
+import { Complaint } from "@/data/mockData";
 
 interface ComplaintListModalProps {
   isOpen: boolean;
@@ -23,6 +12,7 @@ interface ComplaintListModalProps {
   initialStatusFilter?: string;
   onOpenRatingModal?: (complaintId: number) => void;
   ratedComplaints?: Record<number, number>;
+  onOpenDetail?: (complaint: Complaint) => void;
 }
 
 export default function ComplaintListModal({
@@ -33,6 +23,7 @@ export default function ComplaintListModal({
   initialStatusFilter = "전체",
   onOpenRatingModal,
   ratedComplaints = {},
+  onOpenDetail,
 }: ComplaintListModalProps) {
   // 필터 상태
   const [statusFilter, setStatusFilter] = useState(initialStatusFilter);
@@ -225,6 +216,9 @@ export default function ComplaintListModal({
                         ...prev,
                         [complaint.id]: true,
                       }));
+                    }
+                    if (onOpenDetail) {
+                      onOpenDetail(complaint);
                     }
                   }}
                 >

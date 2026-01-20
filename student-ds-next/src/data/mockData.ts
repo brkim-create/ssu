@@ -95,12 +95,32 @@ export interface Evidence {
 export interface JobFitItem {
   name: string;
   matchRate: number;
-  category: string;
+  category?: string;
+  grade: string;
 }
 
 export interface JobFitData {
+  overallMatchRate: number;
   recommendedJobs: JobFitItem[];
-  topMatch: JobFitItem;
+}
+
+// ============================================================
+// Chatbot Data Types
+// ============================================================
+
+export interface ChatMessage {
+  type: "bot" | "user";
+  message: string;
+}
+
+export interface ChatbotAnswerTemplate {
+  [key: string]: string;
+}
+
+export interface WelfareAnswerTemplate {
+  [facility: string]: {
+    [inquiryType: string]: string;
+  };
 }
 
 // ============================================================
@@ -205,6 +225,16 @@ export const radarDataPO: RadarDataItem[] = [
     fullMark: 100,
   },
 ];
+
+// 표준직무 적합도 데이터
+export const jobFitData: JobFitData = {
+  overallMatchRate: 78,
+  recommendedJobs: [
+    { name: "소프트웨어 개발자", matchRate: 92, grade: "우수" },
+    { name: "데이터 분석가", matchRate: 85, grade: "우수" },
+    { name: "IT 컨설턴트", matchRate: 78, grade: "보통" },
+  ],
+};
 
 // 역량 상세 데이터
 export const starDetails: Record<string, StarDetail> = {
@@ -312,6 +342,55 @@ export const poDetails: Record<string, PODetail> = {
     skills: ["경청", "발표", "문서이해"],
     color: "#E94E3C",
   },
+};
+
+// 스킬별 달성도 (실제로는 서버에서 받아올 데이터)
+export const skillProgress: Record<string, number> = {
+  // STAR 역량 스킬
+  창의적사고: 85,
+  문제해결: 78,
+  통찰력: 72,
+  혁신: 88,
+  전공지식: 90,
+  실무기술: 82,
+  현장적응: 75,
+  정보활용: 80,
+  분석: 85,
+  기획: 70,
+  책임감: 95,
+  성실성: 92,
+  윤리의식: 88,
+  협동심: 85,
+  경청: 70,
+  설득: 65,
+  조정: 72,
+  리더십: 78,
+  // PO 역량 스킬
+  대안도출: 87,
+  문제정의: 82,
+  창의적접근: 85,
+  장비운용: 80,
+  실무적용: 83,
+  기술활용: 78,
+  정보검색: 85,
+  데이터분석: 82,
+  문서작성: 88,
+  외국어: 70,
+  다문화이해: 75,
+  글로벌마인드: 72,
+  팀워크: 80,
+  갈등관리: 72,
+  협업: 85,
+  자율성: 90,
+  학습능력: 92,
+  경력개발: 85,
+  준법성: 95,
+  직업의식: 90,
+  융합사고: 75,
+  신기술이해: 70,
+  응용력: 72,
+  발표: 68,
+  문서이해: 75,
 };
 
 // 민원 카테고리 (icon은 문자열로 저장 - DB 호환)
@@ -430,6 +509,32 @@ export const complaints: Complaint[] = [
       { id: 1, name: "와이파이_점검_완료.jpg", size: "2.3MB", url: "#" },
     ],
     isRead: false,
+    isRated: false,
+    rating: undefined,
+  },
+  {
+    id: 6,
+    studentId: "202012345", // 현재 사용자
+    title: "성적 정정 요청",
+    status: "접수",
+    date: "2025.01.18",
+    category: "학사 및 수업",
+    content:
+      "2024년 2학기 데이터베이스 과목 중간고사 점수가 잘못 기재된 것 같습니다. 확인 후 정정 부탁드립니다.",
+    isRead: false,
+    isRated: false,
+    rating: undefined,
+  },
+  {
+    id: 7,
+    studentId: "202012345", // 현재 사용자
+    title: "주차장 이용 문의",
+    status: "접수",
+    date: "2025.01.19",
+    category: "시설 및 환경",
+    content:
+      "학교 주차장 이용 신청을 하고 싶습니다. 신청 방법과 비용에 대해 안내 부탁드립니다.",
+    isRead: true,
     isRated: false,
     rating: undefined,
   },
@@ -555,3 +660,98 @@ export const evidenceData: Evidence[] = [
     date: "2024.04.20",
   },
 ];
+
+// ============================================================
+// Chatbot Mock Data
+// ============================================================
+
+// Gemini API를 사용할 카테고리
+export const GEMINI_CATEGORIES = ["학생 장학", "수업 및 학사"];
+
+// 챗봇 선택 옵션들
+export const chatbotOptions = {
+  facilityTypes: ["강의실", "화장실", "엘리베이터", "기타 시설"],
+  scholarshipTypes: ["성적장학금", "근로장학금", "국가장학금", "기타 장학금"],
+  welfareTypes: ["기숙사", "학생식당", "보건센터", "상담센터"],
+  academicTypes: ["성적 문의", "수강신청", "휴/복학", "졸업요건"],
+  semesters: ["2025-1학기", "2024-2학기", "2024-1학기", "기타"],
+  welfareInquiryTypes: ["이용 시간", "신청 방법", "시설 문의", "기타"],
+  scholarshipInquiryTypes: ["신청 기간", "선발 기준", "지급 일정", "기타 문의"],
+  problemTypes: ["고장/파손", "청결 문제", "안전 문제", "기타"],
+};
+
+// 카테고리별 초기 메시지
+export const chatbotInitialMessages: Record<string, ChatMessage[]> = {
+  "시설 및 환경": [
+    {
+      type: "bot",
+      message: "안녕하세요! 시설 및 환경 관련 문의를 도와드리겠습니다.",
+    },
+    { type: "bot", message: "어떤 시설에 문제가 있나요?" },
+  ],
+  "학생 장학": [
+    {
+      type: "bot",
+      message: "안녕하세요! 장학금 관련 문의를 도와드리겠습니다.",
+    },
+    { type: "bot", message: "어떤 장학금에 대해 문의하시나요?" },
+  ],
+  "학생 복지": [
+    {
+      type: "bot",
+      message: "안녕하세요! 학생 복지 관련 문의를 도와드리겠습니다.",
+    },
+    { type: "bot", message: "어떤 시설에 대해 문의하시나요?" },
+  ],
+  "수업 및 학사": [
+    {
+      type: "bot",
+      message: "안녕하세요! 수업 및 학사 관련 문의를 도와드리겠습니다.",
+    },
+    { type: "bot", message: "어떤 내용에 대해 문의하시나요?" },
+  ],
+};
+
+// 장학금 응답 템플릿
+export const scholarshipAnswerTemplates: ChatbotAnswerTemplate = {
+  "신청 기간": "{scholarshipType}의 {semester} 신청 기간은 학기 시작 2주 전부터 1주간입니다. 학생포털에서 신청하실 수 있으며, 자세한 일정은 학생처 공지사항을 확인해주세요.",
+  "선발 기준": "{scholarshipType} 선발 기준은 다음과 같습니다:\n• 직전학기 평점 3.0 이상\n• 이수학점 12학점 이상\n• 가정 경제 수준 (국가장학금의 경우)\n자세한 기준은 학생처(02-1234-5678)로 문의하시기 바랍니다.",
+  "지급 일정": "{semester} {scholarshipType} 지급 일정은 학기 개시 후 1개월 이내입니다. 정확한 지급일은 학생포털 마이페이지에서 확인하실 수 있습니다.",
+  "기타 문의": "{scholarshipType}에 대한 추가 문의는 학생처 장학담당(scholarship@university.ac.kr / 02-1234-5678)으로 연락 주시기 바랍니다. 상담 시간은 평일 09:00~18:00입니다.",
+};
+
+// 복지 응답 데이터
+export const welfareAnswers: WelfareAnswerTemplate = {
+  기숙사: {
+    "이용 시간": "기숙사 출입은 24시간 가능하며, 외박 시에는 사전 신청이 필요합니다. 문의: 생활관리팀(02-1234-5679)",
+    "신청 방법": "기숙사 신청은 매 학기 학생포털 > 생활 > 기숙사 신청 메뉴에서 가능합니다. 신청 기간은 방학 중 2주간입니다.",
+    "시설 문의": "기숙사 시설 문의 및 고장 신고는 생활관리팀(02-1234-5679)으로 연락 주시기 바랍니다.",
+    기타: "기타 기숙사 관련 문의는 생활관리팀(dorm@university.ac.kr)으로 연락해주세요.",
+  },
+  학생식당: {
+    "이용 시간": "학생식당 운영 시간:\n• 조식: 08:00~09:30\n• 중식: 11:30~13:30\n• 석식: 17:30~19:00",
+    "신청 방법": "학생식당은 별도 신청 없이 이용 가능합니다. 식권은 현장에서 구매하거나 학생증으로 결제하실 수 있습니다.",
+    "시설 문의": "식당 시설 및 메뉴 문의는 복지팀(02-1234-5680)으로 연락해주세요.",
+    기타: "기타 학생식당 관련 문의는 복지팀(welfare@university.ac.kr)으로 연락해주세요.",
+  },
+  보건센터: {
+    "이용 시간": "보건센터 운영 시간:\n• 평일: 09:00~18:00\n• 점심시간: 12:00~13:00\n• 응급상황 시 24시간 연락 가능",
+    "신청 방법": "보건센터 이용은 방문 접수 또는 전화 예약(02-1234-5681) 가능합니다.",
+    "시설 문의": "보건센터 시설 및 진료 문의: 02-1234-5681",
+    기타: "기타 건강 관련 문의는 보건센터(health@university.ac.kr)로 연락해주세요.",
+  },
+  상담센터: {
+    "이용 시간": "학생상담센터 운영 시간:\n• 평일: 09:00~18:00\n• 상담 예약제 운영\n• 비대면 상담 가능",
+    "신청 방법": "상담 신청은 학생포털 또는 전화(02-1234-5682)로 예약하실 수 있습니다. 모든 상담 내용은 비밀이 보장됩니다.",
+    "시설 문의": "상담센터 위치 및 프로그램 문의: 02-1234-5682",
+    기타: "기타 상담 관련 문의는 학생상담센터(counsel@university.ac.kr)로 연락해주세요.",
+  },
+};
+
+// 학사 응답 템플릿
+export const academicAnswerTemplates: ChatbotAnswerTemplate = {
+  "성적 문의": "{detail} 과목의 성적 문의는 다음과 같이 진행됩니다:\n1. 성적 공개 후 1주일 이내 정정 신청 가능\n2. 학생포털 > 학사 > 성적정정신청\n3. 담당 교수 확인 후 처리\n문의: 교학팀(02-1234-5683)",
+  수강신청: "수강신청 관련 안내:\n• 수강신청 기간: 학기 시작 2주 전\n• 정정 기간: 개강 후 1주\n• 포기 기간: 중간고사 이후 1주\n자세한 일정은 학생포털 학사일정을 확인해주세요.\n문의: 교학팀(02-1234-5683)",
+  "휴/복학": "휴학 및 복학 신청 안내:\n• 휴학: 학기 시작 전 또는 개강 후 2주 이내\n• 복학: 복학 학기 시작 1개월 전\n• 신청: 학생포털 > 학적 > 휴학/복학 신청\n문의: 교학팀(02-1234-5683)",
+  졸업요건: "졸업요건 확인:\n• 총 이수학점: 130학점 이상\n• 전공학점: 60학점 이상\n• 교양학점: 30학점 이상\n• STAR 역량 기준 충족\n자세한 졸업요건은 학생포털 > 학사 > 졸업요건조회에서 확인하실 수 있습니다.\n문의: 교학팀(academic@university.ac.kr)",
+};

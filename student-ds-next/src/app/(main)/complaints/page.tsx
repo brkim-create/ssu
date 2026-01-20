@@ -282,6 +282,10 @@ export default function ComplaintsPage() {
         initialStatusFilter={complaintStatusFilter}
         onOpenRatingModal={handleRateComplaint}
         ratedComplaints={complaintRatings}
+        onOpenDetail={(complaint) => {
+          setComplaintDetailModal(complaint);
+          setShowComplaintListModal(false);
+        }}
       />
 
       {/* 다운로드 모달 */}

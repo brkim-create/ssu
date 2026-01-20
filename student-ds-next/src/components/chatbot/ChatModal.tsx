@@ -2,6 +2,17 @@
 
 import { useState, useRef, useEffect } from "react";
 import { X, MessageCircle, Send, Loader2 } from "lucide-react";
+import {
+  chatbotOptions,
+  chatbotInitialMessages,
+  scholarshipAnswerTemplates,
+  welfareAnswers,
+  academicAnswerTemplates,
+  ChatMessage,
+} from "@/data/mockData";
+
+// Gemini API를 사용할 카테고리
+const GEMINI_CATEGORIES = ["학생 장학", "수업 및 학사"];
 
 // Props Interface
 interface ChatModalProps {
@@ -27,90 +38,37 @@ interface ChatAnswers {
   courseName?: string;
 }
 
-// 채팅 히스토리 타입
-interface ChatMessage {
-  type: "bot" | "user";
-  message: string;
-}
-
-// Gemini API를 사용할 카테고리
-const GEMINI_CATEGORIES = ["학생 장학", "수업 및 학사"];
-
 // ========== 기존 플로우용 정적 응답 함수들 ==========
 const getScholarshipAnswer = (
   scholarshipType: string,
   semester: string,
   inquiryType: string
 ): string => {
-  const answers: Record<string, string> = {
-    "신청 기간": `${scholarshipType}의 ${semester} 신청 기간은 학기 시작 2주 전부터 1주간입니다. 학생포털에서 신청하실 수 있으며, 자세한 일정은 학생처 공지사항을 확인해주세요.`,
-    "선발 기준": `${scholarshipType} 선발 기준은 다음과 같습니다:\n• 직전학기 평점 3.0 이상\n• 이수학점 12학점 이상\n• 가정 경제 수준 (국가장학금의 경우)\n자세한 기준은 학생처(02-1234-5678)로 문의하시기 바랍니다.`,
-    "지급 일정": `${semester} ${scholarshipType} 지급 일정은 학기 개시 후 1개월 이내입니다. 정확한 지급일은 학생포털 마이페이지에서 확인하실 수 있습니다.`,
-    "기타 문의": `${scholarshipType}에 대한 추가 문의는 학생처 장학담당(scholarship@university.ac.kr / 02-1234-5678)으로 연락 주시기 바랍니다. 상담 시간은 평일 09:00~18:00입니다.`,
-  };
-  return (
-    answers[inquiryType] ||
-    "문의하신 내용에 대한 답변을 준비 중입니다. 학생처로 직접 문의해주세요."
-  );
+  const template = scholarshipAnswerTemplates[inquiryType];
+  if (!template) {
+    return "문의하신 내용에 대한 답변을 준비 중입니다. 학생처로 직접 문의해주세요.";
+  }
+  return template
+    .replace(/{scholarshipType}/g, scholarshipType)
+    .replace(/{semester}/g, semester);
 };
 
 const getWelfareAnswer = (
   welfareType: string,
   welfareInquiry: string
 ): string => {
-  const answers: Record<string, Record<string, string>> = {
-    기숙사: {
-      "이용 시간":
-        "기숙사 출입은 24시간 가능하며, 외박 시에는 사전 신청이 필요합니다. 문의: 생활관리팀(02-1234-5679)",
-      "신청 방법":
-        "기숙사 신청은 매 학기 학생포털 > 생활 > 기숙사 신청 메뉴에서 가능합니다. 신청 기간은 방학 중 2주간입니다.",
-      "시설 문의":
-        "기숙사 시설 문의 및 고장 신고는 생활관리팀(02-1234-5679)으로 연락 주시기 바랍니다.",
-      기타: "기타 기숙사 관련 문의는 생활관리팀(dorm@university.ac.kr)으로 연락해주세요.",
-    },
-    학생식당: {
-      "이용 시간":
-        "학생식당 운영 시간:\n• 조식: 08:00~09:30\n• 중식: 11:30~13:30\n• 석식: 17:30~19:00",
-      "신청 방법":
-        "학생식당은 별도 신청 없이 이용 가능합니다. 식권은 현장에서 구매하거나 학생증으로 결제하실 수 있습니다.",
-      "시설 문의":
-        "식당 시설 및 메뉴 문의는 복지팀(02-1234-5680)으로 연락해주세요.",
-      기타: "기타 학생식당 관련 문의는 복지팀(welfare@university.ac.kr)으로 연락해주세요.",
-    },
-    보건센터: {
-      "이용 시간":
-        "보건센터 운영 시간:\n• 평일: 09:00~18:00\n• 점심시간: 12:00~13:00\n• 응급상황 시 24시간 연락 가능",
-      "신청 방법":
-        "보건센터 이용은 방문 접수 또는 전화 예약(02-1234-5681) 가능합니다.",
-      "시설 문의": "보건센터 시설 및 진료 문의: 02-1234-5681",
-      기타: "기타 건강 관련 문의는 보건센터(health@university.ac.kr)로 연락해주세요.",
-    },
-    상담센터: {
-      "이용 시간":
-        "학생상담센터 운영 시간:\n• 평일: 09:00~18:00\n• 상담 예약제 운영\n• 비대면 상담 가능",
-      "신청 방법":
-        "상담 신청은 학생포털 또는 전화(02-1234-5682)로 예약하실 수 있습니다. 모든 상담 내용은 비밀이 보장됩니다.",
-      "시설 문의": "상담센터 위치 및 프로그램 문의: 02-1234-5682",
-      기타: "기타 상담 관련 문의는 학생상담센터(counsel@university.ac.kr)로 연락해주세요.",
-    },
-  };
   return (
-    answers[welfareType]?.[welfareInquiry] ||
+    welfareAnswers[welfareType]?.[welfareInquiry] ||
     "문의하신 내용에 대한 답변을 준비 중입니다. 학생복지팀으로 직접 문의해주세요."
   );
 };
 
 const getAcademicAnswer = (academicType: string, detail: string): string => {
-  const answers: Record<string, string> = {
-    "성적 문의": `${detail} 과목의 성적 문의는 다음과 같이 진행됩니다:\n1. 성적 공개 후 1주일 이내 정정 신청 가능\n2. 학생포털 > 학사 > 성적정정신청\n3. 담당 교수 확인 후 처리\n문의: 교학팀(02-1234-5683)`,
-    수강신청: `수강신청 관련 안내:\n• 수강신청 기간: 학기 시작 2주 전\n• 정정 기간: 개강 후 1주\n• 포기 기간: 중간고사 이후 1주\n자세한 일정은 학생포털 학사일정을 확인해주세요.\n문의: 교학팀(02-1234-5683)`,
-    "휴/복학": `휴학 및 복학 신청 안내:\n• 휴학: 학기 시작 전 또는 개강 후 2주 이내\n• 복학: 복학 학기 시작 1개월 전\n• 신청: 학생포털 > 학적 > 휴학/복학 신청\n문의: 교학팀(02-1234-5683)`,
-    졸업요건: `졸업요건 확인:\n• 총 이수학점: 130학점 이상\n• 전공학점: 60학점 이상\n• 교양학점: 30학점 이상\n• STAR 역량 기준 충족\n자세한 졸업요건은 학생포털 > 학사 > 졸업요건조회에서 확인하실 수 있습니다.\n문의: 교학팀(academic@university.ac.kr)`,
-  };
-  return (
-    answers[academicType] ||
-    "문의하신 내용에 대한 답변을 준비 중입니다. 교학팀으로 직접 문의해주세요."
-  );
+  const template = academicAnswerTemplates[academicType];
+  if (!template) {
+    return "문의하신 내용에 대한 답변을 준비 중입니다. 교학팀으로 직접 문의해주세요.";
+  }
+  return template.replace(/{detail}/g, detail);
 };
 
 // 카테고리별 초기 메시지 생성
@@ -124,38 +82,8 @@ const getInitialMessages = (category: string): ChatMessage[] => {
     ];
   }
 
-  const messages: Record<string, ChatMessage[]> = {
-    "시설 및 환경": [
-      {
-        type: "bot",
-        message: "안녕하세요! 시설 및 환경 관련 문의를 도와드리겠습니다.",
-      },
-      { type: "bot", message: "어떤 시설에 문제가 있나요?" },
-    ],
-    "학생 장학": [
-      {
-        type: "bot",
-        message: "안녕하세요! 장학금 관련 문의를 도와드리겠습니다.",
-      },
-      { type: "bot", message: "어떤 장학금에 대해 문의하시나요?" },
-    ],
-    "학생 복지": [
-      {
-        type: "bot",
-        message: "안녕하세요! 학생 복지 관련 문의를 도와드리겠습니다.",
-      },
-      { type: "bot", message: "어떤 시설에 대해 문의하시나요?" },
-    ],
-    "수업 및 학사": [
-      {
-        type: "bot",
-        message: "안녕하세요! 수업 및 학사 관련 문의를 도와드리겠습니다.",
-      },
-      { type: "bot", message: "어떤 내용에 대해 문의하시나요?" },
-    ],
-  };
   return (
-    messages[category] || [
+    chatbotInitialMessages[category] || [
       { type: "bot", message: "안녕하세요! 문의를 도와드리겠습니다." },
     ]
   );
@@ -414,7 +342,7 @@ export default function ChatModal({
           {/* 시설 및 환경 - Step 0 */}
           {chatStep === 0 && category === "시설 및 환경" && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {["강의실", "화장실", "엘리베이터", "기타 시설"].map((option) => (
+              {chatbotOptions.facilityTypes.map((option) => (
                 <button
                   key={option}
                   onClick={() => {
@@ -437,7 +365,7 @@ export default function ChatModal({
           {/* 학생 장학 - Step 0 (기존 플로우용 - Gemini 미사용 시) */}
           {chatStep === 0 && category === "학생 장학" && !useGeminiAPI && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {["성적장학금", "근로장학금", "국가장학금", "기타 장학금"].map(
+              {chatbotOptions.scholarshipTypes.map(
                 (option) => (
                   <button
                     key={option}
@@ -468,7 +396,7 @@ export default function ChatModal({
           {/* 학생 복지 - Step 0 */}
           {chatStep === 0 && category === "학생 복지" && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {["기숙사", "학생식당", "보건센터", "상담센터"].map((option) => (
+              {chatbotOptions.welfareTypes.map((option) => (
                 <button
                   key={option}
                   onClick={() => {
@@ -494,7 +422,7 @@ export default function ChatModal({
           {/* 수업 및 학사 - Step 0 (기존 플로우용 - Gemini 미사용 시) */}
           {chatStep === 0 && category === "수업 및 학사" && !useGeminiAPI && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {["성적 문의", "수강신청", "휴/복학", "졸업요건"].map(
+              {chatbotOptions.academicTypes.map(
                 (option) => (
                   <button
                     key={option}
@@ -567,7 +495,7 @@ export default function ChatModal({
           {/* 학생 장학 - Step 1 */}
           {chatStep === 1 && category === "학생 장학" && !useGeminiAPI && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {["2025-1학기", "2024-2학기", "2024-1학기", "기타"].map(
+              {chatbotOptions.semesters.map(
                 (option) => (
                   <button
                     key={option}
@@ -595,7 +523,7 @@ export default function ChatModal({
           {/* 학생 복지 - Step 1 */}
           {chatStep === 1 && category === "학생 복지" && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {["이용 시간", "신청 방법", "시설 문의", "기타"].map((option) => (
+              {chatbotOptions.welfareInquiryTypes.map((option) => (
                 <button
                   key={option}
                   onClick={() => {
@@ -755,7 +683,7 @@ export default function ChatModal({
           {/* 학생 장학 - Step 2 */}
           {chatStep === 2 && category === "학생 장학" && !useGeminiAPI && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {["신청 기간", "선발 기준", "지급 일정", "기타 문의"].map(
+              {chatbotOptions.scholarshipInquiryTypes.map(
                 (option) => (
                   <button
                     key={option}
@@ -785,7 +713,7 @@ export default function ChatModal({
           {/* 시설 및 환경 - Step 3 */}
           {chatStep === 3 && category === "시설 및 환경" && (
             <div className="grid grid-cols-2 gap-2 pt-2">
-              {["고장/파손", "청결 문제", "안전 문제", "기타"].map((option) => (
+              {chatbotOptions.problemTypes.map((option) => (
                 <button
                   key={option}
                   onClick={() => {

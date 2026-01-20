@@ -1,22 +1,11 @@
 "use client";
 
-interface JobFitItem {
-  name: string;
-  matchRate: number;
-  grade: string;
-}
+import { jobFitData, JobFitItem } from "@/data/mockData";
 
 interface JobFitSectionProps {
   overallMatchRate?: number;
   recommendedJobs?: JobFitItem[];
 }
-
-// 기본 추천 직무 데이터
-const defaultJobs: JobFitItem[] = [
-  { name: "소프트웨어 개발자", matchRate: 92, grade: "우수" },
-  { name: "데이터 분석가", matchRate: 85, grade: "우수" },
-  { name: "IT 컨설턴트", matchRate: 78, grade: "보통" },
-];
 
 /**
  * JobFitSection - 표준직무 적합도 섹션
@@ -24,8 +13,8 @@ const defaultJobs: JobFitItem[] = [
  * 학과 취업자 역량 일치도 및 추천 직무를 표시
  */
 export default function JobFitSection({
-  overallMatchRate = 78,
-  recommendedJobs = defaultJobs,
+  overallMatchRate = jobFitData.overallMatchRate,
+  recommendedJobs = jobFitData.recommendedJobs,
 }: JobFitSectionProps) {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-4">

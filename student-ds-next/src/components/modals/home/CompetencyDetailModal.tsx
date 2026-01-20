@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { starDetails, poDetails } from "@/data/mockData";
+import { starDetails, poDetails, skillProgress } from "@/data/mockData";
 
 interface CompetencyDetailModalProps {
   isOpen: boolean;
@@ -9,55 +9,6 @@ interface CompetencyDetailModalProps {
   type: "star" | "po";
   selectedKey: string | null;
 }
-
-// 스킬별 임시 달성도 (실제로는 서버에서 받아올 데이터)
-const skillProgress: Record<string, number> = {
-  // STAR 역량 스킬
-  창의적사고: 85,
-  문제해결: 78,
-  통찰력: 72,
-  혁신: 88,
-  전공지식: 90,
-  실무기술: 82,
-  현장적응: 75,
-  정보활용: 80,
-  분석: 85,
-  기획: 70,
-  책임감: 95,
-  성실성: 92,
-  윤리의식: 88,
-  협동심: 85,
-  경청: 70,
-  설득: 65,
-  조정: 72,
-  리더십: 78,
-  // PO 역량 스킬
-  대안도출: 87,
-  문제정의: 82,
-  창의적접근: 85,
-  장비운용: 80,
-  실무적용: 83,
-  기술활용: 78,
-  정보검색: 85,
-  데이터분석: 82,
-  문서작성: 88,
-  외국어: 70,
-  다문화이해: 75,
-  글로벌마인드: 72,
-  팀워크: 80,
-  갈등관리: 72,
-  협업: 85,
-  자율성: 90,
-  학습능력: 92,
-  경력개발: 85,
-  준법성: 95,
-  직업의식: 90,
-  융합사고: 75,
-  신기술이해: 70,
-  응용력: 72,
-  발표: 68,
-  문서이해: 75,
-};
 
 export default function CompetencyDetailModal({
   isOpen,
