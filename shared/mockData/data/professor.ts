@@ -69,6 +69,8 @@ export const courses: Course[] = [
   { id: 1, name: '자료구조', students: 65, semester: '2025-1', competency: 'T', totalWeeks: 15 },
   { id: 2, name: '알고리즘', students: 58, semester: '2025-1', competency: 'S', totalWeeks: 15 },
   { id: 3, name: '소프트웨어공학', students: 42, semester: '2025-1', competency: 'T', totalWeeks: 15 },
+  { id: 4, name: '파이썬 기초', students: 30, semester: '2025-여름', competency: 'T', totalWeeks: 4 },
+  { id: 5, name: '데이터분석 실습', students: 25, semester: '2025-여름', competency: 'S', totalWeeks: 8 },
 ];
 
 // 학생 목록 데이터
@@ -101,6 +103,7 @@ export const professorRadarData: RadarDataItem[] = [
 
 // 주차별 강의 데이터
 export const weeklyLectures: WeeklyLecture[] = [
+  // 정규학기 (15주)
   { week: 1, date: '2025-03-03', day: '월', title: '자료구조 개론', status: '완료', attendance: 98 },
   { week: 1, date: '2025-03-05', day: '수', title: '배열 자료구조', status: '완료', attendance: 96 },
   { week: 2, date: '2025-03-10', day: '월', title: '배열과 리스트', status: '완료', attendance: 95 },
@@ -109,6 +112,26 @@ export const weeklyLectures: WeeklyLecture[] = [
   { week: 3, date: '2025-03-19', day: '수', title: '희소 행렬', status: '완료', attendance: 95 },
   { week: 4, date: '2025-03-24', day: '월', title: '스택 구조', status: '진행중', attendance: 92 },
   { week: 4, date: '2025-03-26', day: '수', title: '큐 구조', status: '예정', attendance: 0 },
+  { week: 5, date: '2025-03-31', day: '월', title: '트리 기초', status: '예정', attendance: 0 },
+  { week: 5, date: '2025-04-02', day: '수', title: '이진 트리', status: '예정', attendance: 0 },
+  { week: 6, date: '2025-04-07', day: '월', title: '이진 탐색 트리', status: '예정', attendance: 0 },
+  { week: 6, date: '2025-04-09', day: '수', title: 'AVL 트리', status: '예정', attendance: 0 },
+  { week: 7, date: '2025-04-14', day: '월', title: '힙 구조', status: '예정', attendance: 0 },
+  { week: 7, date: '2025-04-16', day: '수', title: '우선순위 큐', status: '예정', attendance: 0 },
+  { week: 8, date: '2025-04-21', day: '월', title: '중간고사', status: '예정', attendance: 0 },
+  { week: 9, date: '2025-04-28', day: '월', title: '그래프 기초', status: '예정', attendance: 0 },
+  { week: 9, date: '2025-04-30', day: '수', title: '그래프 표현', status: '예정', attendance: 0 },
+  { week: 10, date: '2025-05-05', day: '월', title: 'DFS/BFS', status: '예정', attendance: 0 },
+  { week: 10, date: '2025-05-07', day: '수', title: '최단 경로', status: '예정', attendance: 0 },
+  { week: 11, date: '2025-05-12', day: '월', title: '정렬 알고리즘 1', status: '예정', attendance: 0 },
+  { week: 11, date: '2025-05-14', day: '수', title: '정렬 알고리즘 2', status: '예정', attendance: 0 },
+  { week: 12, date: '2025-05-19', day: '월', title: '해싱 기초', status: '예정', attendance: 0 },
+  { week: 12, date: '2025-05-21', day: '수', title: '해시 테이블', status: '예정', attendance: 0 },
+  { week: 13, date: '2025-05-26', day: '월', title: '동적 프로그래밍', status: '예정', attendance: 0 },
+  { week: 13, date: '2025-05-28', day: '수', title: 'DP 응용', status: '예정', attendance: 0 },
+  { week: 14, date: '2025-06-02', day: '월', title: '종합 복습', status: '예정', attendance: 0 },
+  { week: 14, date: '2025-06-04', day: '수', title: '문제 풀이', status: '예정', attendance: 0 },
+  { week: 15, date: '2025-06-09', day: '월', title: '기말고사', status: '예정', attendance: 0 },
 ];
 
 // 교수 프로필 데이터
