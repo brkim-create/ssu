@@ -29,6 +29,7 @@ import {
   Complaint,
   loginHistory,
   userProfile,
+  currentStudentProfile,
 } from "@/data/mockData";
 import { clearAuthTokens, checkAutoLogin, AuthTokens } from "@/utils/auth";
 
@@ -146,11 +147,11 @@ export default function MyPagePage() {
             </p>
             <p className="text-gray-500 text-sm">
               {authTokens?.userType === "student"
-                ? "컴퓨터공학과 3학년"
-                : "컴퓨터공학과 교수"}
+                ? `${currentStudentProfile.department} ${currentStudentProfile.grade}`
+                : `${currentStudentProfile.department} 교수`}
             </p>
             <p className="text-gray-400 text-xs">
-              {authTokens?.userId || "202012345"}
+              {authTokens?.userId || currentStudentProfile.studentId}
             </p>
           </div>
         </div>

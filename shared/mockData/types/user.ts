@@ -44,3 +44,17 @@ export interface LoginHistory {
   time: string;
   device: string;
 }
+
+// 현재 로그인한 학생 프로필 (student-ds)
+export interface StudentProfile {
+  name: string;
+  department: string;
+  grade: string;
+  studentId: string;
+  totalScore: number;
+}
+
+// 앱 설정 (student-ds)
+export interface AppConfig {
+  shareBaseUrl: string;
+}

@@ -25,11 +25,15 @@ export type {
   ShareOption,
   NotificationChannel,
   UserProfile,
+  StudentProfile,
+  AppConfig,
 } from '@shared/mockData/types';
 
 // Data
 export {
   CURRENT_STUDENT_ID,
+  currentStudentProfile,
+  appConfig,
   radarData,
   radarDataPO,
   jobFitData,

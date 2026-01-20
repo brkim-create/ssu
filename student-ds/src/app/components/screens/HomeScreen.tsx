@@ -17,6 +17,8 @@ import {
   starDetails,
   poDetails,
   evidenceData,
+  currentStudentProfile,
+  jobFitData,
 } from "../../../data/mockData";
 
 interface HomeScreenProps {
@@ -91,7 +93,7 @@ export default function HomeScreen({
   return (
     <div className="pb-4">
       <Header onShareClick={onShareClick} onSearchClick={onSearchClick} onBellClick={onBellClick}>
-        <WelcomeCard userName="김수성" score={81.3} />
+        <WelcomeCard userName={currentStudentProfile.name} score={currentStudentProfile.totalScore} />
       </Header>
 
       {/* Radar Chart Section */}
@@ -271,10 +273,10 @@ export default function HomeScreen({
         <h3 className="font-bold text-gray-800 mb-3">표준직무 적합도</h3>
         <div className="flex items-center justify-between mb-2">
           <span className="text-gray-600">학과 취업자 평균 대비</span>
-          <span className="text-2xl font-bold text-orange-500">78%</span>
+          <span className="text-2xl font-bold text-orange-500">{jobFitData.overallMatchRate}%</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-3">
-          <div className="bg-gradient-to-r from-orange-400 to-red-500 h-3 rounded-full" style={{ width: '78%' }}></div>
+          <div className="bg-gradient-to-r from-orange-400 to-red-500 h-3 rounded-full" style={{ width: `${jobFitData.overallMatchRate}%` }}></div>
         </div>
         <p className="text-xs text-gray-500 mt-2 mb-4">※ 나의 이수 역량과 학과 졸업생(취업자) 평균 역량 일치도</p>
 
@@ -282,27 +284,17 @@ export default function HomeScreen({
         <div className="pt-4 border-t border-gray-100">
           <h4 className="font-bold text-gray-800 mb-3">추천 직무</h4>
           <div className="space-y-3">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <div>
-                <div className="text-sm text-gray-600 mb-1">소프트웨어 개발자</div>
-                <div className="text-2xl font-bold text-gray-600">92%</div>
+            {jobFitData.recommendedJobs.map((job, idx) => (
+              <div key={idx} className={`flex items-center justify-between p-4 bg-gray-50 rounded-xl ${idx > 0 ? 'border border-gray-200/20' : ''}`}>
+                <div>
+                  <div className="text-sm text-gray-600 mb-1">{job.name}</div>
+                  <div className={`text-2xl font-bold ${idx === 0 ? 'text-gray-600' : 'text-gray-500'}`}>{job.matchRate}%</div>
+                </div>
+                <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">
+                  {job.grade === '우수' ? '적합' : job.grade}
+                </div>
               </div>
-              <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">적합</div>
-            </div>
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200/20">
-              <div>
-                <div className="text-sm text-gray-600 mb-1">데이터 분석가</div>
-                <div className="text-2xl font-bold text-gray-500">85%</div>
-              </div>
-              <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">적합</div>
-            </div>
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200/20">
-              <div>
-                <div className="text-sm text-gray-600 mb-1">IT 컨설턴트</div>
-                <div className="text-2xl font-bold text-gray-500">78%</div>
-              </div>
-              <div className="text-xs text-gray-500 bg-white px-3 py-1 rounded-full">보통</div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

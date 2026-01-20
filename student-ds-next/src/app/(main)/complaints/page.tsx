@@ -10,7 +10,7 @@ import WriteComplaintModal from "@/components/modals/complaints/WriteComplaintMo
 import ComplaintListModal from "@/components/modals/mypage/ComplaintListModal";
 import DownloadModal from "@/components/modals/mypage/DownloadModal";
 import SearchModal from "@/components/modals/global/SearchModal";
-import { complaintCategories, complaints, faqData, ComplaintCategory, Complaint, CURRENT_STUDENT_ID } from "@/data/mockData";
+import { complaintCategories, complaints, faqData, ComplaintCategory, Complaint, CURRENT_STUDENT_ID, currentStudentProfile, appConfig } from "@/data/mockData";
 
 // 아이콘 매핑
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -602,7 +602,7 @@ export default function ComplaintsPage() {
 
               <button
                 onClick={() => {
-                  navigator.clipboard.writeText('https://student-dashboard.example.com/report/김수성');
+                  navigator.clipboard.writeText(`${appConfig.shareBaseUrl}/${currentStudentProfile.name}`);
                   alert('링크가 복사되었습니다!');
                 }}
                 className="w-full py-4 bg-blue-50 text-blue-600 rounded-xl font-bold flex items-center justify-center gap-3 hover:bg-blue-100 transition-all"

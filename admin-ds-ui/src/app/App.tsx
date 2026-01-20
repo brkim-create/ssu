@@ -72,7 +72,7 @@ import {
   assigneeOptions,
 } from "../data/mockData";
 
-import logoImage from "../assets/logo.png";
+import logoImage from "@shared/assets/logo.png";
 
 export default function AdminDashboard() {
   const [activeCategory, setActiveCategory] = useState("dashboard"); // 대분류
@@ -1332,7 +1332,7 @@ export default function AdminDashboard() {
         <div className="h-[60px] px-3 flex items-center border-b border-gray-700 gap-2">
           <div className="w-8 h-8 bg-white rounded-lg p-1">
             <img
-              src={logo}
+              src={logoImage}
               alt="Logo"
               className="w-full h-full object-contain"
             />

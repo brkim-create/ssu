@@ -1,6 +1,6 @@
 import React from "react";
 import { Bell, Share2, Search } from "lucide-react";
-import logoImage from "../../../assets/logo.png";
+import logoImage from "@shared/assets/logo.png";
 
 interface HeaderProps {
   onShareClick: () => void;

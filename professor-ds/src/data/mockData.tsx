@@ -23,6 +23,7 @@ export type {
 
 // Data
 export {
+  currentSemester,
   histogramData,
   assessmentData,
   concernStudents,

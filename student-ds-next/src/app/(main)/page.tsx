@@ -18,7 +18,7 @@ import EvidenceListModal from "@/components/modals/home/EvidenceListModal";
 import CompetencyDetailModal from "@/components/modals/home/CompetencyDetailModal";
 
 // Data
-import { evidenceData } from "@/data/mockData";
+import { evidenceData, currentStudentProfile } from "@/data/mockData";
 
 /**
  * HomePage - 메인 대시보드 페이지
@@ -76,7 +76,7 @@ export default function HomePage() {
         onSearchClick={handleSearchClick}
         onBellClick={handleBellClick}
       >
-        <WelcomeCard userName="김수성" score={81.3} />
+        <WelcomeCard userName={currentStudentProfile.name} score={currentStudentProfile.totalScore} />
       </Header>
 
       {/* Main Content */}

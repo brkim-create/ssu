@@ -20,10 +20,21 @@ import type {
   ShareOption,
   NotificationChannel,
   UserProfile,
+  StudentProfile,
+  AppConfig,
 } from '../types';
 
 // 현재 로그인한 사용자 (더미)
 export const CURRENT_STUDENT_ID = '202012345';
+
+// 현재 로그인한 학생 프로필
+export const currentStudentProfile: StudentProfile = {
+  name: '김수성',
+  department: '컴퓨터공학과',
+  grade: '3학년',
+  studentId: '202012345',
+  totalScore: 81.3,
+};
 
 // STAR 핵심역량 진단 데이터
 export const radarData: RadarDataItem[] = [
@@ -284,4 +295,9 @@ export const userProfile: UserProfile = {
   department: '컴퓨터공학과',
   grade: '3학년',
   email: 'school@example.com',
+};
+
+// 앱 설정
+export const appConfig: AppConfig = {
+  shareBaseUrl: 'https://student-dashboard.example.com/report',
 };

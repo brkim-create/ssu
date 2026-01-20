@@ -476,6 +476,44 @@ export const faqData: FAQ[] = [
   },
 ];
 
+// 현재 로그인한 학생 프로필
+export interface StudentProfile {
+  name: string;
+  department: string;
+  grade: string;
+  studentId: string;
+  totalScore: number;
+}
+
+export const currentStudentProfile: StudentProfile = {
+  name: "김수성",
+  department: "컴퓨터공학과",
+  grade: "3학년",
+  studentId: "202012345",
+  totalScore: 81.3,
+};
+
+// 표준직무 적합도 데이터
+export interface RecommendedJob {
+  name: string;
+  matchRate: number;
+  grade: "우수" | "보통" | "미흡";
+}
+
+export interface JobFitData {
+  overallMatchRate: number;
+  recommendedJobs: RecommendedJob[];
+}
+
+export const jobFitData: JobFitData = {
+  overallMatchRate: 78,
+  recommendedJobs: [
+    { name: "소프트웨어 개발자", matchRate: 92, grade: "우수" },
+    { name: "데이터 분석가", matchRate: 85, grade: "우수" },
+    { name: "IT 컨설턴트", matchRate: 78, grade: "보통" },
+  ],
+};
+
 // Evidence 데이터
 export const evidenceData: Evidence[] = [
   {

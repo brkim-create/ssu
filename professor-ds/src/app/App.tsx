@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, LabelList } from 'recharts';
 import { Home, BookOpen, Users, FileText, User, ChevronRight, X, Search, Bell, Share2, TrendingUp, Target, Settings, ChartBar, ChartLine, TriangleAlert, Calendar } from 'lucide-react';
 import {
+  currentSemester,
   histogramData,
   assessmentData,
   concernStudents,
@@ -14,11 +15,14 @@ import {
 } from '../data/mockData';
 import { getStudentRadarSTAR, getStudentRadarPO } from '../utils/studentRadarUtils';
 
-import logoImage from '../assets/logo.png';
+import logoImage from '@shared/assets/logo.png';
+
+// 현재 학기 과목만 필터링
+const currentCourses = courses.filter(c => c.semester === currentSemester);
 
 export default function ProfessorDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [selectedCourse, setSelectedCourse] = useState(courses[0]);
+  const [selectedCourse, setSelectedCourse] = useState(currentCourses[0]);
   const [selectedCompetency, setSelectedCompetency] = useState('전체');
   const [selectedConcernCompetency, setSelectedConcernCompetency] = useState('전체');
   const [showShareModal, setShowShareModal] = useState(false);
@@ -79,13 +83,13 @@ export default function ProfessorDashboard() {
         <select
           value={selectedCourse.id}
           onChange={(e) => {
-            const newCourse = courses.find(c => c.id === Number(e.target.value)) || courses[0];
+            const newCourse = currentCourses.find(c => c.id === Number(e.target.value)) || currentCourses[0];
             setSelectedCourse(newCourse);
             if (selectedWeek > newCourse.totalWeeks) setSelectedWeek(1);
           }}
           className="w-full p-3 bg-white/20 text-white rounded-xl border-2 border-white/30 font-medium backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer"
         >
-          {courses.map(course => (
+          {currentCourses.map(course => (
             <option key={course.id} value={course.id} className="bg-gray-800 text-white">
               {course.name} ({course.semester}학기) | {course.students}명 수강
             </option>

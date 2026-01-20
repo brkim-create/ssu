@@ -2,6 +2,9 @@
 // Professor Dashboard Mock Data
 // ============================================================
 
+// 현재 학기 설정 (서버에서 내려주는 값 시뮬레이션)
+export const currentSemester = '2025-1';
+
 import type {
   HistogramDataItem,
   AssessmentDataItem,
