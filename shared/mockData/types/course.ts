@@ -12,6 +12,7 @@ export interface Course {
   students: number;
   semester: string;
   competency: CompetencyType;
+  totalWeeks: number; // 총 주차 수 (정규학기: 15-16, 계절학기: 4-8)
 }
 
 // 강의 데이터 (admin-ds)

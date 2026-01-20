@@ -76,9 +76,13 @@ export default function ProfessorDashboard() {
       
       {/* 과목 선택 드롭다운 */}
       <div className="mt-4">
-        <select 
+        <select
           value={selectedCourse.id}
-          onChange={(e) => setSelectedCourse(courses.find(c => c.id === Number(e.target.value)) || courses[0])}
+          onChange={(e) => {
+            const newCourse = courses.find(c => c.id === Number(e.target.value)) || courses[0];
+            setSelectedCourse(newCourse);
+            if (selectedWeek > newCourse.totalWeeks) setSelectedWeek(1);
+          }}
           className="w-full p-3 bg-white/20 text-white rounded-xl border-2 border-white/30 font-medium backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer"
         >
           {courses.map(course => (
@@ -175,7 +179,7 @@ export default function ProfessorDashboard() {
               radarViewMode === 'PO' ? 'bg-gradient-to-r from-[#E94E3C] to-[#F7941D] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            전공능력(PO)
+            하위역량(PO)
           </button>
         </div>
 
@@ -369,7 +373,7 @@ export default function ProfessorDashboard() {
         
         <div className="mb-4">
           <select value={selectedWeek} onChange={(e) => setSelectedWeek(Number(e.target.value))} className="w-full p-3 bg-gray-50 text-gray-800 rounded-xl border-2 border-gray-200 font-medium">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(week => <option key={week} value={week}>{week}주차</option>)}
+            {Array.from({ length: selectedCourse.totalWeeks }, (_, i) => i + 1).map(week => <option key={week} value={week}>{week}주차</option>)}
           </select>
         </div>
 

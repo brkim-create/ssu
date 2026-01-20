@@ -66,9 +66,9 @@ export const teachingMethodData: TeachingMethod[] = [
 
 // 개설 과목 데이터
 export const courses: Course[] = [
-  { id: 1, name: '자료구조', students: 65, semester: '2025-1', competency: 'T' },
-  { id: 2, name: '알고리즘', students: 58, semester: '2025-1', competency: 'S' },
-  { id: 3, name: '소프트웨어공학', students: 42, semester: '2025-1', competency: 'T' },
+  { id: 1, name: '자료구조', students: 65, semester: '2025-1', competency: 'T', totalWeeks: 15 },
+  { id: 2, name: '알고리즘', students: 58, semester: '2025-1', competency: 'S', totalWeeks: 15 },
+  { id: 3, name: '소프트웨어공학', students: 42, semester: '2025-1', competency: 'T', totalWeeks: 15 },
 ];
 
 // 학생 목록 데이터
