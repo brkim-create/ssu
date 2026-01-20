@@ -17,7 +17,6 @@ import type {
   GradeGrowthItem,
   CQIStatusItem,
   CurriculumIssues,
-  StudentData,
   StudentRadarItem,
   BehaviorIndicator,
   EvidenceItem,
@@ -250,15 +249,6 @@ export const curriculumIssues: CurriculumIssues = {
     { id: 12, courseName: '물리치료 개론', professor: '배성우', dept: '치료재활과' },
   ],
 };
-
-// 학생 목록 데이터
-export const studentsData: StudentData[] = [
-  { id: 1, name: '김학생', studentId: '20210001', dept: 'AI빅데이터과', grade: 3, S: 78, T: 82, A: 75, R: 80, avg: 78.75, badge: '우수', jobMatch: 87 },
-  { id: 2, name: '이학생', studentId: '20210002', dept: '간호학과', grade: 3, S: 92, T: 88, A: 91, R: 89, avg: 90.0, badge: '마스터', jobMatch: 95 },
-  { id: 3, name: '박학생', studentId: '20210003', dept: '치위생과', grade: 3, S: 65, T: 68, A: 70, R: 66, avg: 67.25, badge: '보통', jobMatch: 72 },
-  { id: 4, name: '최학생', studentId: '20210004', dept: '호텔조리과', grade: 3, S: 52, T: 58, A: 55, R: 54, avg: 54.75, badge: '노력요망', jobMatch: 58 },
-  { id: 5, name: '정학생', studentId: '20210005', dept: '사회복지과', grade: 3, S: 75, T: 79, A: 72, R: 77, avg: 75.75, badge: '보통', jobMatch: 81 },
-];
 
 // 학생 개인 레이더 차트 데이터
 export const studentRadarData: StudentRadarItem[] = [

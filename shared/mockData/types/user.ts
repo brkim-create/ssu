@@ -19,14 +19,6 @@ export interface Student extends StudentCompetency {
   dept: string;
 }
 
-// 학생 확장 정보 (admin-ds)
-export interface StudentData extends Student {
-  grade: number;
-  avg: number;
-  badge: '마스터' | '우수' | '보통' | '노력요망';
-  jobMatch: number;
-}
-
 // 사용자 프로필 (student-ds)
 export interface UserProfile {
   department: string;
