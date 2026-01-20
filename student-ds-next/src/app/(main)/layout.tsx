@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Home, FileText, Bell, User } from "lucide-react";
+import { checkAutoLogin } from "@/utils/auth";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -20,11 +22,43 @@ const tabs = [
  * MainLayout - 메인 영역 레이아웃
  *
  * Next.js App Router의 Route Group Layout
+ * - 인증 체크 후 미인증 시 로그인 페이지로 리다이렉트
  * - 하단 네비게이션 바 포함
  * - URL 경로에 따른 탭 활성화 스타일 적용
  */
 export default function MainLayout({ children }: MainLayoutProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // 인증 체크
+  useEffect(() => {
+    const tokens = checkAutoLogin();
+    if (tokens) {
+      setIsAuthenticated(true);
+    } else {
+      router.replace("/login");
+    }
+    setIsCheckingAuth(false);
+  }, [router]);
+
+  // 인증 체크 중 로딩 표시
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-gray-100 max-w-md mx-auto flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500">로딩 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // 미인증 시 빈 화면 (리다이렉트 중)
+  if (!isAuthenticated) {
+    return null;
+  }
 
   // 현재 경로에 따른 활성 탭 판별
   const getActiveTab = (href: string) => {

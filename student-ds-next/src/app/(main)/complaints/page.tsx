@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Building, GraduationCap, Heart, BookOpen, HelpCircle, CheckCircle, Send, X, Search, Star, ChevronRight, MessageCircle, Clock, Check, User, FileText, Copy, Download, Trophy, Bell } from "lucide-react";
+import { Plus, Building, GraduationCap, Heart, BookOpen, HelpCircle, CheckCircle, Send, X, Search, Star, MessageCircle, Clock, Check, User, FileText, Copy, Download, Trophy } from "lucide-react";
 import Header from "@/components/common/Header";
 import ChatModal from "@/components/chatbot/ChatModal";
 import FAQModal from "@/components/modals/complaints/FAQModal";
 import WriteComplaintModal from "@/components/modals/complaints/WriteComplaintModal";
-import { complaintCategories, complaints, faqData, ComplaintCategory, Complaint } from "@/data/mockData";
+import ComplaintListModal from "@/components/modals/mypage/ComplaintListModal";
+import DownloadModal from "@/components/modals/mypage/DownloadModal";
+import { complaintCategories, complaints, faqData, ComplaintCategory, Complaint, CURRENT_STUDENT_ID } from "@/data/mockData";
 
 // 아이콘 매핑
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -44,8 +46,7 @@ export default function ComplaintsPage() {
   // 민원 목록 모달 상태
   const [showComplaintListModal, setShowComplaintListModal] = useState(false);
   const [complaintStatusFilter, setComplaintStatusFilter] = useState("전체");
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [periodFilter, setPeriodFilter] = useState("전체");
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
 
   // 평가 모달 상태
   const [showRatingModal, setShowRatingModal] = useState(false);
@@ -59,64 +60,24 @@ export default function ComplaintsPage() {
   // 민원 상세 모달 상태
   const [complaintDetailModal, setComplaintDetailModal] = useState<Complaint | null>(null);
 
-  // 공유/검색/알림설정 모달 상태
+  // 공유/검색 모달 상태
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
-  const [showNotificationSettingsModal, setShowNotificationSettingsModal] = useState(false);
-  const [notificationChannels, setNotificationChannels] = useState({
-    pwa: true,
-    kakao: false,
-    email: true,
-  });
 
-  // 통계 계산
+  // 현재 사용자의 민원만 필터링
+  const myComplaints = complaints.filter(
+    (c) => c.studentId === CURRENT_STUDENT_ID
+  );
+
+  // 통계 계산 (내 민원 기준)
   const stats = {
-    접수: complaints.filter((c) => c.status === "접수").length,
-    처리중: complaints.filter((c) => c.status === "처리중").length,
-    완료: complaints.filter((c) => c.status === "완료").length,
+    접수: myComplaints.filter((c) => c.status === "접수").length,
+    처리중: myComplaints.filter((c) => c.status === "처리중").length,
+    완료: myComplaints.filter((c) => c.status === "완료").length,
   };
-  const completionRate = Math.round((stats.완료 / complaints.length) * 100);
-
-  // 민원 필터링
-  const getFilteredComplaints = () => {
-    let filtered = [...complaints];
-
-    // 1. 상태 필터링
-    if (complaintStatusFilter !== "전체") {
-      filtered = filtered.filter((c) => c.status === complaintStatusFilter);
-    }
-
-    // 2. 기간 필터링
-    if (periodFilter !== "전체") {
-      const now = new Date();
-      const monthsAgo = periodFilter === "1개월" ? 1 : periodFilter === "3개월" ? 3 : 6;
-      const filterDate = new Date(now.setMonth(now.getMonth() - monthsAgo));
-
-      filtered = filtered.filter((c) => {
-        const complaintDate = new Date(c.date.replace(/\./g, "-"));
-        return complaintDate >= filterDate;
-      });
-    }
-
-    // 3. 키워드 필터링
-    if (searchKeyword.trim()) {
-      const keyword = searchKeyword.toLowerCase();
-      filtered = filtered.filter(
-        (c) =>
-          c.title.toLowerCase().includes(keyword) ||
-          c.content.toLowerCase().includes(keyword)
-      );
-    }
-
-    return filtered;
-  };
-
-  // 민원 목록 모달 닫기 (X버튼)
-  const handleCloseComplaintListModal = () => {
-    setShowComplaintListModal(false);
-    setSearchKeyword("");
-    setPeriodFilter("전체");
-  };
+  const completionRate = myComplaints.length > 0
+    ? Math.round((stats.완료 / myComplaints.length) * 100)
+    : 0;
 
   // 통계 클릭 시 민원 목록 모달 열기
   const handleStatClick = (status: string) => {
@@ -136,18 +97,11 @@ export default function ComplaintsPage() {
       setComplaintRatedStatus({ ...complaintRatedStatus, [ratingComplaintId]: true });
       setComplaintRatings({ ...complaintRatings, [ratingComplaintId]: selectedRating });
       setShowRatingModal(false);
-      setShowComplaintListModal(false);
       setRatingComplaintId(null);
       setSelectedRating(0);
       setRatingComment("");
-      alert("평가해 주셔서 감사합니다!");
+      // 민원 목록 모달은 유지 (다른 민원도 평가 가능)
     }
-  };
-
-  // 민원 상세 모달 열기
-  const handleOpenComplaintDetail = (complaint: Complaint) => {
-    setShowComplaintListModal(false);
-    setComplaintDetailModal(complaint);
   };
 
   const handleCategoryClick = (categoryName: string) => {
@@ -193,7 +147,7 @@ export default function ComplaintsPage() {
   // Header 아이콘 핸들러
   const handleShareClick = () => setShowShareModal(true);
   const handleSearchClick = () => setShowSearchModal(true);
-  const handleBellClick = () => setShowNotificationSettingsModal(true);
+  const handleBellClick = () => router.push("/notification");
 
   return (
     <div className="pb-4">
@@ -320,209 +274,102 @@ export default function ComplaintsPage() {
       )}
 
       {/* 민원 목록 모달 */}
-      {showComplaintListModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-3xl max-h-[85vh] flex flex-col">
-            {/* 헤더 */}
-            <div className="p-6 pb-4 shrink-0">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-xl">민원 내역</h3>
-                <button onClick={handleCloseComplaintListModal}>
-                  <X className="w-6 h-6 text-gray-400" />
-                </button>
-              </div>
+      <ComplaintListModal
+        isOpen={showComplaintListModal}
+        onClose={() => setShowComplaintListModal(false)}
+        complaints={myComplaints}
+        onOpenDownloadModal={() => setShowDownloadModal(true)}
+        initialStatusFilter={complaintStatusFilter}
+        onOpenRatingModal={handleRateComplaint}
+        ratedComplaints={complaintRatings}
+      />
 
-              {/* 검색 */}
-              <div className="relative mb-4">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  value={searchKeyword}
-                  onChange={(e) => setSearchKeyword(e.target.value)}
-                  placeholder="제목 또는 내용 검색"
-                  className="w-full pl-10 pr-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500"
-                />
-              </div>
-
-              {/* 상태 필터 */}
-              <div className="flex gap-2 mb-3">
-                {["전체", "접수", "처리중", "완료"].map((status) => (
-                  <button
-                    key={status}
-                    onClick={() => setComplaintStatusFilter(status)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                      complaintStatusFilter === status
-                        ? "bg-gradient-to-r from-red-500 to-orange-500 text-white"
-                        : "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {status}
-                  </button>
-                ))}
-              </div>
-
-              {/* 기간 필터 */}
-              <div className="flex gap-2">
-                {["전체", "1개월", "3개월", "6개월"].map((period) => (
-                  <button
-                    key={period}
-                    onClick={() => setPeriodFilter(period)}
-                    className={`px-3 py-1 rounded-lg text-sm ${
-                      periodFilter === period
-                        ? "bg-pink-100 text-pink-600 font-medium"
-                        : "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {period}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 민원 목록 */}
-            <div className="flex-1 overflow-y-auto px-6 pb-6">
-              <div className="space-y-3">
-                {getFilteredComplaints().length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    검색 결과가 없습니다.
-                  </div>
-                ) : (
-                  getFilteredComplaints().map((complaint) => (
-                    <div
-                      key={complaint.id}
-                      onClick={() => handleOpenComplaintDetail(complaint)}
-                      className="bg-gray-50 rounded-xl p-4 cursor-pointer hover:shadow-md transition-all"
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span
-                              className={`text-xs px-2 py-0.5 rounded-full ${
-                                complaint.status === "접수"
-                                  ? "bg-blue-100 text-blue-600"
-                                  : complaint.status === "처리중"
-                                  ? "bg-orange-100 text-orange-600"
-                                  : "bg-green-100 text-green-600"
-                              }`}
-                            >
-                              {complaint.status}
-                            </span>
-                            <span className="text-xs text-gray-400">
-                              {complaint.date}
-                            </span>
-                          </div>
-                          <h4 className="font-medium text-gray-800">
-                            {complaint.title}
-                          </h4>
-                          <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                            {complaint.content}
-                          </p>
-                        </div>
-                        <ChevronRight className="w-5 h-5 text-gray-400 shrink-0" />
-                      </div>
-
-                      {/* 완료된 민원에 평가 버튼 */}
-                      {complaint.status === "완료" &&
-                        !complaintRatedStatus[complaint.id] && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRateComplaint(complaint.id);
-                            }}
-                            className="mt-2 w-full py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg text-sm font-medium"
-                          >
-                            평가하기
-                          </button>
-                        )}
-
-                      {/* 이미 평가한 경우 */}
-                      {complaint.status === "완료" &&
-                        complaintRatedStatus[complaint.id] && (
-                          <div className="mt-2 flex items-center justify-center gap-1 py-2 bg-gray-100 rounded-lg">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <Star
-                                key={star}
-                                className={`w-4 h-4 ${
-                                  star <= (complaintRatings[complaint.id] || 0)
-                                    ? "text-yellow-400 fill-yellow-400"
-                                    : "text-gray-300"
-                                }`}
-                              />
-                            ))}
-                            <span className="text-sm text-gray-500 ml-1">
-                              평가 완료
-                            </span>
-                          </div>
-                        )}
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* 다운로드 모달 */}
+      <DownloadModal
+        isOpen={showDownloadModal}
+        onClose={() => setShowDownloadModal(false)}
+      />
 
       {/* 평가 모달 */}
       {showRatingModal && (
         <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full mx-4 shadow-2xl">
-            <div className="text-center">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                민원 처리 만족도 평가
-              </h3>
-              <p className="text-gray-600 text-sm mb-6">
-                서비스 개선을 위해 평가해 주세요.
-              </p>
+          <div className="bg-white w-full max-w-md rounded-2xl p-6">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="font-bold text-xl mb-2">민원 처리가 완료되었습니다</h3>
+              <p className="text-sm text-gray-500">처리 결과에 대해 평가해주세요</p>
+            </div>
 
-              {/* 별점 */}
-              <div className="flex justify-center gap-2 mb-6">
-                {[1, 2, 3, 4, 5].map((star) => (
+            {/* 별점 */}
+            <div className="mb-6">
+              <p className="text-sm font-medium text-gray-700 mb-3 text-center">만족도를 선택해주세요</p>
+              <div className="flex justify-center gap-2">
+                {[1, 2, 3, 4, 5].map((rating) => (
                   <button
-                    key={star}
-                    onClick={() => setSelectedRating(star)}
+                    key={rating}
+                    onClick={() => setSelectedRating(rating)}
                     className="transition-transform hover:scale-110"
                   >
                     <Star
                       className={`w-10 h-10 ${
-                        star <= selectedRating
-                          ? "text-yellow-400 fill-yellow-400"
+                        rating <= selectedRating
+                          ? "fill-yellow-400 text-yellow-400"
                           : "text-gray-300"
                       }`}
                     />
                   </button>
                 ))}
               </div>
+              <div className="text-center mt-2">
+                <span className="text-sm text-gray-500">
+                  {selectedRating === 0 && "선택해주세요"}
+                  {selectedRating === 1 && "매우 불만족"}
+                  {selectedRating === 2 && "불만족"}
+                  {selectedRating === 3 && "보통"}
+                  {selectedRating === 4 && "만족"}
+                  {selectedRating === 5 && "매우 만족"}
+                </span>
+              </div>
+            </div>
 
-              {/* 코멘트 */}
+            {/* 추가 의견 */}
+            <div className="mb-6">
+              <label className="text-sm font-medium text-gray-700 mb-2 block">추가 의견 (선택)</label>
               <textarea
                 value={ratingComment}
                 onChange={(e) => setRatingComment(e.target.value)}
-                placeholder="의견을 남겨주세요 (선택)"
+                placeholder="더 좋은 서비스를 위한 의견을 남겨주세요"
+                className="w-full p-3 border border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows={3}
-                className="w-full p-3 bg-gray-100 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 mb-4"
               />
+            </div>
 
-              {/* 버튼 */}
-              <div className="flex gap-3">
-                <button
-                  onClick={() => {
-                    setShowRatingModal(false);
-                    setSelectedRating(0);
-                    setRatingComment("");
-                  }}
-                  className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium"
-                >
-                  취소
-                </button>
-                <button
-                  onClick={handleRatingSubmit}
-                  disabled={selectedRating === 0}
-                  className="flex-1 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-bold disabled:opacity-50"
-                >
-                  제출
-                </button>
-              </div>
+            {/* 버튼 */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowRatingModal(false);
+                  setRatingComplaintId(null);
+                  setSelectedRating(0);
+                  setRatingComment("");
+                }}
+                className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all"
+              >
+                나중에
+              </button>
+              <button
+                onClick={handleRatingSubmit}
+                disabled={selectedRating === 0}
+                className={`flex-1 py-3 rounded-xl font-medium transition-all ${
+                  selectedRating === 0
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : "bg-gradient-to-r from-red-500 to-orange-500 text-white hover:shadow-lg"
+                }`}
+              >
+                평가 제출
+              </button>
             </div>
           </div>
         </div>
@@ -868,117 +715,6 @@ export default function ComplaintsPage() {
         </div>
       )}
 
-      {/* 알림 설정 모달 */}
-      {showNotificationSettingsModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[70vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-xl">알림 설정</h3>
-              <button onClick={() => setShowNotificationSettingsModal(false)}>
-                <X className="w-6 h-6 text-gray-400" />
-              </button>
-            </div>
-
-            <p className="text-sm text-gray-600 mb-6">받고 싶은 알림 채널을 선택하세요</p>
-
-            <div className="space-y-4">
-              {/* PWA 푸시 */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Bell className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-800">PWA 푸시</p>
-                      <p className="text-xs text-gray-500">브라우저 알림</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setNotificationChannels({...notificationChannels, pwa: !notificationChannels.pwa})}
-                    className={`w-12 h-6 rounded-full relative transition-all ${
-                      notificationChannels.pwa ? 'bg-green-500' : 'bg-gray-300'
-                    }`}
-                  >
-                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                      notificationChannels.pwa ? 'right-1' : 'left-1'
-                    }`}></div>
-                  </button>
-                </div>
-                <p className="text-xs text-gray-500">실시간으로 중요한 알림을 받을 수 있습니다</p>
-              </div>
-
-              {/* 카카오톡 */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                      <MessageCircle className="w-5 h-5 text-yellow-600" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-800">카카오톡</p>
-                      <p className="text-xs text-gray-500">카카오 알림톡</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setNotificationChannels({...notificationChannels, kakao: !notificationChannels.kakao})}
-                    className={`w-12 h-6 rounded-full relative transition-all ${
-                      notificationChannels.kakao ? 'bg-green-500' : 'bg-gray-300'
-                    }`}
-                  >
-                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                      notificationChannels.kakao ? 'right-1' : 'left-1'
-                    }`}></div>
-                  </button>
-                </div>
-                <p className="text-xs text-gray-500">카카오톡으로 알림을 받을 수 있습니다</p>
-              </div>
-
-              {/* 이메일 */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
-                      <Send className="w-5 h-5 text-pink-600" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-800">이메일</p>
-                      <p className="text-xs text-gray-500">school@example.com</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setNotificationChannels({...notificationChannels, email: !notificationChannels.email})}
-                    className={`w-12 h-6 rounded-full relative transition-all ${
-                      notificationChannels.email ? 'bg-green-500' : 'bg-gray-300'
-                    }`}
-                  >
-                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                      notificationChannels.email ? 'right-1' : 'left-1'
-                    }`}></div>
-                  </button>
-                </div>
-                <p className="text-xs text-gray-500">이메일로 상세한 알림을 받을 수 있습니다</p>
-              </div>
-            </div>
-
-            <div className="mt-6 p-4 bg-blue-50 rounded-xl">
-              <p className="text-sm text-blue-700">
-                💡 알림 채널은 언제든지 변경할 수 있습니다
-              </p>
-            </div>
-
-            <button
-              onClick={() => {
-                setShowNotificationSettingsModal(false);
-                alert('알림 설정이 저장되었습니다!');
-              }}
-              className="w-full mt-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-bold"
-            >
-              저장하기
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

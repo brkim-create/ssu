@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, LogIn } from "lucide-react";
-import { mockSSOLogin, saveAuthTokens } from "@/utils/auth";
+import { mockSSOLogin, saveAuthTokens, checkAutoLogin } from "@/utils/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,6 +14,14 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // 이미 로그인된 경우 홈으로 리다이렉트
+  useEffect(() => {
+    const tokens = checkAutoLogin();
+    if (tokens) {
+      router.replace("/");
+    }
+  }, [router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,9 +51,7 @@ export default function LoginPage() {
         {/* 헤더 */}
         <div className="text-center mb-8">
           <div className="mb-4 flex justify-center">
-            <div className="h-20 w-20 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-              SSU
-            </div>
+            <img src="/logo.png" alt="대학교 로고" className="h-20 w-20 object-contain" />
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-red-500 via-pink-500 to-orange-500 bg-clip-text text-transparent mb-2">
             대학교 통합 포털
