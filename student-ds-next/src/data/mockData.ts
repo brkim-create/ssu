@@ -755,3 +755,118 @@ export const academicAnswerTemplates: ChatbotAnswerTemplate = {
   "휴/복학": "휴학 및 복학 신청 안내:\n• 휴학: 학기 시작 전 또는 개강 후 2주 이내\n• 복학: 복학 학기 시작 1개월 전\n• 신청: 학생포털 > 학적 > 휴학/복학 신청\n문의: 교학팀(02-1234-5683)",
   졸업요건: "졸업요건 확인:\n• 총 이수학점: 130학점 이상\n• 전공학점: 60학점 이상\n• 교양학점: 30학점 이상\n• STAR 역량 기준 충족\n자세한 졸업요건은 학생포털 > 학사 > 졸업요건조회에서 확인하실 수 있습니다.\n문의: 교학팀(academic@university.ac.kr)",
 };
+
+// ============================================================
+// 통합 검색 Mock Data
+// ============================================================
+
+export interface SearchRecommendation {
+  title: string;
+  description: string;
+  icon: string; // "Trophy" 등 아이콘 이름
+}
+
+export interface SearchData {
+  recentSearches: string[];
+  popularSearches: string[];
+  recommendations: SearchRecommendation[];
+  filterTabs: string[];
+}
+
+export const searchData: SearchData = {
+  recentSearches: ["창의적 문제해결", "장학금", "도서관 냉방", "S역량"],
+  popularSearches: ["수강신청", "성적 정정", "역량 점수", "민원 제출"],
+  recommendations: [
+    {
+      title: "S 창의 역량",
+      description: "최근 업데이트된 역량 점수를 확인하세요",
+      icon: "Trophy",
+    },
+  ],
+  filterTabs: ["전체", "Evidence", "민원", "알림"],
+};
+
+// ============================================================
+// 마이페이지 Mock Data
+// ============================================================
+
+// 로그인 이력
+export interface LoginHistory {
+  date: string;
+  time: string;
+  device: string;
+}
+
+export const loginHistory: LoginHistory[] = [
+  { date: "2025.01.20", time: "14:32", device: "Chrome (Windows)" },
+  { date: "2025.01.19", time: "09:15", device: "Safari (iPhone)" },
+  { date: "2025.01.18", time: "18:42", device: "Chrome (Android)" },
+];
+
+// 공유 옵션
+export interface ShareOption {
+  id: string;
+  name: string;
+  icon: string; // lucide icon name
+}
+
+export const shareOptions: ShareOption[] = [
+  { id: "kakao", name: "카카오톡", icon: "MessageCircle" },
+  { id: "sms", name: "문자", icon: "MessageSquare" },
+  { id: "email", name: "이메일", icon: "Mail" },
+  { id: "link", name: "링크복사", icon: "Link" },
+];
+
+// 알림 채널 설정
+export interface NotificationChannel {
+  id: string;
+  name: string;
+  description: string;
+  subText: string;
+  icon: string; // lucide icon name
+  iconBgColor: string;
+  iconColor: string;
+}
+
+export const notificationChannels: NotificationChannel[] = [
+  {
+    id: "pwa",
+    name: "PWA 푸시",
+    description: "실시간으로 중요한 알림을 받을 수 있습니다",
+    subText: "브라우저 알림",
+    icon: "Bell",
+    iconBgColor: "bg-blue-100",
+    iconColor: "text-blue-600",
+  },
+  {
+    id: "kakao",
+    name: "카카오톡",
+    description: "카카오톡으로 알림을 받을 수 있습니다",
+    subText: "카카오 알림톡",
+    icon: "MessageCircle",
+    iconBgColor: "bg-yellow-100",
+    iconColor: "text-yellow-600",
+  },
+  {
+    id: "email",
+    name: "이메일",
+    description: "이메일로 상세한 알림을 받을 수 있습니다",
+    subText: "school@example.com",
+    icon: "Send",
+    iconBgColor: "bg-pink-100",
+    iconColor: "text-pink-600",
+  },
+];
+
+// 사용자 프로필 정보
+export interface UserProfile {
+  department: string;
+  grade: string;
+  email: string;
+}
+
+export const userProfile: UserProfile = {
+  department: "컴퓨터공학과",
+  grade: "3학년",
+  email: "school@example.com",
+};

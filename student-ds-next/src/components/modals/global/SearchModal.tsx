@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { X, Search, Trophy } from "lucide-react";
+import { searchData } from "@/data/mockData";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -43,7 +44,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
           </div>
 
           <div className="flex gap-2 mt-4">
-            {["전체", "Evidence", "민원", "알림"].map((filter) => (
+            {searchData.filterTabs.map((filter) => (
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
@@ -64,53 +65,52 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             <div>
               <h4 className="font-bold text-gray-800 mb-3">최근 검색어</h4>
               <div className="flex flex-wrap gap-2">
-                {["창의적 문제해결", "장학금", "도서관 냉방", "S역량"].map(
-                  (term, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => handleKeywordClick(term)}
-                      className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition-all"
-                    >
-                      {term}
-                    </button>
-                  )
-                )}
+                {searchData.recentSearches.map((term, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleKeywordClick(term)}
+                    className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition-all"
+                  >
+                    {term}
+                  </button>
+                ))}
               </div>
             </div>
 
             <div>
               <h4 className="font-bold text-gray-800 mb-3">인기 검색어</h4>
               <div className="space-y-2">
-                {["수강신청", "성적 정정", "역량 점수", "민원 제출"].map(
-                  (term, idx) => (
-                    <div
-                      key={idx}
-                      onClick={() => handleKeywordClick(term)}
-                      className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all cursor-pointer"
-                    >
-                      <span className="text-pink-500 font-bold text-sm">
-                        {idx + 1}
-                      </span>
-                      <span className="text-gray-800">{term}</span>
-                    </div>
-                  )
-                )}
+                {searchData.popularSearches.map((term, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => handleKeywordClick(term)}
+                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all cursor-pointer"
+                  >
+                    <span className="text-pink-500 font-bold text-sm">
+                      {idx + 1}
+                    </span>
+                    <span className="text-gray-800">{term}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
             <div>
               <h4 className="font-bold text-gray-800 mb-3">추천</h4>
-              <div className="p-4 bg-gradient-to-r from-pink-50 to-orange-50 rounded-xl">
-                <div className="flex items-center gap-2 mb-1">
-                  <Trophy className="w-4 h-4 text-orange-500" />
-                  <span className="text-sm font-bold text-gray-800">
-                    S 창의 역량
-                  </span>
+              {searchData.recommendations.map((rec, idx) => (
+                <div
+                  key={idx}
+                  className="p-4 bg-gradient-to-r from-pink-50 to-orange-50 rounded-xl"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <Trophy className="w-4 h-4 text-orange-500" />
+                    <span className="text-sm font-bold text-gray-800">
+                      {rec.title}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-600">{rec.description}</p>
                 </div>
-                <p className="text-xs text-gray-600">
-                  최근 업데이트된 역량 점수를 확인하세요
-                </p>
-              </div>
+              ))}
             </div>
           </div>
         </div>

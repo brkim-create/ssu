@@ -22,7 +22,14 @@ import {
 } from "lucide-react";
 import DownloadModal from "@/components/modals/mypage/DownloadModal";
 import ComplaintListModal from "@/components/modals/mypage/ComplaintListModal";
-import { complaints, CURRENT_STUDENT_ID, Complaint } from "@/data/mockData";
+import SearchModal from "@/components/modals/global/SearchModal";
+import {
+  complaints,
+  CURRENT_STUDENT_ID,
+  Complaint,
+  loginHistory,
+  userProfile,
+} from "@/data/mockData";
 import { clearAuthTokens, checkAutoLogin, AuthTokens } from "@/utils/auth";
 
 /**
@@ -267,17 +274,17 @@ export default function MyPagePage() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between py-2 border-b border-gray-200">
                     <span className="text-sm text-gray-600">학과</span>
-                    <span className="font-medium text-gray-800">컴퓨터공학과</span>
+                    <span className="font-medium text-gray-800">{userProfile.department}</span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-gray-200">
                     <span className="text-sm text-gray-600">학년</span>
                     <span className="font-medium text-gray-800">
-                      {authTokens?.userType === 'student' ? '3학년' : '-'}
+                      {authTokens?.userType === 'student' ? userProfile.grade : '-'}
                     </span>
                   </div>
                   <div className="flex items-center justify-between py-2">
                     <span className="text-sm text-gray-600">이메일</span>
-                    <span className="font-medium text-gray-800">school@example.com</span>
+                    <span className="font-medium text-gray-800">{userProfile.email}</span>
                   </div>
                 </div>
               </div>
@@ -286,27 +293,15 @@ export default function MyPagePage() {
               <div className="bg-gray-50 rounded-xl p-4">
                 <h4 className="font-bold text-gray-800 mb-3">최근 로그인 이력</h4>
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between py-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600">2025.01.20 14:32</span>
+                  {loginHistory.map((log, idx) => (
+                    <div key={idx} className="flex items-center justify-between py-2 text-sm">
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-gray-400" />
+                        <span className="text-gray-600">{log.date} {log.time}</span>
+                      </div>
+                      <span className="text-gray-500">{log.device}</span>
                     </div>
-                    <span className="text-gray-500">Chrome (Windows)</span>
-                  </div>
-                  <div className="flex items-center justify-between py-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600">2025.01.19 09:15</span>
-                    </div>
-                    <span className="text-gray-500">Safari (iPhone)</span>
-                  </div>
-                  <div className="flex items-center justify-between py-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600">2025.01.18 18:42</span>
-                    </div>
-                    <span className="text-gray-500">Chrome (Android)</span>
-                  </div>
+                  ))}
                 </div>
               </div>
 
@@ -360,39 +355,10 @@ export default function MyPagePage() {
       )}
 
       {/* 검색 모달 */}
-      {showSearchModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-3xl p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-bold text-xl text-gray-800">검색</h3>
-              <button onClick={() => setShowSearchModal(false)}>
-                <span className="text-2xl text-gray-400">×</span>
-              </button>
-            </div>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="검색어를 입력하세요"
-                className="w-full p-4 pr-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500"
-              />
-              <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            </div>
-            <div className="mt-4">
-              <p className="text-sm text-gray-500 mb-2">최근 검색어</p>
-              <div className="flex flex-wrap gap-2">
-                {["민원", "성적", "장학금"].map((term) => (
-                  <span
-                    key={term}
-                    className="px-3 py-1 bg-gray-100 text-gray-600 text-sm rounded-full"
-                  >
-                    {term}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <SearchModal
+        isOpen={showSearchModal}
+        onClose={() => setShowSearchModal(false)}
+      />
 
       {/* 알림 설정 모달 */}
       {showNotificationSettingsModal && (
@@ -408,15 +374,15 @@ export default function MyPagePage() {
             <p className="text-sm text-gray-600 mb-6">받고 싶은 알림 채널을 선택하세요</p>
 
             <div className="space-y-4">
-              {/* PWA 푸시 */}
+              {/* PWA 푸시 알림 */}
               <div className="bg-gray-50 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Bell className="w-5 h-5 text-blue-600" />
+                    <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
+                      <Bell className="w-5 h-5 text-pink-500" />
                     </div>
                     <div>
-                      <p className="font-bold text-gray-800">PWA 푸시</p>
+                      <p className="font-bold text-gray-800">PWA 푸시 알림</p>
                       <p className="text-xs text-gray-500">브라우저 알림</p>
                     </div>
                   </div>
@@ -431,10 +397,10 @@ export default function MyPagePage() {
                     }`}></div>
                   </button>
                 </div>
-                <p className="text-xs text-gray-500">실시간으로 중요한 알림을 받을 수 있습니다</p>
+                <p className="text-xs text-gray-500">앱이 열려있지 않아도 중요한 알림을 받을 수 있습니다</p>
               </div>
 
-              {/* 카카오톡 */}
+              {/* 카카오톡 알림 */}
               <div className="bg-gray-50 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -442,8 +408,8 @@ export default function MyPagePage() {
                       <MessageCircle className="w-5 h-5 text-yellow-600" />
                     </div>
                     <div>
-                      <p className="font-bold text-gray-800">카카오톡</p>
-                      <p className="text-xs text-gray-500">카카오 알림톡</p>
+                      <p className="font-bold text-gray-800">카카오톡 알림</p>
+                      <p className="text-xs text-gray-500">카카오톡 연동</p>
                     </div>
                   </div>
                   <button
@@ -457,19 +423,19 @@ export default function MyPagePage() {
                     }`}></div>
                   </button>
                 </div>
-                <p className="text-xs text-gray-500">카카오톡으로 알림을 받을 수 있습니다</p>
+                <p className="text-xs text-gray-500">카카오톡 알림톡으로 민원 처리 상태를 알려드립니다</p>
               </div>
 
-              {/* 이메일 */}
+              {/* 이메일 알림 */}
               <div className="bg-gray-50 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
-                      <Send className="w-5 h-5 text-pink-600" />
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Send className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
-                      <p className="font-bold text-gray-800">이메일</p>
-                      <p className="text-xs text-gray-500">school@example.com</p>
+                      <p className="font-bold text-gray-800">이메일 알림</p>
+                      <p className="text-xs text-gray-500">{userProfile.email}</p>
                     </div>
                   </div>
                   <button
@@ -483,7 +449,7 @@ export default function MyPagePage() {
                     }`}></div>
                   </button>
                 </div>
-                <p className="text-xs text-gray-500">이메일로 상세한 알림을 받을 수 있습니다</p>
+                <p className="text-xs text-gray-500">자세한 내용은 이메일로 확인할 수 있습니다</p>
               </div>
             </div>
 

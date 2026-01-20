@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Building, GraduationCap, Heart, BookOpen, HelpCircle, CheckCircle, Send, X, Search, Star, MessageCircle, Clock, Check, User, FileText, Copy, Download, Trophy } from "lucide-react";
+import { Plus, Building, GraduationCap, Heart, BookOpen, HelpCircle, CheckCircle, Send, X, Star, MessageCircle, Clock, Check, User, FileText, Copy, Download } from "lucide-react";
 import Header from "@/components/common/Header";
 import ChatModal from "@/components/chatbot/ChatModal";
 import FAQModal from "@/components/modals/complaints/FAQModal";
 import WriteComplaintModal from "@/components/modals/complaints/WriteComplaintModal";
 import ComplaintListModal from "@/components/modals/mypage/ComplaintListModal";
 import DownloadModal from "@/components/modals/mypage/DownloadModal";
+import SearchModal from "@/components/modals/global/SearchModal";
 import { complaintCategories, complaints, faqData, ComplaintCategory, Complaint, CURRENT_STUDENT_ID } from "@/data/mockData";
 
 // 아이콘 매핑
@@ -626,98 +627,10 @@ export default function ComplaintsPage() {
       )}
 
       {/* 검색 모달 */}
-      {showSearchModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-3xl h-[85vh] flex flex-col">
-            {/* 고정 상단 영역 */}
-            <div className="p-6 pb-4 shrink-0">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-bold text-xl">통합 검색</h3>
-                <button onClick={() => setShowSearchModal(false)}>
-                  <X className="w-6 h-6 text-gray-400" />
-                </button>
-              </div>
-
-              {/* 검색창 */}
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Evidence, 민원, 알림 검색..."
-                  className="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500"
-                  autoFocus
-                />
-              </div>
-
-              {/* 필터 탭 */}
-              <div className="flex gap-2 mt-4">
-                {['전체', 'Evidence', '민원', '알림'].map((filter) => (
-                  <button
-                    key={filter}
-                    className="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm hover:bg-pink-100 hover:text-pink-600 transition-all"
-                  >
-                    {filter}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 스크롤 가능한 중간 영역 */}
-            <div className="flex-1 overflow-y-auto px-6 py-2">
-              <div className="space-y-4">
-                {/* 최근 검색어 */}
-                <div>
-                  <h4 className="font-bold text-gray-800 mb-3">최근 검색어</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {['창의적 문제해결', '장학금', '도서관 냉방', 'S역량'].map((term, idx) => (
-                      <button
-                        key={idx}
-                        className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition-all"
-                      >
-                        {term}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* 인기 검색어 */}
-                <div>
-                  <h4 className="font-bold text-gray-800 mb-3">인기 검색어</h4>
-                  <div className="space-y-2">
-                    {['수강신청', '성적 정정', '역량 점수', '민원 제출'].map((term, idx) => (
-                      <div key={idx} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all cursor-pointer">
-                        <span className="text-pink-500 font-bold text-sm">{idx + 1}</span>
-                        <span className="text-gray-800">{term}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* 추천 */}
-                <div>
-                  <h4 className="font-bold text-gray-800 mb-3">추천</h4>
-                  <div className="space-y-2">
-                    <div className="p-4 bg-gradient-to-r from-pink-50 to-orange-50 rounded-xl">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Trophy className="w-4 h-4 text-orange-500" />
-                        <span className="text-sm font-bold text-gray-800">S 창의 역량</span>
-                      </div>
-                      <p className="text-xs text-gray-600">최근 업데이트된 역량 점수를 확인하세요</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 고정 하단 영역 */}
-            <div className="p-6 pt-4 shrink-0 border-t border-gray-100">
-              <button className="w-full py-3 text-gray-500 text-sm">
-                검색 기록 전체 삭제
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <SearchModal
+        isOpen={showSearchModal}
+        onClose={() => setShowSearchModal(false)}
+      />
 
     </div>
   );

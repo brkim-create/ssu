@@ -1,17 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import { Bell } from "lucide-react";
 import Header from "@/components/common/Header";
+import SearchModal from "@/components/modals/global/SearchModal";
 import { notifications } from "@/data/mockData";
 
 /**
  * NotificationPage - 알림 페이지
  */
 export default function NotificationPage() {
+  const [showSearchModal, setShowSearchModal] = useState(false);
 
   // Header 아이콘 핸들러
   const handleShareClick = () => console.log("Share clicked");
-  const handleSearchClick = () => console.log("Search clicked");
+  const handleSearchClick = () => setShowSearchModal(true);
   const handleBellClick = () => console.log("Bell clicked");
 
   return (
@@ -49,6 +52,12 @@ export default function NotificationPage() {
           </div>
         ))}
       </div>
+
+      {/* 검색 모달 */}
+      <SearchModal
+        isOpen={showSearchModal}
+        onClose={() => setShowSearchModal(false)}
+      />
     </div>
   );
 }
