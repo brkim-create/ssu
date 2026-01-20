@@ -8,6 +8,9 @@ import {
   performanceReport,
   courses,
   studentList,
+  weeklyLectures,
+  professorProfile,
+  courseStatistics,
 } from '../data/mockData';
 import { getStudentRadarSTAR, getStudentRadarPO } from '../utils/studentRadarUtils';
 
@@ -128,7 +131,7 @@ export default function ProfessorDashboard() {
         </ResponsiveContainer>
         <div className="mt-3 p-3 bg-slate-50 rounded-xl">
           <p className="text-sm text-slate-700">
-            <strong>평균 점수:</strong> 74.3점 | <strong>중앙값:</strong> 76점
+            <strong>평균 점수:</strong> {courseStatistics.averageScore}점 | <strong>중앙값:</strong> {courseStatistics.medianScore}점
           </p>
         </div>
       </div>
@@ -372,16 +375,6 @@ export default function ProfessorDashboard() {
 
         <div className="space-y-3">
           {(() => {
-            const weeklyLectures = [
-              { week: 1, date: '2025-03-03', day: '월', title: '자료구조 개론', status: '완료', attendance: 98 },
-              { week: 1, date: '2025-03-05', day: '수', title: '배열 자료구조', status: '완료', attendance: 96 },
-              { week: 2, date: '2025-03-10', day: '월', title: '배열과 리스트', status: '완료', attendance: 95 },
-              { week: 2, date: '2025-03-12', day: '수', title: '연결 리스트', status: '완료', attendance: 94 },
-              { week: 3, date: '2025-03-17', day: '월', title: '다항식 덧셈', status: '완료', attendance: 97 },
-              { week: 3, date: '2025-03-19', day: '수', title: '희소 행렬', status: '완료', attendance: 95 },
-              { week: 4, date: '2025-03-24', day: '월', title: '스택 구조', status: '진행중', attendance: 92 },
-              { week: 4, date: '2025-03-26', day: '수', title: '큐 구조', status: '예정', attendance: 0 },
-            ];
             const filteredLectures = weeklyLectures.filter(lecture => lecture.week === selectedWeek);
             return filteredLectures.map((lecture, idx) => (
               <div key={idx} className="p-4 bg-gray-50 rounded-xl border border-gray-100">
@@ -462,8 +455,8 @@ export default function ProfessorDashboard() {
 
       <div className="mx-4 -mt-10 bg-white rounded-2xl shadow-lg p-4">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">박</div>
-          <div><p className="font-bold text-lg">박정인 교수</p><p className="text-gray-500 text-sm">컴퓨터공학과</p><p className="text-gray-400 text-xs">개설 과목: 3개</p></div>
+          <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">{professorProfile.name.charAt(0)}</div>
+          <div><p className="font-bold text-lg">{professorProfile.name}</p><p className="text-gray-500 text-sm">{professorProfile.department}</p><p className="text-gray-400 text-xs">개설 과목: {professorProfile.courseCount}개</p></div>
         </div>
       </div>
 

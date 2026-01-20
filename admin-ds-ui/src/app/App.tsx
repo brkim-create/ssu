@@ -77,6 +77,7 @@ import {
   underperformingStudents,
   cqiPerformanceData,
   teachingMethodData,
+  dashboardStats,
 } from "../data/mockData";
 
 import logoImage from "../assets/logo.png";
@@ -1146,59 +1147,40 @@ export default function AdminDashboard() {
         )
       : collegeHeatmapData;
 
+  const iconMap = {
+    users: Users,
+    trending: TrendingUp,
+    award: Award,
+    check: CheckCircle,
+  };
+
   const DashboardScreen = () => (
     <div className="p-4 space-y-4 bg-gray-50 h-full overflow-y-auto">
       <div className="grid grid-cols-4 gap-3">
-        {[
-          {
-            label: "전체 학생수",
-            value: "1,000명",
-            icon: Users,
-            color: "blue",
-            change: "+5.2%",
-          },
-          {
-            label: "평균 역량 점수",
-            value: "76.3",
-            icon: TrendingUp,
-            color: "green",
-            change: "+3.8%",
-          },
-          {
-            label: "인증 달성률",
-            value: "87.5%",
-            icon: Award,
-            color: "purple",
-            change: "+2.1%",
-          },
-          {
-            label: "CQI 완료율",
-            value: "92.3%",
-            icon: CheckCircle,
-            color: "orange",
-            change: "+1.5%",
-          },
-        ].map((item, i) => (
-          <div
-            key={i}
-            className="bg-white rounded-lg shadow p-3 border border-gray-200"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-gray-600">{item.label}</p>
-                <div className="flex items-baseline gap-2">
-                  <p className="text-2xl font-bold text-gray-900">
-                    {item.value}
-                  </p>
-                  <span className="text-xs text-green-600">{item.change}</span>
+        {dashboardStats.map((item, i) => {
+          const IconComponent = iconMap[item.iconType];
+          return (
+            <div
+              key={i}
+              className="bg-white rounded-lg shadow p-3 border border-gray-200"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-gray-600">{item.label}</p>
+                  <div className="flex items-baseline gap-2">
+                    <p className="text-2xl font-bold text-gray-900">
+                      {item.value}
+                    </p>
+                    <span className="text-xs text-green-600">{item.change}</span>
+                  </div>
+                </div>
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <IconComponent className="w-4 h-4 text-gray-600" />
                 </div>
               </div>
-              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                <item.icon className="w-4 h-4 text-gray-600" />
-              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
