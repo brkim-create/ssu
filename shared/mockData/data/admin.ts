@@ -17,15 +17,6 @@ import type {
   GradeGrowthItem,
   CQIStatusItem,
   CurriculumIssues,
-  StudentRadarItem,
-  BehaviorIndicator,
-  EvidenceItem,
-  CourseData,
-  AchievementDistribution,
-  AssessmentToolItem,
-  UnderperformingStudent,
-  CQIPerformanceData,
-  TeachingMethodItem,
   DashboardStatCard,
   ComplaintStatCard,
   AssigneeOption,
@@ -249,86 +240,6 @@ export const curriculumIssues: CurriculumIssues = {
     { id: 12, courseName: '물리치료 개론', professor: '배성우', dept: '치료재활과' },
   ],
 };
-
-// 학생 개인 레이더 차트 데이터
-export const studentRadarData: StudentRadarItem[] = [
-  { subject: 'Self-directed', student: 78, deptAvg: 72, totalAvg: 70, fullMark: 100 },
-  { subject: 'Teamwork', student: 82, deptAvg: 75, totalAvg: 73, fullMark: 100 },
-  { subject: 'Analytical', student: 75, deptAvg: 70, totalAvg: 68, fullMark: 100 },
-  { subject: 'Relational', student: 80, deptAvg: 74, totalAvg: 71, fullMark: 100 },
-];
-
-// 행동지표 달성도 데이터
-export const behaviorIndicators: BehaviorIndicator[] = [
-  { code: 'S1', name: '자기주도 학습', achievement: 85, status: 'excellent' },
-  { code: 'S2', name: '시간 관리', achievement: 72, status: 'good' },
-  { code: 'S3', name: '목표 설정', achievement: 76, status: 'good' },
-  { code: 'T1', name: '팀워크 협력', achievement: 88, status: 'excellent' },
-  { code: 'T2', name: '리더십', achievement: 79, status: 'good' },
-  { code: 'T3', name: '의사소통', achievement: 80, status: 'excellent' },
-];
-
-// Evidence 트래킹 데이터
-export const evidenceData: EvidenceItem[] = [
-  { competency: 'S', course: '데이터구조', assignment: '프로젝트 1', score: 92, semester: '2024-1' },
-  { competency: 'S', course: '알고리즘', assignment: '중간고사', score: 85, semester: '2024-1' },
-  { competency: 'T', course: '소프트웨어공학', assignment: '팀 프로젝트', score: 88, semester: '2024-2' },
-  { competency: 'A', course: '인공지능', assignment: '기말고사', score: 78, semester: '2024-2' },
-  { competency: 'R', course: '캡스톤디자인', assignment: '최종발표', score: 90, semester: '2024-2' },
-];
-
-// 교수 앱 관리 - 강의 목록 데이터
-export const coursesData: CourseData[] = [
-  { id: 1, code: 'CS301', name: '데이터구조', professor: '김교수', students: 45, targetCompetency: 'S', avgScore: 76.5 },
-  { id: 2, code: 'CS302', name: '알고리즘', professor: '이교수', students: 38, targetCompetency: 'S', avgScore: 72.3 },
-  { id: 3, code: 'CS401', name: '소프트웨어공학', professor: '박교수', students: 42, targetCompetency: 'T', avgScore: 81.2 },
-  { id: 4, code: 'CS402', name: '인공지능', professor: '최교수', students: 35, targetCompetency: 'A', avgScore: 78.8 },
-];
-
-// 교과목 역량 성취도 분포
-export const courseAchievementDistribution: AchievementDistribution[] = [
-  { range: '0-60', count: 3 },
-  { range: '60-70', count: 8 },
-  { range: '70-80', count: 15 },
-  { range: '80-90', count: 12 },
-  { range: '90-100', count: 7 },
-];
-
-// 평가도구별 역량 점수
-export const assessmentToolData: AssessmentToolItem[] = [
-  { tool: '중간고사', S: 72, T: 68, A: 75, R: 70 },
-  { tool: '기말고사', S: 75, T: 71, A: 78, R: 73 },
-  { tool: '과제', S: 82, T: 85, A: 79, R: 81 },
-  { tool: '출석', S: 88, T: 90, A: 86, R: 89 },
-  { tool: '프로젝트', S: 85, T: 92, A: 83, R: 87 },
-];
-
-// 역량 미달 학생 리스트
-export const underperformingStudents: UnderperformingStudent[] = [
-  { name: '최학생', studentId: '20210004', targetComp: 'S', score: 52, threshold: 60, gap: -8 },
-  { name: '박학생', studentId: '20220015', targetComp: 'T', score: 58, threshold: 65, gap: -7 },
-  { name: '정학생', studentId: '20220023', targetComp: 'A', score: 61, threshold: 70, gap: -9 },
-];
-
-// CQI 성과 분석 데이터
-export const cqiPerformanceData: CQIPerformanceData = {
-  targetAchievement: 85,
-  currentAchievement: 78.5,
-  achievementRate: 92.4,
-  yearOverYear: 3.8,
-  weakAreas: [
-    { area: 'Analytical 역량', score: 68.5, improvement: '문제해결 과제 강화 필요' },
-    { area: 'Self-directed 역량', score: 71.2, improvement: '자기주도 학습 시간 확대' },
-  ],
-};
-
-// 교수법 연계 진단 데이터
-export const teachingMethodData: TeachingMethodItem[] = [
-  { method: 'PBL', S: 82, T: 88, A: 79, R: 85, satisfaction: 4.2 },
-  { method: 'Flipped', S: 78, T: 75, A: 82, R: 76, satisfaction: 3.8 },
-  { method: '강의식', S: 70, T: 68, A: 72, R: 69, satisfaction: 3.5 },
-  { method: '토론식', S: 75, T: 92, A: 74, R: 88, satisfaction: 4.5 },
-];
 
 // 대시보드 통계 카드 데이터
 export const dashboardStats: DashboardStatCard[] = [

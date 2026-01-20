@@ -67,16 +67,6 @@ import {
   gradeGrowthData,
   cqiStatusData,
   curriculumIssues,
-  studentsData,
-  studentRadarData,
-  behaviorIndicators,
-  evidenceData,
-  coursesData,
-  courseAchievementDistribution,
-  assessmentToolData,
-  underperformingStudents,
-  cqiPerformanceData,
-  teachingMethodData,
   dashboardStats,
   complaintStats,
   assigneeOptions,
@@ -106,7 +96,6 @@ export default function AdminDashboard() {
     else if (category === "workspace") setActiveSubMenu("tickets");
     else if (category === "stats") setActiveSubMenu("overview");
     else if (category === "system") setActiveSubMenu("users");
-    else if (category === "apps") setActiveSubMenu("student-app");
   };
 
   // 드롭다운 외부 클릭 시 닫기
@@ -1337,83 +1326,6 @@ export default function AdminDashboard() {
     </div>
   );
 
-  const StudentAppScreen = () => (
-    <div className="p-4 space-y-4 bg-gray-50 h-full overflow-y-auto">
-      <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
-        <h3 className="font-bold text-sm mb-3">학생 상세 역량 (김학생)</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <ResponsiveContainer width="100%" height={300}>
-            <RadarChart data={studentRadarData}>
-              <PolarGrid />
-              <PolarAngleAxis dataKey="subject" />
-              <PolarRadiusAxis domain={[0, 100]} />
-              <Radar
-                name="내 점수"
-                dataKey="student"
-                stroke="#E94E3C"
-                fill="#E94E3C"
-                fillOpacity={0.6}
-              />
-              <Legend />
-            </RadarChart>
-          </ResponsiveContainer>
-          <div className="space-y-4">
-            <div className="bg-gray-50 p-4 rounded">
-              <h4 className="font-bold">행동지표 달성도</h4>
-              {behaviorIndicators.map((b) => (
-                <div key={b.code} className="flex justify-between text-sm mt-1">
-                  <span>{b.name}</span>
-                  <span className="font-bold text-blue-600">
-                    {b.achievement}%
-                  </span>
-                </div>
-              ))}
-            </div>
-            <div className="bg-gray-50 p-4 rounded">
-              <h4 className="font-bold">Evidence</h4>
-              {evidenceData.map((e, i) => (
-                <div key={i} className="text-xs mt-1 text-gray-600">
-                  {e.course} - {e.assignment}: <b>{e.score}</b>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const ProfessorAppScreen = () => (
-    <div className="p-4 space-y-4 bg-gray-50 h-full overflow-y-auto">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="font-bold text-sm mb-3">교과목 성취도 분포</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={courseAchievementDistribution}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="range" />
-              <YAxis />
-              <Bar dataKey="count" fill="#3B82F6" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="font-bold text-sm mb-3">평가도구별 분석</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={assessmentToolData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="tool" />
-              <YAxis domain={[60, 100]} />
-              <Legend />
-              <Bar dataKey="S" fill="#E94E3C" />
-              <Bar dataKey="T" fill="#F7941D" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div className="h-screen bg-gray-900 flex text-gray-900">
       <div className="w-48 bg-gray-800 shadow-lg flex flex-col border-r border-gray-700">
@@ -1539,22 +1451,6 @@ export default function AdminDashboard() {
                   </button>
                 </>
               )}
-              {activeCategory === "apps" && (
-                <>
-                  <button
-                    onClick={() => setActiveSubMenu("student-app")}
-                    className="px-3 py-1.5 rounded text-sm bg-gray-700 text-white"
-                  >
-                    학생 앱
-                  </button>
-                  <button
-                    onClick={() => setActiveSubMenu("professor-app")}
-                    className="px-3 py-1.5 rounded text-sm text-gray-400"
-                  >
-                    교수 앱
-                  </button>
-                </>
-              )}
             </div>
           </div>
           <Bell className="w-4 h-4 text-gray-300" />
@@ -1566,8 +1462,6 @@ export default function AdminDashboard() {
           {activeSubMenu === "users" && <UsersScreen />}
           {activeSubMenu === "scenario" && <ScenarioScreen />}
           {activeSubMenu === "competency" && <DashboardScreen />}
-          {activeSubMenu === "student-app" && <StudentAppScreen />}
-          {activeSubMenu === "professor-app" && <ProfessorAppScreen />}
         </main>
       </div>
     </div>
