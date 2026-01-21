@@ -16,6 +16,7 @@ import {
 import { getStudentRadarSTAR, getStudentRadarPO } from '../utils/studentRadarUtils';
 
 import logoImage from '@shared/assets/logo.png';
+import { competencyColors } from '@shared/theme';
 
 // 현재 학기 과목만 필터링
 const currentCourses = courses.filter(c => c.semester === currentSemester);
@@ -40,21 +41,6 @@ export default function ProfessorDashboard() {
     kakao: false,
     email: true,
   });
-
-  // 역량별 색상
-  const competencyColors: Record<string, string> = {
-    S: '#E94E3C',
-    T: '#F7941D',
-    A: '#C13584',
-    R: '#5B51D8',
-  };
-
-  // 신호등 색상
-  const trafficLightColor: Record<string, string> = {
-    danger: '#EF4444',
-    warning: '#F59E0B',
-    safe: '#10B981',
-  };
 
   // 공통 헤더 컴포넌트
   const CommonHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (

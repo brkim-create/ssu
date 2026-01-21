@@ -2,6 +2,7 @@
 
 import { Trophy, Star, Check, TrendingUp } from "lucide-react";
 import { starDetails, poDetails } from "@/data/mockData";
+import { gradeBadgeTailwind } from "@shared/theme";
 
 type ViewMode = "core" | "po";
 
@@ -11,12 +12,20 @@ interface CompetencyGridProps {
   onSelectPO?: (key: string) => void;
 }
 
-// Grade Badge 설정
+// Grade Badge 아이콘 매핑
+const gradeIcons: Record<string, React.ReactNode> = {
+  마스터: <Trophy className="w-3 h-3" />,
+  우수: <Star className="w-3 h-3" />,
+  보통: <Check className="w-3 h-3" />,
+  노력요망: <TrendingUp className="w-3 h-3" />,
+};
+
+// Grade Badge 설정 (theme 색상 + 아이콘)
 const gradeBadge: Record<string, { bg: string; icon: React.ReactNode }> = {
-  마스터: { bg: "bg-[#FAAF40]", icon: <Trophy className="w-3 h-3" /> },
-  우수: { bg: "bg-[#EE3E42]", icon: <Star className="w-3 h-3" /> },
-  보통: { bg: "bg-[#e2e8f0]", icon: <Check className="w-3 h-3" /> },
-  노력요망: { bg: "bg-[#C5006F]", icon: <TrendingUp className="w-3 h-3" /> },
+  마스터: { bg: gradeBadgeTailwind.마스터.bg, icon: gradeIcons.마스터 },
+  우수: { bg: gradeBadgeTailwind.우수.bg, icon: gradeIcons.우수 },
+  보통: { bg: gradeBadgeTailwind.보통.bg, icon: gradeIcons.보통 },
+  노력요망: { bg: gradeBadgeTailwind.노력요망.bg, icon: gradeIcons.노력요망 },
 };
 
 /**

@@ -73,6 +73,18 @@ import {
 } from "../data/mockData";
 
 import logoImage from "@shared/assets/logo.png";
+import {
+  getStatusBadgeClass,
+  competencyColors,
+  subCompetencyBgColors,
+  getHeatmapBgColor,
+  getHeatmapTextColor,
+  heatmapLegend,
+  competencyLineColors,
+  barChartColors,
+  radarChartCompareColors,
+  chatColors,
+} from "@shared/theme";
 
 export default function AdminDashboard() {
   const [activeCategory, setActiveCategory] = useState("dashboard"); // 대분류
@@ -114,15 +126,8 @@ export default function AdminDashboard() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showDeptDropdown]);
 
-  const getStatusBadge = (status: string) => {
-    const styles: Record<string, string> = {
-      접수: "bg-blue-100 text-blue-700",
-      처리중: "bg-orange-100 text-orange-700",
-      완료: "bg-green-100 text-green-700",
-      반려됨: "bg-red-100 text-red-700",
-    };
-    return styles[status];
-  };
+  // getStatusBadge -> theme에서 getStatusBadgeClass 사용
+  const getStatusBadge = getStatusBadgeClass;
 
   // 일반 담당자용 필터링 로직
   const getFilteredTicketsForRole = () => {
@@ -497,7 +502,7 @@ export default function AdminDashboard() {
                   <div className="max-w-[80%]">
                     <div
                       className="rounded-2xl rounded-tr-none p-3"
-                      style={{ background: "#FEE500" }}
+                      style={{ background: chatColors.botMessage }}
                     >
                       <p className="text-sm text-gray-900">
                         어떤 시설에 문제가 있나요?
@@ -534,7 +539,7 @@ export default function AdminDashboard() {
                   <div className="max-w-[80%]">
                     <div
                       className="rounded-2xl rounded-tr-none p-3"
-                      style={{ background: "#FEE500" }}
+                      style={{ background: chatColors.botMessage }}
                     >
                       <p className="text-sm text-gray-900">
                         상세 내용을 입력해주세요
@@ -907,7 +912,7 @@ export default function AdminDashboard() {
                 <Bar
                   dataKey="time"
                   name="처리 시간(시간)"
-                  fill="#E94E3C"
+                  fill={barChartColors.primary}
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>
@@ -1062,24 +1067,7 @@ export default function AdminDashboard() {
       </div>
     </div>
   );
-  // 히트맵 색상 및 역량 계산 헬퍼 함수들
-  const getHeatmapColor = (value: number) => {
-    if (value >= 90) return "text-gray-900";
-    if (value >= 10) return "text-white";
-    return "text-white";
-  };
-  const getHeatmapBgColor = (value: number) => {
-    if (value >= 90) return "#F59E42";
-    if (value >= 80) return "#F5A857";
-    if (value >= 70) return "#F4B26C";
-    if (value >= 60) return "#E5BA93";
-    if (value >= 50) return "#D6C2BA";
-    if (value >= 40) return "#C7B8BA";
-    if (value >= 30) return "#B8AEC1";
-    if (value >= 20) return "#A199C8";
-    if (value >= 10) return "#8B8FD0";
-    return "#6D85DE";
-  };
+  // 히트맵 색상 헬퍼 (theme에서 import)
   const calculateSTARCompetencies = (deptData: any) => ({
     S: (deptData.기획 + deptData.실행 + deptData.화합 + deptData.통섭) / 4,
     T:
@@ -1212,16 +1200,16 @@ export default function AdminDashboard() {
                   <Radar
                     name="선택학과"
                     dataKey="선택학과"
-                    stroke="#C13584"
-                    fill="#C13584"
-                    fillOpacity={0.3}
+                    stroke={radarChartCompareColors.selected.stroke}
+                    fill={radarChartCompareColors.selected.fill}
+                    fillOpacity={radarChartCompareColors.selected.fillOpacity}
                   />
                   <Radar
                     name="전체평균"
                     dataKey="전체평균"
-                    stroke="#9ca3af"
-                    fill="#9ca3af"
-                    fillOpacity={0.3}
+                    stroke={radarChartCompareColors.average.stroke}
+                    fill={radarChartCompareColors.average.fill}
+                    fillOpacity={radarChartCompareColors.average.fillOpacity}
                   />
                   <Legend />
                 </RadarChart>
@@ -1236,9 +1224,9 @@ export default function AdminDashboard() {
                   <Radar
                     name="선택학과"
                     dataKey="선택학과"
-                    stroke="#C13584"
-                    fill="#C13584"
-                    fillOpacity={0.3}
+                    stroke={radarChartCompareColors.selected.stroke}
+                    fill={radarChartCompareColors.selected.fill}
+                    fillOpacity={radarChartCompareColors.selected.fillOpacity}
                   />
                   <Legend />
                 </RadarChart>
@@ -1255,73 +1243,116 @@ export default function AdminDashboard() {
                 <XAxis dataKey="grade" />
                 <YAxis domain={[50, 90]} />
                 <Tooltip />
-                <Line type="monotone" dataKey="S" stroke="#E94E3C" />
-                <Line type="monotone" dataKey="T" stroke="#F7941D" />
-                <Line type="monotone" dataKey="A" stroke="#C13584" />
-                <Line type="monotone" dataKey="R" stroke="#5B51D8" />
+                <Line type="monotone" dataKey="S" stroke={competencyColors.S} />
+                <Line type="monotone" dataKey="T" stroke={competencyColors.T} />
+                <Line type="monotone" dataKey="A" stroke={competencyColors.A} />
+                <Line type="monotone" dataKey="R" stroke={competencyColors.R} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
       </div>
 
-      {/* 과별 역량 히트맵 테이블 (축약하여 렌더링) */}
-      <div className="bg-white rounded-lg shadow p-4 border border-gray-200 overflow-x-auto">
-        <h3 className="font-bold text-sm mb-3">과별 역량 강/약점 히트맵</h3>
-        <table className="w-full text-xs border-collapse">
-          <thead>
-            <tr>
-              <th className="p-2 border">과</th>
-              <th className="p-2 border bg-red-100">기획(S)</th>
-              <th className="p-2 border bg-orange-100">전공(T)</th>
-              <th className="p-2 border bg-purple-100">사명(A)</th>
-              <th className="p-2 border bg-indigo-100">소통(R)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {collegeHeatmapData.slice(0, 10).map((c, i) => (
-              <tr key={i}>
-                <td className="p-2 border font-medium">{c.college}</td>
-                <td
-                  className="p-2 border text-center"
-                  style={{
-                    backgroundColor: getHeatmapBgColor(c.기획),
-                    color: getHeatmapColor(c.기획),
-                  }}
+      {/* 과별 역량 히트맵 */}
+      <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
+        <div className="flex items-center gap-2 mb-3 justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+              <Activity className="w-4 h-4 text-gray-600" />
+            </div>
+            <h3 className="font-bold text-sm text-gray-900">과별 역량 강/약점 히트맵</h3>
+            <span className="text-xs text-gray-600">| 각 과의 S-T-A-R 역량 분포</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-xs text-gray-600 mr-2">색상범례:</span>
+            <div className="flex items-center gap-0.5">
+              {heatmapLegend.map((item, idx) => (
+                <div
+                  key={idx}
+                  className={`px-1.5 h-4 flex items-center justify-center text-[10px] ${idx === heatmapLegend.length - 1 ? 'text-gray-900 font-medium' : 'text-white'}`}
+                  style={{backgroundColor: item.color}}
                 >
-                  {c.기획}
-                </td>
-                <td
-                  className="p-2 border text-center"
-                  style={{
-                    backgroundColor: getHeatmapBgColor(c.전공지식),
-                    color: getHeatmapColor(c.전공지식),
-                  }}
-                >
-                  {c.전공지식}
-                </td>
-                <td
-                  className="p-2 border text-center"
-                  style={{
-                    backgroundColor: getHeatmapBgColor(c.사명감),
-                    color: getHeatmapColor(c.사명감),
-                  }}
-                >
-                  {c.사명감}
-                </td>
-                <td
-                  className="p-2 border text-center"
-                  style={{
-                    backgroundColor: getHeatmapBgColor(c.경청),
-                    color: getHeatmapColor(c.경청),
-                  }}
-                >
-                  {c.경청}
-                </td>
+                  {item.range}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs border-collapse table-fixed">
+            <thead>
+              <tr className="border-b border-gray-300">
+                <th rowSpan={3} className="p-2 font-medium bg-gray-100 border-r-2 border-gray-300 text-gray-900 relative" style={{width: '140px', maxWidth: '140px'}}>
+                  <div className="flex flex-col leading-tight text-xs">
+                    <span className="self-end">역량분포</span>
+                    <span className="self-center">∖</span>
+                    <span className="self-start">과</span>
+                  </div>
+                </th>
+                <th colSpan={4} className="text-center p-2 font-medium border-x border-gray-300 text-white" style={{backgroundColor: competencyColors.S}}>Self-directed (S)</th>
+                <th colSpan={6} className="text-center p-2 font-medium border-x border-gray-300 text-white" style={{backgroundColor: competencyColors.T}}>Teamwork (T)</th>
+                <th colSpan={4} className="text-center p-2 font-medium border-x border-gray-300 text-white" style={{backgroundColor: competencyColors.A}}>Analytical (A)</th>
+                <th colSpan={4} className="text-center p-2 font-medium border-x border-gray-300 text-white" style={{backgroundColor: competencyColors.R}}>Relational (R)</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+              <tr className="border-b border-gray-300">
+                <th colSpan={2} className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 text-xs" style={{backgroundColor: subCompetencyBgColors.S}}>창의적 문제해결</th>
+                <th colSpan={2} className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 text-xs" style={{backgroundColor: subCompetencyBgColors.S}}>융복합적사고</th>
+                <th colSpan={2} className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 text-xs" style={{backgroundColor: subCompetencyBgColors.T}}>전문지식</th>
+                <th colSpan={2} className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 text-xs" style={{backgroundColor: subCompetencyBgColors.T}}>미래혁신</th>
+                <th colSpan={2} className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 text-xs" style={{backgroundColor: subCompetencyBgColors.T}}>리더십</th>
+                <th colSpan={2} className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 text-xs" style={{backgroundColor: subCompetencyBgColors.A}}>공동체의식</th>
+                <th colSpan={2} className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 text-xs" style={{backgroundColor: subCompetencyBgColors.A}}>자기계발</th>
+                <th colSpan={2} className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 text-xs" style={{backgroundColor: subCompetencyBgColors.R}}>의사소통</th>
+                <th colSpan={2} className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 text-xs" style={{backgroundColor: subCompetencyBgColors.R}}>글로컬 시민</th>
+              </tr>
+              <tr className="border-b border-gray-300">
+                <th className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.S}`}}>기획</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.S}`}}>실행</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.S}`}}>화합</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.S}`}}>통섭</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 whitespace-normal leading-tight text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.T}`}}>전공<br/>지식</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 whitespace-normal leading-tight text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.T}`}}>전공<br/>기술</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 whitespace-normal text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.T}`}}>정보화</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 whitespace-normal leading-tight text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.T}`}}>신기술<br/>활용</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.T}`}}>공감</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.T}`}}>판단</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 whitespace-normal leading-tight text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.A}`}}>사명감</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 whitespace-normal leading-tight text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.A}`}}>조직<br/>이해</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 whitespace-normal leading-tight text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.A}`}}>도전성</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 whitespace-normal leading-tight text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.A}`}}>자기<br/>학습</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.R}`}}>경청</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.R}`}}>협상</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 whitespace-normal leading-tight text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.R}`}}>외국어</th>
+                <th className="text-center p-2 font-medium border-x border-gray-300 whitespace-normal leading-tight text-gray-700 bg-white" style={{borderBottom: `3px solid ${competencyColors.R}`}}>세계<br/>시민</th>
+              </tr>
+            </thead>
+            <tbody>
+              {collegeHeatmapData.map((college, idx) => (
+                <tr key={idx}>
+                  <td className="p-2 font-medium bg-gray-50 border-r-2 border-gray-300 text-xs text-gray-900" style={{width: '140px', maxWidth: '140px'}}>{college.college}</td>
+                  <td className={`${getHeatmapTextColor(college.기획)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.기획)}}>{college.기획}</td>
+                  <td className={`${getHeatmapTextColor(college.실행)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.실행)}}>{college.실행}</td>
+                  <td className={`${getHeatmapTextColor(college.화합)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.화합)}}>{college.화합}</td>
+                  <td className={`${getHeatmapTextColor(college.통섭)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.통섭)}}>{college.통섭}</td>
+                  <td className={`${getHeatmapTextColor(college.전공지식)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.전공지식)}}>{college.전공지식}</td>
+                  <td className={`${getHeatmapTextColor(college.전공기술)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.전공기술)}}>{college.전공기술}</td>
+                  <td className={`${getHeatmapTextColor(college.정보화)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.정보화)}}>{college.정보화}</td>
+                  <td className={`${getHeatmapTextColor(college.신기술활용)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.신기술활용)}}>{college.신기술활용}</td>
+                  <td className={`${getHeatmapTextColor(college.공감)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.공감)}}>{college.공감}</td>
+                  <td className={`${getHeatmapTextColor(college.판단)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.판단)}}>{college.판단}</td>
+                  <td className={`${getHeatmapTextColor(college.사명감)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.사명감)}}>{college.사명감}</td>
+                  <td className={`${getHeatmapTextColor(college.조직이해)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.조직이해)}}>{college.조직이해}</td>
+                  <td className={`${getHeatmapTextColor(college.도전성)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.도전성)}}>{college.도전성}</td>
+                  <td className={`${getHeatmapTextColor(college.자기학습)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.자기학습)}}>{college.자기학습}</td>
+                  <td className={`${getHeatmapTextColor(college.경청)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.경청)}}>{college.경청}</td>
+                  <td className={`${getHeatmapTextColor(college.협상)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.협상)}}>{college.협상}</td>
+                  <td className={`${getHeatmapTextColor(college.외국어)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.외국어)}}>{college.외국어}</td>
+                  <td className={`${getHeatmapTextColor(college.세계시민)} p-2 text-center font-medium border border-gray-300`} style={{backgroundColor: getHeatmapBgColor(college.세계시민)}}>{college.세계시민}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
