@@ -34,7 +34,13 @@ export default function LoginPage() {
       if (result.success && result.tokens) {
         const tokens = { ...result.tokens, rememberMe };
         saveAuthTokens(tokens);
-        router.push("/");
+
+        // ✅ [수정됨] 사용자가 선택한 userType에 따라 이동 경로 분기
+        if (userType === "professor") {
+          router.push("/professor"); // 교수 메인으로 이동
+        } else {
+          router.push("/"); // 학생 메인으로 이동
+        }
       } else {
         setError(result.error || "로그인에 실패했습니다.");
       }
@@ -51,7 +57,11 @@ export default function LoginPage() {
         {/* 헤더 */}
         <div className="text-center mb-8">
           <div className="mb-4 flex justify-center">
-            <img src="/logo.png" alt="대학교 로고" className="h-20 w-20 object-contain" />
+            <img
+              src="/logo.png"
+              alt="대학교 로고"
+              className="h-20 w-20 object-contain"
+            />
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-red-500 via-pink-500 to-orange-500 bg-clip-text text-transparent mb-2">
             대학교 통합 포털
