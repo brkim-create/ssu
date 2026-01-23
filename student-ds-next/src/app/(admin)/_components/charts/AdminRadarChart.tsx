@@ -6,10 +6,9 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   Radar,
-  Legend,
+  Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { radarChartCompareColors } from "@shared/theme";
 
 interface RadarDataItem {
   competency: string;
@@ -29,25 +28,44 @@ interface AdminRadarChartProps {
 export default function AdminRadarChart({ data }: AdminRadarChartProps) {
   return (
     <ResponsiveContainer width="100%" height={220}>
-      <RadarChart data={data}>
-        <PolarGrid />
-        <PolarAngleAxis dataKey="competency" />
-        <PolarRadiusAxis domain={[0, 100]} />
-        <Radar
-          name="선택학과"
-          dataKey="선택학과"
-          stroke={radarChartCompareColors.selected.stroke}
-          fill={radarChartCompareColors.selected.fill}
-          fillOpacity={radarChartCompareColors.selected.fillOpacity}
+      <RadarChart
+        data={data}
+        margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
+      >
+        <PolarGrid stroke="#d1d5db" />
+        <PolarAngleAxis
+          dataKey="competency"
+          tick={{ fontSize: 11, fill: "#374151", fontWeight: 500 }}
+        />
+        <PolarRadiusAxis
+          angle={90}
+          domain={[0, 100]}
+          tick={{ fontSize: 10, fill: "#6b7280" }}
+        />
+        <Tooltip
+          contentStyle={{
+            backgroundColor: "#ffffff",
+            border: "1px solid #d1d5db",
+            borderRadius: "6px",
+            fontSize: "12px",
+          }}
         />
         <Radar
           name="전체평균"
           dataKey="전체평균"
-          stroke={radarChartCompareColors.average.stroke}
-          fill={radarChartCompareColors.average.fill}
-          fillOpacity={radarChartCompareColors.average.fillOpacity}
+          stroke="#9ca3af"
+          fill="#9ca3af"
+          fillOpacity={0.3}
+          strokeWidth={2}
         />
-        <Legend />
+        <Radar
+          name="선택학과"
+          dataKey="선택학과"
+          stroke="#C13584"
+          fill="#C13584"
+          fillOpacity={0.3}
+          strokeWidth={2}
+        />
       </RadarChart>
     </ResponsiveContainer>
   );
