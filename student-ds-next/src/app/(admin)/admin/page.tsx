@@ -374,45 +374,51 @@ export default function AdminDashboardPage() {
 
           {/* 교육과정 적절성 */}
           <div className="bg-white rounded-lg shadow p-4 border border-gray-200 flex-1">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-              <AlertTriangle className="w-4 h-4 text-gray-600" />
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                <AlertTriangle className="w-4 h-4 text-gray-600" />
+              </div>
+              <h3 className="font-bold text-sm">교육과정 적절성</h3>
+              <span className="text-xs text-gray-500">| 미매핑 교과목 현황</span>
             </div>
-            <h3 className="font-bold text-sm text-gray-900">{"\uAD50\uC721\uACFC\uC815 \uC801\uC808\uC131"}</h3>
-            <span className="text-xs text-gray-500">
-              | {"\uC804\uCCB4"} {curriculumIssues.totalCourses}{"\uAC1C \uACFC\uBAA9 \uC911"}
-            </span>
-          </div>
-          <div className="flex gap-4">
-            <div className="bg-red-50 rounded-lg p-4 flex flex-col items-center justify-center" style={{ width: "140px" }}>
-              <p className="text-xs text-red-600 mb-1">{"\uBBF8\uB9E4\uD551 \uAD50\uACFC\uBAA9"}</p>
-              <p className="text-3xl font-bold text-red-600">{curriculumIssues.unmappedCourses}</p>
+            <div className="pt-2">
+              <div className="grid grid-cols-[150px_1fr] gap-4">
+                {/* 좌측: 미매핑 교과목 수 카드 */}
+                <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-3 border border-orange-200 text-center flex flex-col justify-center h-full">
+                  <div className="text-xs text-orange-600 font-medium mb-1">미매핑 교과목</div>
+                  <div className="flex items-baseline gap-1 justify-center">
+                    <span className="text-2xl font-bold text-orange-600 text-[32px]">{curriculumIssues.unmappedCourses}</span>
+                    <span className="text-lg text-gray-400">/</span>
+                    <span className="text-lg text-gray-600 text-[24px]">{curriculumIssues.totalCourses}</span>
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1 text-[14px]">
+                    {((curriculumIssues.unmappedCourses / curriculumIssues.totalCourses) * 100).toFixed(1)}% 미완료
+                  </div>
+                </div>
+
+                {/* 우측: 미매핑 교과목 테이블 */}
+                <div className="max-h-40 overflow-y-auto">
+                  <table className="w-full text-xs">
+                    <thead className="bg-gray-50 sticky top-0">
+                      <tr>
+                        <th className="px-3 py-2 text-left text-gray-600 font-medium border-b">교과명</th>
+                        <th className="px-3 py-2 text-left text-gray-600 font-medium border-b">담당교수명</th>
+                        <th className="px-3 py-2 text-left text-gray-600 font-medium border-b">과명</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {curriculumIssues.unmappedCoursesList.map((course) => (
+                        <tr key={course.id} className="border-b border-gray-100 hover:bg-gray-50">
+                          <td className="px-3 py-2.5 text-gray-800">{course.courseName}</td>
+                          <td className="px-3 py-2.5 text-gray-600">{course.professor}</td>
+                          <td className="px-3 py-2.5 text-gray-600">{course.dept}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-            <div className="flex-1 max-h-40 overflow-y-auto">
-              <table className="w-full text-xs">
-                <thead className="bg-gray-50 sticky top-0">
-                  <tr className="border-b">
-                    <th className="text-left p-2 bg-gray-50">{"\uACFC\uBAA9\uBA85"}</th>
-                    <th className="text-left p-2 bg-gray-50">{"\uB2F4\uB2F9\uAD50\uC218"}</th>
-                    <th className="text-left p-2 bg-gray-50">{"\uD559\uACFC"}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {curriculumIssues.unmappedCoursesList.map((item) => (
-                    <tr key={item.id} className="border-b last:border-b-0">
-                      <td className="p-2 font-medium">{item.courseName}</td>
-                      <td className="p-2 text-gray-600">{item.professor}</td>
-                      <td className="p-2">
-                        <span className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs">
-                          {item.dept}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
           </div>
         </div>
       </div>
