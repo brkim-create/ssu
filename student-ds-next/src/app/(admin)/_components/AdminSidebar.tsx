@@ -1,17 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Activity, Inbox, FileText, BarChart3, Users, Bot } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Activity, Inbox, BarChart3, Users, ChevronDown } from "lucide-react";
+import { useRole } from "@/contexts/RoleContext";
 
 // 메뉴 아이템 정의
 const menuItems = [
   { href: "/admin", label: "대시보드", icon: Activity },
-  { href: "/admin/cqi", label: "티켓/CQI", icon: Inbox },
-  { href: "/admin/templates", label: "템플릿", icon: FileText },
-  { href: "/admin/stats", label: "통계/분석", icon: BarChart3 },
-  { href: "/admin/users", label: "사용자 관리", icon: Users },
-  { href: "/admin/scenario", label: "시나리오", icon: Bot },
+  { href: "/admin/cqi", label: "워크스페이스", icon: Inbox, badge: 23 },
+  { href: "/admin/stats", label: "통계/분석", icon: BarChart3, superAdminOnly: true },
+  { href: "/admin/system", label: "시스템 관리", icon: Users, superAdminOnly: true },
 ];
 
 /**
@@ -21,6 +21,9 @@ const menuItems = [
  */
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { userRole, setUserRole, currentUserEmail, ROLE_SUPER_ADMIN, ROLE_GENERAL } = useRole();
+  const [showRoleDropdown, setShowRoleDropdown] = useState(false);
 
   // 현재 경로가 메뉴 아이템과 일치하는지 확인
   const isActive = (href: string) => {
@@ -28,6 +31,18 @@ export default function AdminSidebar() {
       return pathname === "/admin";
     }
     return pathname.startsWith(href);
+  };
+
+  // 역할 기반 메뉴 필터링
+  const filteredMenuItems = menuItems.filter(
+    (item) => !item.superAdminOnly || userRole === ROLE_SUPER_ADMIN
+  );
+
+  // 역할 변경 핸들러
+  const handleRoleChange = (role: string) => {
+    setUserRole(role);
+    setShowRoleDropdown(false);
+    router.push("/admin");
   };
 
   return (
@@ -39,13 +54,13 @@ export default function AdminSidebar() {
         </div>
         <div>
           <p className="font-bold text-sm text-white">수성대학교</p>
-          <p className="text-xs text-gray-400">관리자</p>
+          <p className="text-xs text-white">관리자</p>
         </div>
       </div>
 
       {/* 네비게이션 메뉴 */}
       <nav className="flex-1 p-2 space-y-0.5">
-        {menuItems.map((item) => {
+        {filteredMenuItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
 
@@ -56,24 +71,59 @@ export default function AdminSidebar() {
               className={`w-full flex items-center gap-2 px-2 py-1.5 rounded text-sm transition-colors ${
                 active
                   ? "bg-gray-700 text-white border-l-2 border-pink-500"
-                  : "text-gray-400 hover:text-white hover:bg-gray-700/50"
+                  : "text-gray-400 hover:text-gray-200 hover:bg-gray-700"
               }`}
             >
               <Icon className="w-4 h-4" />
               <span>{item.label}</span>
+              {item.badge && (
+                <span className="ml-auto bg-red-500 text-white text-xs px-1.5 rounded-full">
+                  {item.badge}
+                </span>
+              )}
             </Link>
           );
         })}
       </nav>
 
       {/* 하단 사용자 정보 */}
-      <div className="p-2 border-t border-gray-700">
-        <div className="flex items-center gap-2 text-white text-xs">
-          <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center">
-            관
+      <div className="p-2 border-t border-gray-700 relative">
+        <button
+          onClick={() => setShowRoleDropdown(!showRoleDropdown)}
+          className="w-full flex items-center gap-2 hover:bg-gray-700 rounded p-1 transition-colors"
+        >
+          <div className="w-7 h-7 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+            {userRole === ROLE_SUPER_ADMIN ? "슈" : "일"}
           </div>
-          <span>슈퍼관리자</span>
-        </div>
+          <div className="flex-1 text-left">
+            <p className="text-xs font-medium text-white">{userRole}</p>
+            <p className="text-xs text-gray-400">{currentUserEmail}</p>
+          </div>
+          <ChevronDown className="w-3 h-3 text-gray-400" />
+        </button>
+
+        {showRoleDropdown && (
+          <div className="absolute bottom-full left-2 right-2 mb-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg overflow-hidden">
+            {[ROLE_SUPER_ADMIN, ROLE_GENERAL].map((role) => (
+              <button
+                key={role}
+                onClick={() => handleRoleChange(role)}
+                className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-700 transition-colors ${
+                  userRole === role
+                    ? "bg-gray-700 text-white border-l-2 border-pink-500"
+                    : "text-gray-400"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white text-xs">
+                    {role === ROLE_SUPER_ADMIN ? "슈" : "일"}
+                  </div>
+                  <span>{role}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

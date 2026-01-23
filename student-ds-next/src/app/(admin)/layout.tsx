@@ -1,4 +1,5 @@
 import AdminSidebar from "./_components/AdminSidebar";
+import { RoleProvider } from "@/contexts/RoleContext";
 
 /**
  * Admin Layout
@@ -12,14 +13,16 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-screen bg-gray-50 flex">
-      {/* 좌측 사이드바 */}
-      <AdminSidebar />
+    <RoleProvider>
+      <div className="h-screen bg-gray-50 flex">
+        {/* 좌측 사이드바 */}
+        <AdminSidebar />
 
-      {/* 우측 콘텐츠 영역 */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-auto">{children}</main>
+        {/* 우측 콘텐츠 영역 */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <main className="flex-1 overflow-auto">{children}</main>
+        </div>
       </div>
-    </div>
+    </RoleProvider>
   );
 }
