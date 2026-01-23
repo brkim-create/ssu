@@ -57,3 +57,51 @@ export {
   notificationChannels,
   userProfile,
 } from '@shared/mockData/data/student';
+
+// ============================================================
+// Admin Dashboard Mock Data
+// ============================================================
+
+// Admin Types
+export type {
+  Ticket,
+  TicketReply,
+  Template,
+  CategoryStat,
+  SpeedDataItem,
+  KeywordItem,
+  AdminUser,
+  FAQScenario,
+  CompetencyTrendItem,
+  CollegeHeatmapItem,
+  CertificationItem,
+  DepartmentGapItem,
+  GradeGrowthItem,
+  CQIStatusItem,
+  CurriculumIssues,
+  DashboardStatCard,
+  ComplaintStatCard,
+  AssigneeOption,
+} from '@shared/mockData/types';
+
+// Admin Data
+export {
+  ticketsData,
+  templatesData,
+  categoryStats,
+  speedData,
+  keywordsData,
+  usersData,
+  bannedWords,
+  faqScenarios,
+  competencyTrendData,
+  collegeHeatmapData,
+  certificationData,
+  departmentGapData,
+  gradeGrowthData,
+  cqiStatusData,
+  curriculumIssues,
+  dashboardStats,
+  complaintStats,
+  assigneeOptions,
+} from '@shared/mockData/data/admin';
