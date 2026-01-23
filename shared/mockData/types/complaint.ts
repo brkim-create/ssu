@@ -100,7 +100,6 @@ export interface KeywordItem {
 export interface ComplaintStatCard {
   label: string;
   value: string;
-  iconType: 'inbox' | 'clock' | 'check' | 'alert';
   color: 'blue' | 'green' | 'orange' | 'red';
 }
 

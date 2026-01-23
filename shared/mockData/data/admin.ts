@@ -251,10 +251,10 @@ export const dashboardStats: DashboardStatCard[] = [
 
 // 민원 통계 카드 데이터
 export const complaintStats: ComplaintStatCard[] = [
-  { label: '전체 민원', value: '156', iconType: 'inbox', color: 'blue' },
-  { label: '평균 처리시간', value: '1.8일', iconType: 'clock', color: 'green' },
-  { label: '처리 완료율', value: '87%', iconType: 'check', color: 'orange' },
-  { label: '지연 건수', value: '5', iconType: 'alert', color: 'red' },
+  { label: '전체 민원', value: '156', color: 'blue' },
+  { label: '평균 처리시간', value: '1.8일', color: 'green' },
+  { label: '처리 완료율', value: '87%', color: 'orange' },
+  { label: '지연 건수', value: '5', color: 'red' },
 ];
 
 // 담당자 배정 옵션 데이터
