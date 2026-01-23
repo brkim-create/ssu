@@ -3,7 +3,8 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import CommonHeader from "../_components/CommonHeader";
-import { ChartBar, ChartLine, User, FileText, TrendingUp, TriangleAlert } from "lucide-react";
+import TeachingMethodDiagnosis from "../_components/TeachingMethodDiagnosis";
+import { ChartBar, ChartLine, User, FileText, TrendingUp, TriangleAlert, Download } from "lucide-react";
 
 // mockData imports from shared
 import {
@@ -295,7 +296,23 @@ export default function ProfessorDashboardPage() {
             ))}
           </div>
         </div>
+
+        {/* 다운로드 버튼 */}
+        <button
+          onClick={() => {
+            alert(
+              "성과 분석 리포트 다운로드\n\n목표 달성률: 87%\n전년 대비 향상도: 5.2%\n\n성취도 하위 영역:\n• R (소통): 73.5점\n• S (창의): 76.2점\n• T (실무): 80.1점\n\nPDF/Excel 형식으로 다운로드됩니다."
+            );
+          }}
+          className="w-full mt-4 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-bold flex items-center justify-center gap-2"
+        >
+          <Download className="w-5 h-5" />
+          PDF/Excel 다운로드
+        </button>
       </div>
+
+      {/* 교수법 연계 진단 */}
+      <TeachingMethodDiagnosis />
     </div>
   );
 }
