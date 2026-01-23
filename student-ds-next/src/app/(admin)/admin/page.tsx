@@ -12,6 +12,7 @@ import {
   AlertTriangle,
   BookOpen,
   BarChart3,
+  Search,
 } from "lucide-react";
 
 // mockData imports
@@ -69,6 +70,15 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 export default function AdminDashboardPage() {
   const [selectedDepartment, setSelectedDepartment] = useState("AI빅데이터과");
   const [showDeptDropdown, setShowDeptDropdown] = useState(false);
+  const [deptSearchText, setDeptSearchText] = useState("");
+
+  // 학과 검색 필터링
+  const getFilteredDepartments = () => {
+    if (!deptSearchText) return collegeHeatmapData;
+    return collegeHeatmapData.filter((dept) =>
+      dept.college.toLowerCase().includes(deptSearchText.toLowerCase())
+    );
+  };
 
   // STAR 역량 계산 헬퍼
   const calculateSTARCompetencies = (deptData: (typeof collegeHeatmapData)[0]) => ({
@@ -210,30 +220,72 @@ export default function AdminDashboardPage() {
                 학과별 S-T-A-R 역량 비교
               </h3>
             </div>
-            <div className="relative">
-              <button
-                onClick={() => setShowDeptDropdown(!showDeptDropdown)}
-                className="px-3 py-1 border rounded bg-white text-sm flex gap-2 items-center"
-              >
-                {selectedDepartment} <ChevronDown className="w-4 h-4" />
-              </button>
-              {showDeptDropdown && (
-                <div className="absolute top-full right-0 mt-1 bg-white border rounded shadow-lg z-10 w-48 max-h-48 overflow-y-auto">
-                  {collegeHeatmapData.map((d) => (
+
+            {/* 범례 */}
+            <div className="flex items-center gap-2 text-xs">
+              <div className="flex items-center gap-1">
+                <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: '#C13584' }}></div>
+                <span className="text-gray-600">선택학과</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-2.5 h-2.5 rounded-sm bg-gray-400"></div>
+                <span className="text-gray-600">전체평균</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 학과 선택기 */}
+          <div className="mb-4 relative">
+            <button
+              onClick={() => setShowDeptDropdown(!showDeptDropdown)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-left flex items-center justify-between hover:bg-gray-50"
+            >
+              <span className="text-sm text-gray-900">{selectedDepartment}</span>
+              <ChevronDown className="w-4 h-4 text-gray-500" />
+            </button>
+
+            {showDeptDropdown && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-60 overflow-hidden">
+                {/* 검색 입력 */}
+                <div className="p-2 border-b border-gray-200">
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-2 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="학과 검색..."
+                      value={deptSearchText}
+                      onChange={(e) => setDeptSearchText(e.target.value)}
+                      className="w-full pl-8 pr-3 py-1.5 border border-gray-300 rounded text-sm"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                </div>
+
+                {/* 학과 목록 */}
+                <div className="max-h-48 overflow-y-auto">
+                  {getFilteredDepartments().map((dept) => (
                     <button
-                      key={d.college}
+                      key={dept.college}
                       onClick={() => {
-                        setSelectedDepartment(d.college);
+                        setSelectedDepartment(dept.college);
                         setShowDeptDropdown(false);
+                        setDeptSearchText('');
                       }}
-                      className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
+                      className={`w-full px-3 py-2 text-left text-sm hover:bg-gray-100 ${
+                        selectedDepartment === dept.college ? 'bg-blue-50 text-blue-700' : 'text-gray-900'
+                      }`}
                     >
-                      {d.college}
+                      {dept.college}
                     </button>
                   ))}
+                  {getFilteredDepartments().length === 0 && (
+                    <div className="px-3 py-2 text-sm text-gray-500 text-center">
+                      검색 결과가 없습니다
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
           {/* 비교 그래프 */}
           <div className="grid grid-cols-2 gap-4">
