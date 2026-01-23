@@ -9,6 +9,9 @@ import {
   CheckCircle,
   Activity,
   ChevronDown,
+  AlertTriangle,
+  BookOpen,
+  BarChart3,
 } from "lucide-react";
 
 // mockData imports
@@ -16,6 +19,10 @@ import {
   dashboardStats,
   gradeGrowthData,
   collegeHeatmapData,
+  curriculumIssues,
+  cqiStatusData,
+  competencyTrendData,
+  certificationData,
 } from "@/data/mockData";
 
 // theme imports
@@ -34,6 +41,14 @@ const AdminRadarChart = dynamic(
 );
 const AdminLineChart = dynamic(
   () => import("../_components/charts/AdminLineChart"),
+  { ssr: false }
+);
+const CompetencyTrendChart = dynamic(
+  () => import("../_components/charts/CompetencyTrendChart"),
+  { ssr: false }
+);
+const CertificationPieChart = dynamic(
+  () => import("../_components/charts/CertificationPieChart"),
   { ssr: false }
 );
 
@@ -82,7 +97,7 @@ export default function AdminDashboardPage() {
     };
   };
 
-  // 학과 비교 데이터
+  // 학과 비교 데이터 (S-T-A-R 대분류)
   const getDepartmentComparisonData = () => {
     const d = collegeHeatmapData.find((x) => x.college === selectedDepartment);
     if (!d) return [];
@@ -93,6 +108,62 @@ export default function AdminDashboardPage() {
       { competency: "Teamwork", 선택학과: s.T, 전체평균: a.T },
       { competency: "Analytical", 선택학과: s.A, 전체평균: a.A },
       { competency: "Relational", 선택학과: s.R, 전체평균: a.R },
+    ];
+  };
+
+  // 하위역량(PO) 9개 항목 비교 데이터
+  const getDepartmentPOComparisonData = () => {
+    const d = collegeHeatmapData.find((x) => x.college === selectedDepartment);
+    if (!d) return [];
+
+    // 선택 학과 PO 계산
+    const deptPO = {
+      창의적문제해결: (d.기획 + d.실행) / 2,
+      융복합적사고: (d.화합 + d.통섭) / 2,
+      전문지식: (d.전공지식 + d.전공기술) / 2,
+      미래혁신: (d.정보화 + d.신기술활용) / 2,
+      리더십: (d.공감 + d.판단) / 2,
+      공동체의식: (d.사명감 + d.조직이해) / 2,
+      자기계발: (d.도전성 + d.자기학습) / 2,
+      의사소통: (d.경청 + d.협상) / 2,
+      글로컬시민: (d.외국어 + d.세계시민) / 2,
+    };
+
+    // 전체 평균 PO 계산
+    const allPO = collegeHeatmapData.map((item) => ({
+      창의적문제해결: (item.기획 + item.실행) / 2,
+      융복합적사고: (item.화합 + item.통섭) / 2,
+      전문지식: (item.전공지식 + item.전공기술) / 2,
+      미래혁신: (item.정보화 + item.신기술활용) / 2,
+      리더십: (item.공감 + item.판단) / 2,
+      공동체의식: (item.사명감 + item.조직이해) / 2,
+      자기계발: (item.도전성 + item.자기학습) / 2,
+      의사소통: (item.경청 + item.협상) / 2,
+      글로컬시민: (item.외국어 + item.세계시민) / 2,
+    }));
+
+    const avgPO = {
+      창의적문제해결: allPO.reduce((s, c) => s + c.창의적문제해결, 0) / allPO.length,
+      융복합적사고: allPO.reduce((s, c) => s + c.융복합적사고, 0) / allPO.length,
+      전문지식: allPO.reduce((s, c) => s + c.전문지식, 0) / allPO.length,
+      미래혁신: allPO.reduce((s, c) => s + c.미래혁신, 0) / allPO.length,
+      리더십: allPO.reduce((s, c) => s + c.리더십, 0) / allPO.length,
+      공동체의식: allPO.reduce((s, c) => s + c.공동체의식, 0) / allPO.length,
+      자기계발: allPO.reduce((s, c) => s + c.자기계발, 0) / allPO.length,
+      의사소통: allPO.reduce((s, c) => s + c.의사소통, 0) / allPO.length,
+      글로컬시민: allPO.reduce((s, c) => s + c.글로컬시민, 0) / allPO.length,
+    };
+
+    return [
+      { competency: "\uCC3D\uC758\uC801\uBB38\uC81C\uD574\uACB0", 선택학과: deptPO.창의적문제해결, 전체평균: avgPO.창의적문제해결 },
+      { competency: "\uC735\uBCF5\uD569\uC0AC\uACE0", 선택학과: deptPO.융복합적사고, 전체평균: avgPO.융복합적사고 },
+      { competency: "\uC804\uBB38\uC9C0\uC2DD", 선택학과: deptPO.전문지식, 전체평균: avgPO.전문지식 },
+      { competency: "\uBBF8\uB798\uD601\uC2E0", 선택학과: deptPO.미래혁신, 전체평균: avgPO.미래혁신 },
+      { competency: "\uB9AC\uB354\uC2ED", 선택학과: deptPO.리더십, 전체평균: avgPO.리더십 },
+      { competency: "\uACF5\uB3D9\uCCB4\uC758\uC2DD", 선택학과: deptPO.공동체의식, 전체평균: avgPO.공동체의식 },
+      { competency: "\uC790\uAE30\uACC4\uBC1C", 선택학과: deptPO.자기계발, 전체평균: avgPO.자기계발 },
+      { competency: "\uC758\uC0AC\uC18C\uD1B5", 선택학과: deptPO.의사소통, 전체평균: avgPO.의사소통 },
+      { competency: "\uAE00\uB85C\uCEEC\uC2DC\uBBFC", 선택학과: deptPO.글로컬시민, 전체평균: avgPO.글로컬시민 },
     ];
   };
 
@@ -128,7 +199,7 @@ export default function AdminDashboardPage() {
 
       {/* 차트 섹션 */}
       <div className="grid grid-cols-2 gap-4">
-        {/* 학과별 역량 비교 */}
+        {/* 학과별 역량 비교 + CQI 운영 현황 */}
         <div className="bg-white rounded-lg shadow p-3 border border-gray-200">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
@@ -164,15 +235,239 @@ export default function AdminDashboardPage() {
               )}
             </div>
           </div>
-          <div style={{ width: "100%", height: "220px" }}>
-            <AdminRadarChart data={getDepartmentComparisonData()} />
+          {/* 비교 그래프 */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* S-T-A-R 역량 레이더 */}
+            <div>
+              <h4 className="text-xs font-semibold text-gray-700 mb-2 text-center">S-T-A-R {"\uB300\uBD84\uB958 \uC5ED\uB7C9"}</h4>
+              <div style={{ width: "100%", height: "220px" }}>
+                <AdminRadarChart data={getDepartmentComparisonData()} />
+              </div>
+            </div>
+
+            {/* 하위역량(PO) 레이더 */}
+            <div>
+              <h4 className="text-xs font-semibold text-gray-700 mb-2 text-center">{"\uD558\uC704\uC5ED\uB7C9"}(PO) 9{"\uAC1C \uD56D\uBAA9"}</h4>
+              <div style={{ width: "100%", height: "220px" }}>
+                <AdminRadarChart data={getDepartmentPOComparisonData()} />
+              </div>
+            </div>
+          </div>
+
+          {/* CQI 운영 현황 */}
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                <BookOpen className="w-4 h-4 text-gray-600" />
+              </div>
+              <h4 className="font-bold text-sm text-gray-900">CQI {"\uC6B4\uC601 \uD604\uD669"}</h4>
+            </div>
+            {(() => {
+              const selectedCQI = cqiStatusData.find(item => item.dept === selectedDepartment);
+              if (!selectedCQI) {
+                return (
+                  <div className="text-xs text-gray-500 text-center py-3">
+                    {"\uD574\uB2F9 \uD559\uACFC\uC758 CQI \uB370\uC774\uD130\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"}
+                  </div>
+                );
+              }
+              return (
+                <div className="grid grid-cols-4 gap-3">
+                  <div className="bg-gray-50 rounded-lg p-3">
+                    <p className="text-xs text-gray-600 mb-1">{"\uC804\uCCB4 \uAD50\uACFC\uBAA9"}</p>
+                    <p className="text-xl font-bold text-gray-900">{selectedCQI.total}</p>
+                  </div>
+                  <div className="bg-blue-50 rounded-lg p-3">
+                    <p className="text-xs text-gray-600 mb-1">{"\uC644\uB8CC"}</p>
+                    <p className="text-xl font-bold text-blue-700">{selectedCQI.completed}</p>
+                  </div>
+                  <div className={`rounded-lg p-3 ${selectedCQI.rate >= 90 ? 'bg-green-50' : 'bg-yellow-50'}`}>
+                    <p className="text-xs text-gray-600 mb-1">{"\uC644\uB8CC\uC728"}</p>
+                    <p className={`text-xl font-bold ${selectedCQI.rate >= 90 ? 'text-green-700' : 'text-yellow-700'}`}>
+                      {selectedCQI.rate}%
+                    </p>
+                  </div>
+                  <div className={`rounded-lg p-3 ${selectedCQI.lowGrade > 0 ? 'bg-red-50' : 'bg-gray-50'}`}>
+                    <p className="text-xs text-gray-600 mb-1">{"\uACBD\uACE0 \uB4F1\uAE09"}</p>
+                    <div className="flex items-center gap-1">
+                      {selectedCQI.lowGrade > 0 ? (
+                        <>
+                          <AlertTriangle className="w-4 h-4 text-red-600" />
+                          <p className="text-xl font-bold text-red-700">{selectedCQI.lowGrade}{"\uAC74"}</p>
+                        </>
+                      ) : (
+                        <p className="text-xl font-bold text-gray-400">-</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </div>
 
-        {/* 학년별 역량 성장 추이 */}
+        {/* 오른쪽 컬럼: 학년별 성장 추이 + 교육과정 적절성 */}
+        <div className="flex flex-col gap-4">
+          {/* 학년별 역량 성장 추이 */}
+          <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-4 h-4 text-gray-600" />
+              </div>
+              <h3 className="font-bold text-sm">{"\uD559\uB144\uBCC4 \uC5ED\uB7C9 \uC131\uC7A5 \uCD94\uC774"}</h3>
+              <span className="text-xs text-gray-500">| 1{"\uD559\uB144"} → 4{"\uD559\uB144 \uC9C4\uAE09\uC5D0 \uB530\uB978 \uC5ED\uB7C9 \uC0C1\uC2B9"}</span>
+            </div>
+            <AdminLineChart data={gradeGrowthData} />
+          </div>
+
+          {/* 교육과정 적절성 */}
+          <div className="bg-white rounded-lg shadow p-4 border border-gray-200 flex-1">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+              <AlertTriangle className="w-4 h-4 text-gray-600" />
+            </div>
+            <h3 className="font-bold text-sm text-gray-900">{"\uAD50\uC721\uACFC\uC815 \uC801\uC808\uC131"}</h3>
+            <span className="text-xs text-gray-500">
+              | {"\uC804\uCCB4"} {curriculumIssues.totalCourses}{"\uAC1C \uACFC\uBAA9 \uC911"}
+            </span>
+          </div>
+          <div className="flex gap-4">
+            <div className="bg-red-50 rounded-lg p-4 flex flex-col items-center justify-center" style={{ width: "140px" }}>
+              <p className="text-xs text-red-600 mb-1">{"\uBBF8\uB9E4\uD551 \uAD50\uACFC\uBAA9"}</p>
+              <p className="text-3xl font-bold text-red-600">{curriculumIssues.unmappedCourses}</p>
+            </div>
+            <div className="flex-1 max-h-40 overflow-y-auto">
+              <table className="w-full text-xs">
+                <thead className="bg-gray-50 sticky top-0">
+                  <tr className="border-b">
+                    <th className="text-left p-2 bg-gray-50">{"\uACFC\uBAA9\uBA85"}</th>
+                    <th className="text-left p-2 bg-gray-50">{"\uB2F4\uB2F9\uAD50\uC218"}</th>
+                    <th className="text-left p-2 bg-gray-50">{"\uD559\uACFC"}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {curriculumIssues.unmappedCoursesList.map((item) => (
+                    <tr key={item.id} className="border-b last:border-b-0">
+                      <td className="p-2 font-medium">{item.courseName}</td>
+                      <td className="p-2 text-gray-600">{item.professor}</td>
+                      <td className="p-2">
+                        <span className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs">
+                          {item.dept}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 역량 추이 및 인증 현황 */}
+      <div className="grid grid-cols-3 gap-4">
+        {/* 대학 역량 지표 - Line Chart */}
         <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
-          <h3 className="font-bold text-sm mb-3">학년별 역량 성장 추이</h3>
-          <AdminLineChart data={gradeGrowthData} />
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+              <TrendingUp className="w-4 h-4 text-gray-600" />
+            </div>
+            <h3 className="font-bold text-sm text-gray-900">S-T-A-R {"\uC5ED\uB7C9 \uC5F0\uB3C4\uBCC4 \uCD94\uC774"}</h3>
+            <span className="text-xs text-gray-600">| {"\uB300\uD559 \uC804\uCCB4 \uD559\uC0DD \uD3C9\uADE0\uAC12"}</span>
+          </div>
+          <div className="flex flex-col items-center gap-3" style={{ width: "100%" }}>
+            <div className="flex justify-center" style={{ width: "100%", height: "220px" }}>
+              <CompetencyTrendChart data={competencyTrendData} />
+            </div>
+            <div className="flex justify-center gap-4 flex-wrap">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "#E94E3C" }}></div>
+                <span className="text-xs" style={{ color: "#E94E3C" }}>Self-directed</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "#F7941D" }}></div>
+                <span className="text-xs" style={{ color: "#F7941D" }}>Teamwork</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "#C13584" }}></div>
+                <span className="text-xs" style={{ color: "#C13584" }}>Analytical</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "#5B51D8" }}></div>
+                <span className="text-xs" style={{ color: "#5B51D8" }}>Relational</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 인증 현황판 */}
+        <div className="bg-white rounded-lg shadow p-3 border border-gray-200">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+              <Award className="w-4 h-4 text-gray-600" />
+            </div>
+            <h3 className="font-bold text-sm text-gray-900">{"\uC5ED\uB7C9 \uC778\uC99D \uD604\uD669"}</h3>
+            <span className="text-xs text-gray-600">| {"\uD559\uC0DD \uC5ED\uB7C9 \uB4F1\uAE09 \uBD84\uD3EC"}</span>
+          </div>
+          <div className="flex flex-col items-center gap-3" style={{ width: "100%" }}>
+            <div style={{ width: "100%", height: "200px" }}>
+              <CertificationPieChart data={certificationData} />
+            </div>
+            <div className="w-full grid grid-cols-2 gap-2">
+              {certificationData.map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2 text-xs">
+                  <div className="w-3 h-3 rounded" style={{ backgroundColor: item.color }}></div>
+                  <span className="text-gray-700">{item.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* 역량별 평가 분포 */}
+        <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+              <BarChart3 className="w-4 h-4 text-gray-600" />
+            </div>
+            <h3 className="font-bold text-sm text-gray-900">{"\uC5ED\uB7C9\uBCC4 \uD3C9\uAC00 \uBD84\uD3EC"}</h3>
+            <span className="text-xs text-gray-600">| {"\uD3C9\uAC00 \uC4F8\uB9BC \uD604\uC0C1 \uC9C4\uB2E8"}</span>
+          </div>
+          <div className="space-y-3 mt-4">
+            {curriculumIssues.competencyDistribution.map((comp, idx) => {
+              const getCompetencyColor = (competency: string) => {
+                if (competency.includes("Self-directed") || competency === "S") return "#E94E3C";
+                if (competency.includes("Teamwork") || competency === "T") return "#F7941D";
+                if (competency.includes("Analytical") || competency === "A") return "#C13584";
+                if (competency.includes("Relational") || competency === "R") return "#5B51D8";
+                return "#E94E3C";
+              };
+
+              return (
+                <div key={idx}>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-sm font-medium">{comp.competency} {"\uC5ED\uB7C9"}</span>
+                    <span className="text-sm text-gray-600">{comp.count}{"\uAC1C"} ({comp.percentage}%)</span>
+                  </div>
+                  <div className="relative w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className="h-full"
+                      style={{
+                        width: `${comp.percentage}%`,
+                        backgroundColor: getCompetencyColor(comp.competency),
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+            <p className="text-xs text-blue-800">
+              {"\uD83D\uDCA1 T \uC5ED\uB7C9\uC774 33.5%\uB85C \uAC00\uC7A5 \uB192\uC740 \uBE44\uC728\uC744 \uCC28\uC9C0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4. \uADE0\uD615 \uC788\uB294 \uC5ED\uB7C9 \uD3C9\uAC00\uB97C \uC704\uD574 \uC870\uC815\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."}
+            </p>
+          </div>
         </div>
       </div>
 
