@@ -6,6 +6,25 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  // 동적 클래스명을 위한 safelist (키워드 분석 등에서 사용)
+  safelist: [
+    // 폰트 크기 (키워드 분석)
+    "text-6xl",
+    "text-5xl",
+    "text-4xl",
+    "text-3xl",
+    "text-2xl",
+    "text-xl",
+    "text-lg",
+    "text-base",
+    "text-sm",
+    "text-xs",
+    // 폰트 두께
+    "font-bold",
+    "font-semibold",
+    "font-medium",
+    "font-normal",
+  ],
   theme: {
     extend: {
       colors: {
