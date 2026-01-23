@@ -20,20 +20,9 @@ import { competencyColors } from "@shared/theme";
 import { getStudentRadarSTAR, getStudentRadarPO } from "@/utils/studentRadarUtils";
 
 // recharts SSR 문제 방지를 위한 dynamic import
-const BarChart = dynamic(() => import("recharts").then((mod) => mod.BarChart), { ssr: false });
-const Bar = dynamic(() => import("recharts").then((mod) => mod.Bar), { ssr: false });
-const XAxis = dynamic(() => import("recharts").then((mod) => mod.XAxis), { ssr: false });
-const YAxis = dynamic(() => import("recharts").then((mod) => mod.YAxis), { ssr: false });
-const CartesianGrid = dynamic(() => import("recharts").then((mod) => mod.CartesianGrid), { ssr: false });
-const Tooltip = dynamic(() => import("recharts").then((mod) => mod.Tooltip), { ssr: false });
-const Legend = dynamic(() => import("recharts").then((mod) => mod.Legend), { ssr: false });
-const ResponsiveContainer = dynamic(() => import("recharts").then((mod) => mod.ResponsiveContainer), { ssr: false });
-const RadarChart = dynamic(() => import("recharts").then((mod) => mod.RadarChart), { ssr: false });
-const Radar = dynamic(() => import("recharts").then((mod) => mod.Radar), { ssr: false });
-const PolarGrid = dynamic(() => import("recharts").then((mod) => mod.PolarGrid), { ssr: false });
-const PolarAngleAxis = dynamic(() => import("recharts").then((mod) => mod.PolarAngleAxis), { ssr: false });
-const PolarRadiusAxis = dynamic(() => import("recharts").then((mod) => mod.PolarRadiusAxis), { ssr: false });
-const LabelList = dynamic(() => import("recharts").then((mod) => mod.LabelList), { ssr: false });
+const HistogramChart = dynamic(() => import("../_components/charts/HistogramChart"), { ssr: false });
+const CompetencyRadarChart = dynamic(() => import("../_components/charts/CompetencyRadarChart"), { ssr: false });
+const AssessmentBarChart = dynamic(() => import("../_components/charts/AssessmentBarChart"), { ssr: false });
 
 // 현재 학기 과목만 필터링
 const currentCourses = courses.filter((c) => c.semester === currentSemester);
@@ -104,17 +93,7 @@ export default function ProfessorDashboardPage() {
         </div>
         <p className="text-xs text-gray-500 mb-4">점수 구간별 학생 수 분포</p>
         <div className="h-[250px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={histogramData} margin={{ left: 0, right: 10, top: 10, bottom: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="range" tick={{ fontSize: 12 }} />
-              <YAxis tick={{ fontSize: 12 }} width={35} />
-              <Tooltip />
-              <Bar dataKey="students" fill="#F7941D" radius={[8, 8, 0, 0]}>
-                <LabelList dataKey="students" position="inside" style={{ fontSize: 13, fill: "#ffffff", fontWeight: "bold" }} />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+          <HistogramChart data={histogramData} />
         </div>
         <div className="mt-3 p-3 bg-slate-50 rounded-xl">
           <p className="text-sm text-slate-700">
@@ -173,18 +152,7 @@ export default function ProfessorDashboardPage() {
         </div>
 
         <div className="h-[320px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={radarData}>
-              <PolarGrid stroke="#e5e7eb" />
-              <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: "#4b5563" }} />
-              <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 10 }} />
-              <Radar name="내 점수" dataKey="myScore" stroke="#F7941D" fill="#F7941D" fillOpacity={0.5} strokeWidth={2} />
-              <Radar name="학과 평균" dataKey="deptAvg" stroke="#E94E3C" fill="#E94E3C" fillOpacity={0.3} strokeWidth={2} />
-              <Radar name="전체 평균" dataKey="totalAvg" stroke="#C13584" fill="#C13584" fillOpacity={0.2} strokeWidth={2} />
-              <Legend wrapperStyle={{ fontSize: "11px" }} iconType="circle" />
-              <Tooltip />
-            </RadarChart>
-          </ResponsiveContainer>
+          <CompetencyRadarChart data={radarData} />
         </div>
 
         {/* S/T/A/R 역량 카드 (STAR 모드일 때만) */}
@@ -220,19 +188,7 @@ export default function ProfessorDashboardPage() {
         </div>
         <p className="text-xs text-gray-500 mb-4">각 평가 도구별 역량 점수 비교</p>
         <div className="h-[200px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={assessmentData} margin={{ left: 0, right: 10, top: 10, bottom: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} width={35} />
-              <Tooltip />
-              <Legend wrapperStyle={{ fontSize: "11px" }} />
-              <Bar dataKey="S" fill="#E94E3C" radius={[4, 4, 0, 0]} name="S(창의)" />
-              <Bar dataKey="T" fill="#F7941D" radius={[4, 4, 0, 0]} name="T(실무)" />
-              <Bar dataKey="A" fill="#C13584" radius={[4, 4, 0, 0]} name="A(인성)" />
-              <Bar dataKey="R" fill="#5B51D8" radius={[4, 4, 0, 0]} name="R(소통)" />
-            </BarChart>
-          </ResponsiveContainer>
+          <AssessmentBarChart data={assessmentData} />
         </div>
       </div>
 

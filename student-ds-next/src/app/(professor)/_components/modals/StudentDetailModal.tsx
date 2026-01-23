@@ -5,12 +5,7 @@ import { X } from "lucide-react";
 import dynamic from "next/dynamic";
 
 // recharts SSR 문제 방지를 위한 dynamic import
-const RadarChart = dynamic(() => import("recharts").then((mod) => mod.RadarChart), { ssr: false });
-const Radar = dynamic(() => import("recharts").then((mod) => mod.Radar), { ssr: false });
-const PolarGrid = dynamic(() => import("recharts").then((mod) => mod.PolarGrid), { ssr: false });
-const PolarAngleAxis = dynamic(() => import("recharts").then((mod) => mod.PolarAngleAxis), { ssr: false });
-const PolarRadiusAxis = dynamic(() => import("recharts").then((mod) => mod.PolarRadiusAxis), { ssr: false });
-const ResponsiveContainer = dynamic(() => import("recharts").then((mod) => mod.ResponsiveContainer), { ssr: false });
+const StudentRadarChart = dynamic(() => import("../charts/StudentRadarChart"), { ssr: false });
 
 // 학생 데이터 타입
 export interface StudentData {
@@ -107,20 +102,7 @@ export default function StudentDetailModal({
         <div className="bg-gray-50 rounded-2xl p-4 mb-4">
           <h4 className="font-bold text-gray-800 mb-3">역량 상세</h4>
           <div className="h-[250px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <RadarChart data={radarData}>
-                <PolarGrid stroke="#e5e7eb" />
-                <PolarAngleAxis dataKey="subject" tick={{ fontSize: 14, fontWeight: "bold" }} />
-                <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 10 }} />
-                <Radar
-                  dataKey="score"
-                  stroke="#F7941D"
-                  fill="#F7941D"
-                  fillOpacity={0.5}
-                  strokeWidth={2}
-                />
-              </RadarChart>
-            </ResponsiveContainer>
+            <StudentRadarChart data={radarData} />
           </div>
         </div>
 

@@ -68,9 +68,9 @@ export default function ProfessorLayout({ children }: ProfessorLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 max-w-md mx-auto relative overflow-hidden">
+    <div className="min-h-screen bg-gray-100 max-w-md mx-auto relative">
       {/* Main Content Area */}
-      <main className="pb-20 overflow-y-auto" style={{ height: "calc(100vh - 5rem)" }}>
+      <main className="pb-20">
         {children}
       </main>
 
