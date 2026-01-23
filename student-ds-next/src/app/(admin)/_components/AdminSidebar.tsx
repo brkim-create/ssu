@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Activity, Inbox, BarChart3, Users, ChevronDown } from "lucide-react";
 import { useRole } from "@/contexts/RoleContext";
@@ -49,8 +50,14 @@ export default function AdminSidebar() {
     <div className="w-48 bg-gray-800 shadow-lg flex flex-col border-r border-gray-700 h-screen">
       {/* 로고 헤더 */}
       <div className="h-[60px] px-3 flex items-center border-b border-gray-700 gap-2">
-        <div className="w-8 h-8 bg-white rounded-lg p-1 flex items-center justify-center">
-          <span className="text-xs font-bold text-gray-800">SSU</span>
+        <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center overflow-hidden p-1">
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={24}
+            height={24}
+            className="object-contain"
+          />
         </div>
         <div>
           <p className="font-bold text-sm text-white">수성대학교</p>
