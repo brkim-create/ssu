@@ -40,9 +40,15 @@ export default function TeachingMethodDiagnosis() {
         ))}
       </div>
 
-      <div className="mt-3 p-3 bg-gray-50 rounded-xl">
-        <p className="text-xs text-gray-700">
-          💡 PBL 방식에서 가장 높은 평균 성취도를 보입니다. (2차년도 고도화 예정)
+      <div className="mt-3 p-3 bg-[rgb(241,245,249)] rounded-xl">
+        <p className="text-sm text-[rgb(51,65,85)]">
+          💡 <strong>인사이트:</strong> {
+            (() => {
+              const maxMethod = teachingMethodData.reduce((a, b) => a.score > b.score ? a : b);
+              const minMethod = teachingMethodData.reduce((a, b) => a.score < b.score ? a : b);
+              return `${maxMethod.method} 방식에서 가장 높은 평균 성취도(${maxMethod.score}점)를 보이며, ${minMethod.method} 방식(${minMethod.score}점)은 개선이 필요합니다.`;
+            })()
+          }
         </p>
       </div>
     </div>

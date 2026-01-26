@@ -215,6 +215,11 @@ export default function ProfessorDashboardPage() {
         <div className="h-[200px]">
           <AssessmentBarChart data={assessmentData} />
         </div>
+        <div className="mt-3 p-3 bg-[rgb(241,245,249)] rounded-xl">
+          <p className="text-sm text-[rgb(51,65,85)]">
+            💡 <strong>인사이트:</strong> 과제 평가에서 가장 높은 역량 점수를 보입니다.
+          </p>
+        </div>
       </div>
 
       {/* 관심 학생 알림 */}
