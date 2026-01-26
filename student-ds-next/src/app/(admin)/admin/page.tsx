@@ -23,7 +23,8 @@ import {
   curriculumIssues,
   cqiStatusData,
   competencyTrendData,
-  certificationData,
+  certificationHistogramData,
+  certificationStats,
 } from "@/data/mockData";
 
 // theme imports
@@ -48,8 +49,8 @@ const CompetencyTrendChart = dynamic(
   () => import("../_components/charts/CompetencyTrendChart"),
   { ssr: false }
 );
-const CertificationPieChart = dynamic(
-  () => import("../_components/charts/CertificationPieChart"),
+const CertificationHistogramChart = dynamic(
+  () => import("../_components/charts/CertificationHistogramChart"),
   { ssr: false }
 );
 
@@ -459,27 +460,22 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* 인증 현황판 */}
+        {/* 역량 인증 현황 */}
         <div className="bg-white rounded-lg shadow p-3 border border-gray-200">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
               <Award className="w-4 h-4 text-gray-600" />
             </div>
-            <h3 className="font-bold text-sm text-gray-900">{"\uC5ED\uB7C9 \uC778\uC99D \uD604\uD669"}</h3>
-            <span className="text-xs text-gray-600">| {"\uD559\uC0DD \uC5ED\uB7C9 \uB4F1\uAE09 \uBD84\uD3EC"}</span>
+            <h3 className="font-bold text-sm text-gray-900">역량 인증 현황</h3>
+            <span className="text-xs text-gray-600">| 점수 구간별 학생 수 분포</span>
           </div>
-          <div className="flex flex-col items-center gap-3" style={{ width: "100%" }}>
-            <div style={{ width: "100%", height: "200px" }}>
-              <CertificationPieChart data={certificationData} />
-            </div>
-            <div className="w-full grid grid-cols-2 gap-2">
-              {certificationData.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-2 text-xs">
-                  <div className="w-3 h-3 rounded" style={{ backgroundColor: item.color }}></div>
-                  <span className="text-gray-700">{item.name}</span>
-                </div>
-              ))}
-            </div>
+          <div style={{ width: "100%", height: "230px" }}>
+            <CertificationHistogramChart data={certificationHistogramData} />
+          </div>
+          <div className="p-3 bg-slate-50 rounded-xl">
+            <p className="text-sm text-slate-700">
+              <strong>평균 점수:</strong> {certificationStats.averageScore}점 | <strong>중앙값:</strong> {certificationStats.medianScore}점
+            </p>
           </div>
         </div>
 

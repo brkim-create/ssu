@@ -97,6 +97,8 @@ export {
   competencyTrendData,
   collegeHeatmapData,
   certificationData,
+  certificationHistogramData,
+  certificationStats,
   departmentGapData,
   gradeGrowthData,
   cqiStatusData,

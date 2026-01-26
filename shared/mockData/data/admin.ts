@@ -178,13 +178,34 @@ export const collegeHeatmapData: CollegeHeatmapItem[] = [
   { college: '유아교육과', 기획: 74, 실행: 69, 화합: 86, 통섭: 78, 전공지식: 81, 전공기술: 75, 정보화: 67, 신기술활용: 72, 공감: 89, 판단: 83, 사명감: 64, 조직이해: 58, 도전성: 52, 자기학습: 0, 경청: 90, 협상: 84, 외국어: 70, 세계시민: 87 },
 ];
 
-// 인증 현황 데이터
+// 인증 현황 데이터 (Pie Chart용 - 레거시)
 export const certificationData: CertificationItem[] = [
   { level: 'Advanced', count: 245, color: '#E94E3C', name: 'Advanced (245명)' },
   { level: 'Intermediate', count: 512, color: '#F7941D', name: 'Intermediate (512명)' },
   { level: 'Basic', count: 183, color: '#C13584', name: 'Basic (183명)' },
   { level: 'Low', count: 60, color: '#5B51D8', name: 'Low (60명)' },
 ];
+
+// 역량 인증 현황 히스토그램 데이터 (점수 구간별 학생 분포)
+export interface CertificationHistogramItem {
+  range: string;
+  students: number;
+}
+
+export const certificationHistogramData: CertificationHistogramItem[] = [
+  { range: '0-20', students: 15 },
+  { range: '21-40', students: 45 },
+  { range: '41-60', students: 183 },
+  { range: '61-80', students: 512 },
+  { range: '81-100', students: 245 },
+];
+
+// 역량 인증 통계
+export const certificationStats = {
+  totalStudents: 1000,
+  averageScore: 68.5,
+  medianScore: 72,
+};
 
 // 과별 역량 달성도 (Gap Analysis)
 export const departmentGapData: DepartmentGapItem[] = [
