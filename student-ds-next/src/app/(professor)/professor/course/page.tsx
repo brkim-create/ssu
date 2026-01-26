@@ -1,7 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import CommonHeader from "../../_components/CommonHeader";
 import { FileText, Target, Clock, MessageCircle, ChevronRight } from "lucide-react";
+
+// mockData imports from shared
+import { currentSemester, courses } from "@shared/mockData/data/professor";
+
+// 현재 학기 과목만 필터링
+const currentCourses = courses.filter((c) => c.semester === currentSemester);
 
 /**
  * Course Management Page
@@ -10,9 +17,29 @@ import { FileText, Target, Clock, MessageCircle, ChevronRight } from "lucide-rea
  * 프로토타입 CourseScreen 기반
  */
 export default function ProfessorCoursePage() {
+  const [selectedCourse, setSelectedCourse] = useState(currentCourses[0]);
+
   return (
     <div className="pb-4">
-      <CommonHeader title="과목 관리" subtitle="담당 과목 상세 관리" />
+      <CommonHeader title="과목 관리" subtitle="담당 과목 상세 관리">
+        {/* 과목 선택 드롭다운 */}
+        <div className="mt-4">
+          <select
+            value={selectedCourse.id}
+            onChange={(e) => {
+              const newCourse = currentCourses.find((c) => c.id === Number(e.target.value)) || currentCourses[0];
+              setSelectedCourse(newCourse);
+            }}
+            className="w-full p-3 bg-white/20 text-white rounded-xl border-2 border-white/30 font-medium backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer"
+          >
+            {currentCourses.map((course) => (
+              <option key={course.id} value={course.id} className="bg-gray-800 text-white">
+                {course.name} ({course.semester}학기) | {course.students}명 수강
+              </option>
+            ))}
+          </select>
+        </div>
+      </CommonHeader>
 
       {/* 강의 관리 메뉴 */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg overflow-hidden">
