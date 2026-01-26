@@ -193,13 +193,13 @@ export default function ProfessorDashboardPage() {
         </div>
       </div>
 
-      {/* 관심(위험) 학생 알림 */}
+      {/* 관심 학생 알림 */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
             <TriangleAlert className="w-5 h-5 text-gray-600" />
           </div>
-          <h3 className="font-bold text-gray-800">관심(위험) 학생 알림</h3>
+          <h3 className="font-bold text-gray-800">관심 학생 알림</h3>
           <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
             {concernStudents.filter((s) => s.level === "danger").length}명
           </span>
@@ -281,7 +281,7 @@ export default function ProfessorDashboardPage() {
 
         {/* 취약 역량 */}
         <div className="bg-gray-50 rounded-xl p-3">
-          <p className="text-sm font-bold text-gray-800 mb-2">취약 역량 점검</p>
+          <p className="text-sm font-bold text-gray-800 mb-2">성취도 하위 영역</p>
           <div className="space-y-2">
             {performanceReport.weakAreas.map((area, idx) => (
               <div key={idx} className="flex items-center justify-between">
