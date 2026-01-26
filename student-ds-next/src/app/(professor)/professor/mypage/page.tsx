@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Share2, Search, Bell, Settings, User, ChevronRight, LogOut, X } from "lucide-react";
 import SearchModal from "../../_components/modals/SearchModal";
+import NotificationModal from "../../_components/modals/NotificationModal";
 import NotificationSettingsModal from "../../_components/modals/NotificationSettingsModal";
 
 // mockData imports from shared
@@ -21,6 +22,7 @@ import { professorProfile } from "@shared/mockData/data/professor";
 export default function ProfessorMyPage() {
   const router = useRouter();
   const [showSearchModal, setShowSearchModal] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [showNotificationSettingsModal, setShowNotificationSettingsModal] = useState(false);
   const [showLoginInfoModal, setShowLoginInfoModal] = useState(false);
 
@@ -51,7 +53,11 @@ export default function ProfessorMyPage() {
             >
               <Search className="w-6 h-6" />
             </button>
-            <button className="p-2 hover:bg-white/20 rounded-lg transition-all relative" aria-label="알림">
+            <button
+              onClick={() => setShowNotificationModal(true)}
+              className="p-2 hover:bg-white/20 rounded-lg transition-all relative"
+              aria-label="알림"
+            >
               <Bell className="w-6 h-6" />
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 rounded-full flex items-center justify-center text-xs font-bold">
                 2
@@ -109,7 +115,13 @@ export default function ProfessorMyPage() {
         로그아웃
       </button>
 
-      {/* 알림 설정 모달 */}
+      {/* 알림 목록 모달 (헤더 Bell 아이콘) */}
+      <NotificationModal
+        isOpen={showNotificationModal}
+        onClose={() => setShowNotificationModal(false)}
+      />
+
+      {/* 알림 설정 모달 (메뉴 버튼) */}
       <NotificationSettingsModal
         isOpen={showNotificationSettingsModal}
         onClose={() => setShowNotificationSettingsModal(false)}

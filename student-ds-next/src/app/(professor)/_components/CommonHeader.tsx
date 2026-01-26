@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Share2, Search, Bell } from "lucide-react";
 import ShareModal from "./modals/ShareModal";
 import SearchModal from "./modals/SearchModal";
-import NotificationSettingsModal from "./modals/NotificationSettingsModal";
+import NotificationModal from "./modals/NotificationModal";
 
 interface CommonHeaderProps {
   /** 헤더 타이틀 */
@@ -37,7 +37,7 @@ export default function CommonHeader({
   // 모달 상태
   const [showShareModal, setShowShareModal] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
-  const [showNotificationSettingsModal, setShowNotificationSettingsModal] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   return (
     <>
@@ -73,7 +73,7 @@ export default function CommonHeader({
               <Search className="w-6 h-6" />
             </button>
             <button
-              onClick={() => setShowNotificationSettingsModal(true)}
+              onClick={() => setShowNotificationModal(true)}
               className="p-2 hover:bg-white/20 rounded-lg transition-all relative"
               aria-label="알림"
             >
@@ -105,9 +105,9 @@ export default function CommonHeader({
         isOpen={showSearchModal}
         onClose={() => setShowSearchModal(false)}
       />
-      <NotificationSettingsModal
-        isOpen={showNotificationSettingsModal}
-        onClose={() => setShowNotificationSettingsModal(false)}
+      <NotificationModal
+        isOpen={showNotificationModal}
+        onClose={() => setShowNotificationModal(false)}
       />
     </>
   );
