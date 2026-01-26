@@ -227,12 +227,20 @@ export const gradeGrowthData: GradeGrowthItem[] = [
 // CQI 운영 현황
 export const cqiStatusData: CQIStatusItem[] = [
   { dept: 'AI빅데이터과', total: 28, completed: 26, rate: 92.9, lowGrade: 2 },
+  { dept: '메타버스크리에이터과', total: 22, completed: 20, rate: 90.9, lowGrade: 2 },
+  { dept: '웹툰웹소설과', total: 18, completed: 17, rate: 94.4, lowGrade: 1 },
   { dept: '간호학과', total: 35, completed: 34, rate: 97.1, lowGrade: 1 },
+  { dept: '방사선과', total: 26, completed: 23, rate: 88.5, lowGrade: 3 },
   { dept: '치위생과', total: 30, completed: 29, rate: 96.7, lowGrade: 1 },
+  { dept: '뷰티스타일리스트과', total: 20, completed: 18, rate: 90.0, lowGrade: 2 },
+  { dept: '제과제빵커피과', total: 19, completed: 16, rate: 84.2, lowGrade: 3 },
   { dept: '호텔조리과', total: 25, completed: 22, rate: 88.0, lowGrade: 3 },
-  { dept: '사회복지과', total: 32, completed: 31, rate: 96.9, lowGrade: 1 },
   { dept: '스포츠레저과', total: 24, completed: 23, rate: 95.8, lowGrade: 1 },
+  { dept: '치료재활과', total: 31, completed: 29, rate: 93.5, lowGrade: 2 },
   { dept: '경찰행정과', total: 27, completed: 25, rate: 92.6, lowGrade: 2 },
+  { dept: '미술심리보육과', total: 23, completed: 21, rate: 91.3, lowGrade: 2 },
+  { dept: '반려동물보건과', total: 21, completed: 18, rate: 85.7, lowGrade: 3 },
+  { dept: '사회복지과', total: 32, completed: 31, rate: 96.9, lowGrade: 1 },
   { dept: '유아교육과', total: 29, completed: 28, rate: 96.6, lowGrade: 1 },
 ];
 
@@ -241,10 +249,10 @@ export const curriculumIssues: CurriculumIssues = {
   unmappedCourses: 12,
   totalCourses: 245,
   competencyDistribution: [
-    { competency: 'S', count: 68, percentage: 27.8 },
-    { competency: 'T', count: 82, percentage: 33.5 },
-    { competency: 'A', count: 55, percentage: 22.4 },
-    { competency: 'R', count: 40, percentage: 16.3 },
+    { competency: 'S', count: 95, percentage: 38.8 },
+    { competency: 'T', count: 72, percentage: 29.4 },
+    { competency: 'A', count: 48, percentage: 19.6 },
+    { competency: 'R', count: 30, percentage: 12.2 },
   ],
   unmappedCoursesList: [
     { id: 1, courseName: 'AI 윤리와 철학', professor: '김철수', dept: 'AI빅데이터과' },
