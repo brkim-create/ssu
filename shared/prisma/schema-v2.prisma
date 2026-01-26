@@ -118,15 +118,15 @@ model Competency {
   name        String         // 역량명 (창의역량, 실무역량, 인성역량, 소통역량)
   description String?
   color       String         // UI 표시 색상
+  skills      String[]       // 하위 스킬 목록
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 
   // Relations
-  competencyScores   CompetencyScore[]
-  poDetails          PODetail[]
-  courses            Course[]
-  evidences          Evidence[]
-  behaviorIndicators BehaviorIndicator[] // 하위역량 (18개 행동지표)
+  competencyScores CompetencyScore[]
+  poDetails        PODetail[]
+  courses          Course[]
+  evidences        Evidence[]
 
   @@map("competencies")
 }
@@ -155,6 +155,7 @@ model PODetail {
   competencyId Int
   score        Float           @default(0)
   grade        CompetencyGrade @default(AVERAGE)
+  skills       String[]
   color        String
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
@@ -320,17 +321,16 @@ enum IndicatorStatus {
 }
 
 model BehaviorIndicator {
-  id           Int      @id @default(autoincrement())
-  code         String   @unique // BI-01, BI-02, ...
-  name         String   // 기획, 실행, 화합, 통섭, ... (18개 행동지표)
-  competencyId Int      // 상위 역량 FK
-  description  String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          Int             @id @default(autoincrement())
+  code        String          @unique // BI-01, BI-02, ...
+  name        String          // 기획, 실행, 화합, 통섭, ...
+  competencyType CompetencyType // S, T, A, R
+  description String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
   // Relations
-  competency Competency             @relation(fields: [competencyId], references: [id])
-  scores     BehaviorIndicatorScore[]
+  scores BehaviorIndicatorScore[]
 
   @@map("behavior_indicators")
 }
@@ -431,17 +431,18 @@ model TeachingMethod {
 }
 
 model TeachingMethodDiagnostic {
-  id        Int      @id @default(autoincrement())
-  methodId  Int
-  courseId  Int?
-  semester  String
-  score     Float    // 전체 점수
-  S         Float    @default(0) // S역량 점수
-  T         Float    @default(0)
-  A         Float    @default(0)
-  R         Float    @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  methodId        Int
+  courseId        Int?
+  semester        String
+  score           Float    // 전체 점수
+  S               Float    @default(0) // S역량 점수
+  T               Float    @default(0)
+  A               Float    @default(0)
+  R               Float    @default(0)
+  satisfaction    Float?   // 만족도
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   // Relations
   method TeachingMethod @relation(fields: [methodId], references: [id])

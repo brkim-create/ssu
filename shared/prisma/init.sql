@@ -1,9 +1,3 @@
--- ============================================================
--- SSU Student Dashboard - Initial Database Schema
--- Generated from Prisma schema
--- Database: PostgreSQL
--- ============================================================
-
 -- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('STUDENT', 'PROFESSOR', 'ADMIN', 'SUPER_ADMIN');
 
@@ -21,6 +15,9 @@ CREATE TYPE "ComplaintStatus" AS ENUM ('RECEIVED', 'PROCESSING', 'COMPLETED', 'R
 
 -- CreateEnum
 CREATE TYPE "ComplaintPriority" AS ENUM ('HIGH', 'MEDIUM', 'LOW');
+
+-- CreateEnum
+CREATE TYPE "IndicatorStatus" AS ENUM ('EXCELLENT', 'GOOD', 'POOR');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -318,9 +315,212 @@ CREATE TABLE "app_configs" (
     CONSTRAINT "app_configs_pkey" PRIMARY KEY ("id")
 );
 
--- ============================================================
--- Indexes
--- ============================================================
+-- CreateTable
+CREATE TABLE "behavior_indicators" (
+    "id" SERIAL NOT NULL,
+    "code" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "competencyType" "CompetencyType" NOT NULL,
+    "description" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "behavior_indicators_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "behavior_indicator_scores" (
+    "id" SERIAL NOT NULL,
+    "indicatorId" INTEGER NOT NULL,
+    "departmentId" INTEGER,
+    "studentId" INTEGER,
+    "achievement" DOUBLE PRECISION NOT NULL,
+    "status" "IndicatorStatus" NOT NULL,
+    "semester" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "behavior_indicator_scores_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "departments" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "college" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "departments_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "department_heatmap_scores" (
+    "id" SERIAL NOT NULL,
+    "departmentId" INTEGER NOT NULL,
+    "semester" TEXT NOT NULL,
+    "기획" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "실행" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "화합" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "통섭" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "전공지식" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "전공기술" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "정보화" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "신기술활용" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "공감" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "판단" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "사명감" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "조직이해" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "도전성" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "자기학습" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "경청" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "협상" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "외국어" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "세계시민" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "department_heatmap_scores_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "teaching_methods" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "teaching_methods_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "teaching_method_diagnostics" (
+    "id" SERIAL NOT NULL,
+    "methodId" INTEGER NOT NULL,
+    "courseId" INTEGER,
+    "semester" TEXT NOT NULL,
+    "score" DOUBLE PRECISION NOT NULL,
+    "S" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "T" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "A" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "R" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "satisfaction" DOUBLE PRECISION,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "teaching_method_diagnostics_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "cqi_statuses" (
+    "id" SERIAL NOT NULL,
+    "departmentId" INTEGER NOT NULL,
+    "semester" TEXT NOT NULL,
+    "totalCourses" INTEGER NOT NULL DEFAULT 0,
+    "completed" INTEGER NOT NULL DEFAULT 0,
+    "rate" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "lowGrade" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "cqi_statuses_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "cqi_performances" (
+    "id" SERIAL NOT NULL,
+    "semester" TEXT NOT NULL,
+    "targetAchievement" DOUBLE PRECISION NOT NULL,
+    "currentAchievement" DOUBLE PRECISION NOT NULL,
+    "achievementRate" DOUBLE PRECISION NOT NULL,
+    "yearOverYear" DOUBLE PRECISION NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "cqi_performances_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "cqi_weak_areas" (
+    "id" SERIAL NOT NULL,
+    "performanceId" INTEGER NOT NULL,
+    "area" TEXT NOT NULL,
+    "score" DOUBLE PRECISION NOT NULL,
+    "improvement" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "cqi_weak_areas_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "department_gaps" (
+    "id" SERIAL NOT NULL,
+    "departmentId" INTEGER NOT NULL,
+    "semester" TEXT NOT NULL,
+    "current" DOUBLE PRECISION NOT NULL,
+    "target" DOUBLE PRECISION NOT NULL,
+    "gap" DOUBLE PRECISION NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "department_gaps_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "underperforming_students" (
+    "id" SERIAL NOT NULL,
+    "studentId" INTEGER NOT NULL,
+    "targetComp" "CompetencyType" NOT NULL,
+    "score" DOUBLE PRECISION NOT NULL,
+    "threshold" DOUBLE PRECISION NOT NULL,
+    "gap" DOUBLE PRECISION NOT NULL,
+    "semester" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "underperforming_students_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "certifications" (
+    "id" SERIAL NOT NULL,
+    "level" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "count" INTEGER NOT NULL DEFAULT 0,
+    "color" TEXT NOT NULL,
+    "semester" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "certifications_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "assessment_tools" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "assessment_tools_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "assessment_tool_scores" (
+    "id" SERIAL NOT NULL,
+    "toolId" INTEGER NOT NULL,
+    "courseId" INTEGER,
+    "semester" TEXT NOT NULL,
+    "S" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "T" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "A" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "R" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "assessment_tool_scores_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
@@ -361,9 +561,35 @@ CREATE UNIQUE INDEX "chatbot_templates_category_key_key" ON "chatbot_templates"(
 -- CreateIndex
 CREATE UNIQUE INDEX "app_configs_key_key" ON "app_configs"("key");
 
--- ============================================================
--- Foreign Keys
--- ============================================================
+-- CreateIndex
+CREATE UNIQUE INDEX "behavior_indicators_code_key" ON "behavior_indicators"("code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "departments_name_key" ON "departments"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "department_heatmap_scores_departmentId_semester_key" ON "department_heatmap_scores"("departmentId", "semester");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "teaching_methods_name_key" ON "teaching_methods"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "cqi_statuses_departmentId_semester_key" ON "cqi_statuses"("departmentId", "semester");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "cqi_performances_semester_key" ON "cqi_performances"("semester");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "department_gaps_departmentId_semester_key" ON "department_gaps"("departmentId", "semester");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "underperforming_students_studentId_targetComp_semester_key" ON "underperforming_students"("studentId", "targetComp", "semester");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "certifications_level_semester_key" ON "certifications"("level", "semester");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "assessment_tools_name_key" ON "assessment_tools"("name");
 
 -- AddForeignKey
 ALTER TABLE "students" ADD CONSTRAINT "students_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -427,3 +653,31 @@ ALTER TABLE "job_fit_recommendations" ADD CONSTRAINT "job_fit_recommendations_st
 
 -- AddForeignKey
 ALTER TABLE "chat_messages" ADD CONSTRAINT "chat_messages_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "chat_sessions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "behavior_indicator_scores" ADD CONSTRAINT "behavior_indicator_scores_indicatorId_fkey" FOREIGN KEY ("indicatorId") REFERENCES "behavior_indicators"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "behavior_indicator_scores" ADD CONSTRAINT "behavior_indicator_scores_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "departments"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "department_heatmap_scores" ADD CONSTRAINT "department_heatmap_scores_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "departments"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "teaching_method_diagnostics" ADD CONSTRAINT "teaching_method_diagnostics_methodId_fkey" FOREIGN KEY ("methodId") REFERENCES "teaching_methods"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "cqi_statuses" ADD CONSTRAINT "cqi_statuses_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "departments"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "cqi_weak_areas" ADD CONSTRAINT "cqi_weak_areas_performanceId_fkey" FOREIGN KEY ("performanceId") REFERENCES "cqi_performances"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "department_gaps" ADD CONSTRAINT "department_gaps_departmentId_fkey" FOREIGN KEY ("departmentId") REFERENCES "departments"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "underperforming_students" ADD CONSTRAINT "underperforming_students_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "students"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "assessment_tool_scores" ADD CONSTRAINT "assessment_tool_scores_toolId_fkey" FOREIGN KEY ("toolId") REFERENCES "assessment_tools"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
