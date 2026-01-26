@@ -11,12 +11,26 @@ export interface StudentCompetency {
   R: number;
 }
 
+// 학생 하위역량(PO) 점수 (professor-ds)
+export interface StudentPOScore {
+  창의적문제해결: number;
+  융복합적사고: number;
+  전문지식: number;
+  미래혁신: number;
+  리더십: number;
+  공동체의식: number;
+  자기계발: number;
+  의사소통: number;
+  글로컬시민: number;
+}
+
 // 학생 기본 정보 (professor-ds, admin-ds 공통)
 export interface Student extends StudentCompetency {
   id: number;
   name: string;
   studentId: string;
   dept: string;
+  PO?: StudentPOScore;  // 하위역량 점수 (선택적)
 }
 
 // 사용자 프로필 (student-ds)
