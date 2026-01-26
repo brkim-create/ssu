@@ -104,6 +104,9 @@ export interface ProfessorProfile {
   name: string;
   department: string;
   courseCount: number;
+  employeeId: string;      // 교번
+  position: string;        // 직급
+  email: string;           // 이메일
 }
 
 // 과목 통계 (professor-ds)

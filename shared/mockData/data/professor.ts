@@ -18,6 +18,7 @@ import type {
   WeeklyLecture,
   ProfessorProfile,
   CourseStatistics,
+  LoginHistory,
 } from '../types';
 
 // 교과목 역량 성취도 히스토그램 데이터
@@ -142,7 +143,17 @@ export const professorProfile: ProfessorProfile = {
   name: '박정인 교수',
   department: '컴퓨터공학과',
   courseCount: 3,
+  employeeId: 'P202001',
+  position: '조교수',
+  email: 'professor@example.com',
 };
+
+// 로그인 이력 데이터
+export const loginHistory: LoginHistory[] = [
+  { date: '2025.01.23', time: '14:32', device: 'Chrome (Windows)' },
+  { date: '2025.01.22', time: '09:15', device: 'Safari (iPhone)' },
+  { date: '2025.01.21', time: '18:42', device: 'Chrome (Android)' },
+];
 
 // 과목 통계 데이터
 export const courseStatistics: CourseStatistics = {
