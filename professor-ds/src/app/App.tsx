@@ -1,21 +1,30 @@
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, LabelList } from 'recharts';
-import { Home, BookOpen, Users, FileText, User, ChevronRight, X, Search, Bell, Share2, TrendingUp, Target, Settings, ChartBar, ChartLine, TriangleAlert, Calendar } from 'lucide-react';
+import { Home, BookOpen, Users, FileText, User, ChevronRight, X, Search, Bell, Share2, TrendingUp, Target, Settings, ChartBar, ChartLine, TriangleAlert, Calendar, FlaskConical } from 'lucide-react';
 import {
+  currentSemester,
   histogramData,
   assessmentData,
   concernStudents,
   performanceReport,
+  teachingMethodData,
   courses,
   studentList,
+  weeklyLectures,
+  professorProfile,
+  courseStatistics,
 } from '../data/mockData';
 import { getStudentRadarSTAR, getStudentRadarPO } from '../utils/studentRadarUtils';
 
-import logoImage from '../assets/logo.png';
+import logoImage from '@shared/assets/logo.png';
+import { competencyColors } from '@shared/theme';
+
+// 현재 학기 과목만 필터링
+const currentCourses = courses.filter(c => c.semester === currentSemester);
 
 export default function ProfessorDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [selectedCourse, setSelectedCourse] = useState(courses[0]);
+  const [selectedCourse, setSelectedCourse] = useState(currentCourses[0]);
   const [selectedCompetency, setSelectedCompetency] = useState('전체');
   const [selectedConcernCompetency, setSelectedConcernCompetency] = useState('전체');
   const [showShareModal, setShowShareModal] = useState(false);
@@ -33,21 +42,6 @@ export default function ProfessorDashboard() {
     kakao: false,
     email: true,
   });
-
-  // 역량별 색상
-  const competencyColors: Record<string, string> = {
-    S: '#E94E3C',
-    T: '#F7941D',
-    A: '#C13584',
-    R: '#5B51D8',
-  };
-
-  // 신호등 색상
-  const trafficLightColor: Record<string, string> = {
-    danger: '#EF4444',
-    warning: '#F59E0B',
-    safe: '#10B981',
-  };
 
   // 공통 헤더 컴포넌트
   const CommonHeader = ({ title, subtitle }: { title: string; subtitle: string }) => (
@@ -73,12 +67,16 @@ export default function ProfessorDashboard() {
       
       {/* 과목 선택 드롭다운 */}
       <div className="mt-4">
-        <select 
+        <select
           value={selectedCourse.id}
-          onChange={(e) => setSelectedCourse(courses.find(c => c.id === Number(e.target.value)) || courses[0])}
+          onChange={(e) => {
+            const newCourse = currentCourses.find(c => c.id === Number(e.target.value)) || currentCourses[0];
+            setSelectedCourse(newCourse);
+            if (selectedWeek > newCourse.totalWeeks) setSelectedWeek(1);
+          }}
           className="w-full p-3 bg-white/20 text-white rounded-xl border-2 border-white/30 font-medium backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer"
         >
-          {courses.map(course => (
+          {currentCourses.map(course => (
             <option key={course.id} value={course.id} className="bg-gray-800 text-white">
               {course.name} ({course.semester}학기) | {course.students}명 수강
             </option>
@@ -128,7 +126,7 @@ export default function ProfessorDashboard() {
         </ResponsiveContainer>
         <div className="mt-3 p-3 bg-slate-50 rounded-xl">
           <p className="text-sm text-slate-700">
-            <strong>평균 점수:</strong> 74.3점 | <strong>중앙값:</strong> 76점
+            <strong>평균 점수:</strong> {courseStatistics.averageScore}점 | <strong>중앙값:</strong> {courseStatistics.medianScore}점
           </p>
         </div>
       </div>
@@ -172,7 +170,7 @@ export default function ProfessorDashboard() {
               radarViewMode === 'PO' ? 'bg-gradient-to-r from-[#E94E3C] to-[#F7941D] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            전공능력(PO)
+            하위역량(PO)
           </button>
         </div>
 
@@ -334,6 +332,43 @@ export default function ProfessorDashboard() {
           </div>
         </div>
       </div>
+
+      {/* 교수법 연계 진단 */}
+      <div className="mx-4 mt-4 mb-4 bg-white rounded-2xl shadow-lg p-4">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+              <FlaskConical className="w-5 h-5 text-gray-600" />
+            </div>
+            <h3 className="font-bold text-gray-800">교수법 연계 진단</h3>
+            <span className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">Beta</span>
+          </div>
+        </div>
+        <p className="text-xs text-gray-500 mb-4">교수법과 학생 성취도 간 상관관계</p>
+
+        <div className="space-y-2">
+          {teachingMethodData.map((method, idx) => (
+            <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+              <span className="text-sm font-medium text-gray-700">{method.method}</span>
+              <div className="flex items-center gap-3">
+                <div className="w-32 bg-gray-200 rounded-full h-2">
+                  <div
+                    className="bg-gray-600 h-2 rounded-full"
+                    style={{ width: `${method.score}%` }}
+                  ></div>
+                </div>
+                <span className="text-sm font-bold text-gray-700 w-12 text-right">{method.score}점</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-3 p-3 bg-gray-50 rounded-xl">
+          <p className="text-xs text-gray-700">
+            💡 PBL 방식에서 가장 높은 평균 성취도를 보입니다. (2차년도 고도화 예정)
+          </p>
+        </div>
+      </div>
     </div>
   );
   // 과목 관리 화면
@@ -366,22 +401,12 @@ export default function ProfessorDashboard() {
         
         <div className="mb-4">
           <select value={selectedWeek} onChange={(e) => setSelectedWeek(Number(e.target.value))} className="w-full p-3 bg-gray-50 text-gray-800 rounded-xl border-2 border-gray-200 font-medium">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(week => <option key={week} value={week}>{week}주차</option>)}
+            {Array.from({ length: selectedCourse.totalWeeks }, (_, i) => i + 1).map(week => <option key={week} value={week}>{week}주차</option>)}
           </select>
         </div>
 
         <div className="space-y-3">
           {(() => {
-            const weeklyLectures = [
-              { week: 1, date: '2025-03-03', day: '월', title: '자료구조 개론', status: '완료', attendance: 98 },
-              { week: 1, date: '2025-03-05', day: '수', title: '배열 자료구조', status: '완료', attendance: 96 },
-              { week: 2, date: '2025-03-10', day: '월', title: '배열과 리스트', status: '완료', attendance: 95 },
-              { week: 2, date: '2025-03-12', day: '수', title: '연결 리스트', status: '완료', attendance: 94 },
-              { week: 3, date: '2025-03-17', day: '월', title: '다항식 덧셈', status: '완료', attendance: 97 },
-              { week: 3, date: '2025-03-19', day: '수', title: '희소 행렬', status: '완료', attendance: 95 },
-              { week: 4, date: '2025-03-24', day: '월', title: '스택 구조', status: '진행중', attendance: 92 },
-              { week: 4, date: '2025-03-26', day: '수', title: '큐 구조', status: '예정', attendance: 0 },
-            ];
             const filteredLectures = weeklyLectures.filter(lecture => lecture.week === selectedWeek);
             return filteredLectures.map((lecture, idx) => (
               <div key={idx} className="p-4 bg-gray-50 rounded-xl border border-gray-100">
@@ -462,8 +487,8 @@ export default function ProfessorDashboard() {
 
       <div className="mx-4 -mt-10 bg-white rounded-2xl shadow-lg p-4">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">박</div>
-          <div><p className="font-bold text-lg">박정인 교수</p><p className="text-gray-500 text-sm">컴퓨터공학과</p><p className="text-gray-400 text-xs">개설 과목: 3개</p></div>
+          <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">{professorProfile.name.charAt(0)}</div>
+          <div><p className="font-bold text-lg">{professorProfile.name}</p><p className="text-gray-500 text-sm">{professorProfile.department}</p><p className="text-gray-400 text-xs">개설 과목: {professorProfile.courseCount}개</p></div>
         </div>
       </div>
 

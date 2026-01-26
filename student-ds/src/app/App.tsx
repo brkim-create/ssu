@@ -19,6 +19,9 @@ import ShareModal from "./components/modals/global/ShareModal";
 import SearchModal from "./components/modals/global/SearchModal";
 import SuccessModal from "./components/modals/global/SuccessModal";
 
+// Data
+import { complaints } from "../data/mockData";
+
 export default function StudentDashboard() {
   // ============================================================
   // Authentication State
@@ -61,15 +64,33 @@ export default function StudentDashboard() {
   const [successMessage, setSuccessMessage] = useState("");
   const [successType, setSuccessType] = useState<"complete" | "submit">("complete");
 
+  // Complaint States (for MyPageScreen)
+  const [complaintReadStatus, setComplaintReadStatus] = useState<{ [key: number]: boolean }>({});
+  const [complaintRatings, setComplaintRatings] = useState<{ [key: number]: number }>({});
+  const [complaintDetailModal, setComplaintDetailModal] = useState<typeof complaints[0] | null>(null);
+
   // ============================================================
   // Common Handler Functions
   // ============================================================
   const handleShareClick = () => setShowShareModal(true);
   const handleSearchClick = () => setShowSearchModal(true);
+  const handleBellClick = () => setActiveTab("notification");
 
   const handleChatOpen = (category: string) => {
     setCurrentCategory(category);
     setShowChatModal(true);
+  };
+
+  const handleComplaintClick = (complaint: typeof complaints[0]) => {
+    setComplaintDetailModal(complaint);
+    if (!complaint.isRead && !complaintReadStatus[complaint.id]) {
+      setComplaintReadStatus((prev) => ({ ...prev, [complaint.id]: true }));
+    }
+  };
+
+  const handleRateComplaint = (complaintId: number) => {
+    const rating = Math.floor(Math.random() * 2) + 4; // 4 or 5
+    setComplaintRatings((prev) => ({ ...prev, [complaintId]: rating }));
   };
 
   // ============================================================
@@ -101,12 +122,14 @@ export default function StudentDashboard() {
           authTokens={authTokens}
           onShareClick={handleShareClick}
           onSearchClick={handleSearchClick}
+          onBellClick={handleBellClick}
         />
       )}
       {activeTab === "complaint" && (
         <ComplaintScreen
           onShareClick={handleShareClick}
           onSearchClick={handleSearchClick}
+          onBellClick={handleBellClick}
           onChatOpen={handleChatOpen}
         />
       )}
@@ -114,6 +137,7 @@ export default function StudentDashboard() {
         <NotificationScreen
           onShareClick={handleShareClick}
           onSearchClick={handleSearchClick}
+          onBellClick={handleBellClick}
         />
       )}
       {activeTab === "mypage" && (
@@ -121,8 +145,13 @@ export default function StudentDashboard() {
           authTokens={authTokens}
           onShareClick={handleShareClick}
           onSearchClick={handleSearchClick}
-          onShowComplaintList={() => setActiveTab("complaint")}
+          onBellClick={handleBellClick}
           onLogout={handleLogout}
+          complaints={complaints}
+          onComplaintClick={handleComplaintClick}
+          onRateComplaint={handleRateComplaint}
+          complaintReadStatus={complaintReadStatus}
+          complaintRatings={complaintRatings}
         />
       )}
 

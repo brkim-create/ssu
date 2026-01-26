@@ -1,10 +1,11 @@
 import React from "react";
 import { Bell, Share2, Search } from "lucide-react";
-import logoImage from "../../../assets/logo.png";
+import logoImage from "@shared/assets/logo.png";
 
 interface HeaderProps {
   onShareClick: () => void;
   onSearchClick: () => void;
+  onBellClick?: () => void;
   title?: string;
   subtitle?: string;
   /** 헤더 영역에 추가할 커스텀 콘텐츠 (예: 통계 카드, 환영 메시지 등) */
@@ -24,6 +25,7 @@ interface HeaderProps {
 export default function Header({
   onShareClick,
   onSearchClick,
+  onBellClick,
   title,
   subtitle,
   children,
@@ -49,7 +51,10 @@ export default function Header({
           >
             <Search className="w-6 h-6" />
           </button>
-          <button className="p-2 hover:bg-white/20 rounded-lg transition-all">
+          <button
+            onClick={onBellClick}
+            className="p-2 hover:bg-white/20 rounded-lg transition-all"
+          >
             <Bell className="w-6 h-6" />
           </button>
         </div>

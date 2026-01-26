@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, LogIn } from "lucide-react";
-import logoImage from '../assets/logo.png';
+import logoImage from '@shared/assets/logo.png';
 import { mockSSOLogin, saveAuthTokens, AuthTokens } from "./utils/auth";
 
 interface LoginProps {

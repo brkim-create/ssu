@@ -1,0 +1,228 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { Share2, Search, Bell, Settings, User, ChevronRight, LogOut, X, CheckCircle, Clock } from "lucide-react";
+import SearchModal from "../../_components/modals/SearchModal";
+import ShareModal from "../../_components/modals/ShareModal";
+import NotificationModal from "../../_components/modals/NotificationModal";
+import NotificationSettingsModal from "../../_components/modals/NotificationSettingsModal";
+
+// mockData imports from shared
+import { professorProfile, loginHistory } from "@shared/mockData/data/professor";
+import { clearAuthTokens } from "@/utils/auth";
+
+/**
+ * MyPage Screen
+ *
+ * URL: /professor/mypage
+ * App.tsx 434~469줄 (MyPageScreen) 기반 마이그레이션
+ *
+ * 특이점: CommonHeader 대신 별도 헤더 사용 (프로필 카드 오버랩 디자인)
+ */
+export default function ProfessorMyPage() {
+  const router = useRouter();
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [showNotificationSettingsModal, setShowNotificationSettingsModal] = useState(false);
+  const [showLoginInfoModal, setShowLoginInfoModal] = useState(false);
+
+  // 로그아웃 핸들러
+  const handleLogout = () => {
+    clearAuthTokens();
+    router.push("/login");
+  };
+
+  return (
+    <div className="pb-4">
+      {/* 별도 헤더 (프로필 카드 오버랩을 위해 pb-16) */}
+      <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4 pb-16">
+        <div className="flex items-center justify-between mb-4">
+          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1">
+            <Image src="/logo.png" alt="Logo" width={28} height={28} className="object-contain" />
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowShareModal(true)}
+              className="p-2 hover:bg-white/20 rounded-lg transition-all"
+              aria-label="공유"
+            >
+              <Share2 className="w-6 h-6" />
+            </button>
+            <button
+              onClick={() => setShowSearchModal(true)}
+              className="p-2 hover:bg-white/20 rounded-lg transition-all"
+              aria-label="검색"
+            >
+              <Search className="w-6 h-6" />
+            </button>
+            <button
+              onClick={() => setShowNotificationModal(true)}
+              className="p-2 hover:bg-white/20 rounded-lg transition-all relative"
+              aria-label="알림"
+            >
+              <Bell className="w-6 h-6" />
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-600 rounded-full flex items-center justify-center text-xs font-bold">
+                2
+              </span>
+            </button>
+          </div>
+        </div>
+        <h2 className="font-bold text-xl">마이페이지</h2>
+      </div>
+
+      {/* 프로필 카드 (헤더 위에 오버랩) */}
+      <div className="mx-4 -mt-10 bg-white rounded-2xl shadow-lg p-4">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+            {professorProfile.name.charAt(0)}
+          </div>
+          <div>
+            <p className="font-bold text-lg">{professorProfile.name}</p>
+            <p className="text-gray-500 text-sm">{professorProfile.department}</p>
+            <p className="text-gray-400 text-xs">개설 과목: {professorProfile.courseCount}개</p>
+          </div>
+        </div>
+      </div>
+
+      {/* 메뉴 목록 */}
+      <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg overflow-hidden">
+        <button
+          onClick={() => setShowNotificationSettingsModal(true)}
+          className="w-full p-4 flex items-center justify-between border-b border-gray-100 hover:bg-gray-50 transition-all"
+        >
+          <div className="flex items-center gap-3">
+            <Settings className="w-5 h-5 text-gray-400" />
+            <span className="text-gray-700">알림 설정</span>
+          </div>
+          <ChevronRight className="w-5 h-5 text-gray-400" />
+        </button>
+        <button
+          onClick={() => setShowLoginInfoModal(true)}
+          className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-all"
+        >
+          <div className="flex items-center gap-3">
+            <User className="w-5 h-5 text-gray-400" />
+            <span className="text-gray-700">로그인 정보 (SSO)</span>
+          </div>
+          <ChevronRight className="w-5 h-5 text-gray-400" />
+        </button>
+      </div>
+
+      {/* 로그아웃 버튼 */}
+      <button
+        onClick={handleLogout}
+        className="mx-4 mt-4 w-[calc(100%-2rem)] py-3 text-red-500 hover:text-red-600 transition-all flex items-center justify-center gap-2"
+      >
+        <LogOut className="w-5 h-5" />
+        로그아웃
+      </button>
+
+      {/* 알림 목록 모달 (헤더 Bell 아이콘) */}
+      <NotificationModal
+        isOpen={showNotificationModal}
+        onClose={() => setShowNotificationModal(false)}
+      />
+
+      {/* 알림 설정 모달 (메뉴 버튼) */}
+      <NotificationSettingsModal
+        isOpen={showNotificationSettingsModal}
+        onClose={() => setShowNotificationSettingsModal(false)}
+      />
+
+      {/* 로그인 정보 모달 */}
+      {showLoginInfoModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
+          <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[70vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-xl">로그인 정보</h3>
+              <button onClick={() => setShowLoginInfoModal(false)}>
+                <X className="w-6 h-6 text-gray-400" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {/* SSO 연동 상태 */}
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-6 h-6 text-green-500" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-800">SSO 연동 완료</p>
+                    <p className="text-xs text-gray-500">통합 인증 시스템</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 계정 정보 */}
+              <div className="bg-gray-50 rounded-xl p-4">
+                <h4 className="font-bold text-gray-800 mb-3">계정 정보</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between py-2 border-b border-gray-200">
+                    <span className="text-sm text-gray-600">이름</span>
+                    <span className="font-medium text-gray-800">{professorProfile.name}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-b border-gray-200">
+                    <span className="text-sm text-gray-600">교번</span>
+                    <span className="font-medium text-gray-800">{professorProfile.employeeId}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-b border-gray-200">
+                    <span className="text-sm text-gray-600">학과</span>
+                    <span className="font-medium text-gray-800">{professorProfile.department}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2 border-b border-gray-200">
+                    <span className="text-sm text-gray-600">직급</span>
+                    <span className="font-medium text-gray-800">{professorProfile.position}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-sm text-gray-600">이메일</span>
+                    <span className="font-medium text-gray-800">{professorProfile.email}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 로그인 이력 */}
+              <div className="bg-gray-50 rounded-xl p-4">
+                <h4 className="font-bold text-gray-800 mb-3">최근 로그인 이력</h4>
+                <div className="space-y-2">
+                  {loginHistory.map((history, index) => (
+                    <div key={index} className="flex items-center justify-between py-2 text-sm">
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-gray-400" />
+                        <span className="text-gray-600">{history.date} {history.time}</span>
+                      </div>
+                      <span className="text-gray-500">{history.device}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 보안 설정 */}
+              <div className="bg-gray-50 rounded-xl p-4">
+                <h4 className="font-bold text-gray-800 mb-3">보안 설정</h4>
+                <button className="w-full py-3 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-all">
+                  비밀번호 변경
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-6 p-4 bg-orange-50 rounded-xl">
+              <p className="text-xs text-orange-700">
+                ⚠️ 의심스러운 로그인 활동이 있다면 즉시 비밀번호를 변경하세요
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 검색 모달 */}
+      <SearchModal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} />
+
+      {/* 공유 모달 */}
+      <ShareModal isOpen={showShareModal} onClose={() => setShowShareModal(false)} />
+    </div>
+  );
+}

@@ -49,18 +49,4 @@ export const getIcon = (iconName: string): LucideIcon => {
   return iconMap[iconName] || HelpCircle;
 };
 
-/**
- * 아이콘 컴포넌트를 JSX로 렌더링
- * @param iconName - 아이콘 이름 문자열
- * @param props - 아이콘에 전달할 props (className, size 등)
- * @returns JSX Element
- */
-export const renderIcon = (
-  iconName: string,
-  props?: { className?: string; size?: number; color?: string }
-) => {
-  const IconComponent = getIcon(iconName);
-  return <IconComponent {...props} />;
-};
-
 export default iconMap;

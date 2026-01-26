@@ -210,7 +210,7 @@ export const starDetails: Record<string, StarDetail> = {
   A: {
     name: "인성역량",
     score: 92,
-    grade: "최우수",
+    grade: "마스터",
     skills: ["책임감", "성실성", "윤리의식", "협동심"],
     color: "#C13584",
   },
@@ -268,7 +268,7 @@ export const poDetails: Record<string, PODetail> = {
   자기계발능력: {
     name: "자기계발능력",
     score: 90,
-    grade: "최우수",
+    grade: "마스터",
     category: "A",
     skills: ["자율성", "학습능력", "경력개발"],
     color: "#C13584",
@@ -276,7 +276,7 @@ export const poDetails: Record<string, PODetail> = {
   직업윤리: {
     name: "직업윤리",
     score: 94,
-    grade: "최우수",
+    grade: "마스터",
     category: "A",
     skills: ["준법성", "책임감", "직업의식"],
     color: "#C13584",
@@ -475,6 +475,44 @@ export const faqData: FAQ[] = [
     answer: "학생 포털 로그인 화면의 비밀번호 찾기를 이용해주세요.",
   },
 ];
+
+// 현재 로그인한 학생 프로필
+export interface StudentProfile {
+  name: string;
+  department: string;
+  grade: string;
+  studentId: string;
+  totalScore: number;
+}
+
+export const currentStudentProfile: StudentProfile = {
+  name: "김수성",
+  department: "컴퓨터공학과",
+  grade: "3학년",
+  studentId: "202012345",
+  totalScore: 81.3,
+};
+
+// 표준직무 적합도 데이터
+export interface RecommendedJob {
+  name: string;
+  matchRate: number;
+  grade: "우수" | "보통" | "미흡";
+}
+
+export interface JobFitData {
+  overallMatchRate: number;
+  recommendedJobs: RecommendedJob[];
+}
+
+export const jobFitData: JobFitData = {
+  overallMatchRate: 78,
+  recommendedJobs: [
+    { name: "소프트웨어 개발자", matchRate: 92, grade: "우수" },
+    { name: "데이터 분석가", matchRate: 85, grade: "우수" },
+    { name: "IT 컨설턴트", matchRate: 78, grade: "보통" },
+  ],
+};
 
 // Evidence 데이터
 export const evidenceData: Evidence[] = [

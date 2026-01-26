@@ -1,4 +1,5 @@
-import { X, FileText, Download } from "lucide-react";
+import { useState } from "react";
+import { X, Download, FileText, AlertCircle } from "lucide-react";
 
 interface DownloadModalProps {
   isOpen: boolean;
@@ -6,65 +7,128 @@ interface DownloadModalProps {
 }
 
 /**
- * DownloadModal - 민원 내역 다운로드 모달
+ * DownloadModal - 민원 이력 다운로드 모달
  *
  * 역할:
- * - PDF/Excel 형식 선택 및 다운로드
+ * - 기간 선택 (최근 1개월, 3개월, 6개월, 전체)
+ * - 파일 형식 선택 (PDF, Excel)
+ * - 다운로드 실행
  */
 export default function DownloadModal({ isOpen, onClose }: DownloadModalProps) {
+  const [downloadPeriod, setDownloadPeriod] = useState("전체");
+  const [downloadFormat, setDownloadFormat] = useState("PDF");
+
   if (!isOpen) return null;
 
-  const handleDownload = (format: "pdf" | "excel") => {
-    alert(`${format.toUpperCase()} 다운로드를 시작합니다.`);
+  const handleDownload = () => {
+    alert(`${downloadPeriod} 민원 이력을 ${downloadFormat} 형식으로 다운로드합니다.`);
     onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-      <div className="bg-white w-full max-w-md rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto animate-slide-up">
+      <div className="bg-white w-full max-w-md rounded-t-3xl p-6 animate-slide-up">
+        {/* 헤더 */}
         <div className="flex items-center justify-between mb-6">
-          <h3 className="font-bold text-xl">민원 내역 다운로드</h3>
+          <h3 className="font-bold text-xl">민원 이력 다운로드</h3>
           <button onClick={onClose}>
             <X className="w-6 h-6 text-gray-400" />
           </button>
         </div>
-        <div className="space-y-4">
-          <p className="text-gray-600">
-            민원 내역을 다운로드할 형식을 선택해주세요.
-          </p>
-          <button
-            onClick={() => handleDownload("pdf")}
-            className="w-full p-4 bg-gray-50 rounded-xl flex items-center justify-between hover:bg-gray-100 transition-all"
-          >
-            <div className="flex items-center gap-3">
-              <FileText className="w-5 h-5 text-red-500" />
-              <div className="text-left">
-                <p className="font-medium">PDF 형식</p>
-                <p className="text-sm text-gray-500">인쇄용 문서 형식</p>
+
+        {/* 다운로드 옵션 */}
+        <div className="space-y-6">
+          {/* 기간 선택 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              다운로드 기간
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              {["최근 1개월", "최근 3개월", "최근 6개월", "전체"].map((period) => (
+                <button
+                  key={period}
+                  onClick={() => setDownloadPeriod(period)}
+                  className={`p-3 rounded-xl border-2 font-medium transition-all ${
+                    downloadPeriod === period
+                      ? "border-red-500 bg-red-50 text-red-600"
+                      : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
+                  }`}
+                >
+                  {period}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 파일 형식 선택 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              파일 형식
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              {["PDF", "Excel"].map((format) => (
+                <button
+                  key={format}
+                  onClick={() => setDownloadFormat(format)}
+                  className={`p-3 rounded-xl border-2 font-medium transition-all ${
+                    downloadFormat === format
+                      ? "border-red-500 bg-red-50 text-red-600"
+                      : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
+                  }`}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    <Download className="w-4 h-4" />
+                    {format}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* 다운로드 내용 미리보기 */}
+          <div className="bg-gradient-to-r from-red-50 via-pink-50 to-orange-50 rounded-xl p-4">
+            <div className="flex items-start gap-3">
+              <FileText className="w-5 h-5 text-red-500 mt-0.5" />
+              <div className="flex-1">
+                <p className="font-medium text-gray-800 mb-1">포함 내용</p>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• 민원 제목 및 내용</li>
+                  <li>• 처리 상태 및 담당자</li>
+                  <li>• 답변 내용 (완료된 경우)</li>
+                  <li>• 처리 일자 및 이력</li>
+                </ul>
               </div>
             </div>
-            <Download className="w-5 h-5 text-gray-400" />
+          </div>
+
+          {/* 안내 메시지 */}
+          <div className="bg-blue-50 rounded-xl p-4">
+            <p className="text-xs text-blue-700 flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+              <span>
+                다운로드된 파일에는 개인정보가 포함되어 있으니 보안에
+                유의해주시기 바랍니다.
+              </span>
+            </p>
+          </div>
+        </div>
+
+        {/* 버튼 */}
+        <div className="mt-6 flex gap-3">
+          <button
+            onClick={onClose}
+            className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all"
+          >
+            취소
           </button>
           <button
-            onClick={() => handleDownload("excel")}
-            className="w-full p-4 bg-gray-50 rounded-xl flex items-center justify-between hover:bg-gray-100 transition-all"
+            onClick={handleDownload}
+            className="flex-1 py-3 bg-gradient-to-r from-red-500 via-pink-500 to-orange-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2"
           >
-            <div className="flex items-center gap-3">
-              <FileText className="w-5 h-5 text-green-500" />
-              <div className="text-left">
-                <p className="font-medium">Excel 형식</p>
-                <p className="text-sm text-gray-500">스프레드시트 형식</p>
-              </div>
-            </div>
-            <Download className="w-5 h-5 text-gray-400" />
+            <Download className="w-5 h-5" />
+            다운로드
           </button>
         </div>
-        <button
-          onClick={onClose}
-          className="w-full mt-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium"
-        >
-          취소
-        </button>
       </div>
     </div>
   );

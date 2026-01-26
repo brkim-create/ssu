@@ -9,18 +9,25 @@ import {
 } from "lucide-react";
 import Header from "../layout/Header";
 import { AuthTokens } from "../../utils/auth";
+import { Complaint } from "../../../data/mockData";
 
 // Modals
 import NotificationSettingsModal from "../modals/mypage/NotificationSettingsModal";
 import LoginInfoModal from "../modals/mypage/LoginInfoModal";
 import DownloadModal from "../modals/mypage/DownloadModal";
+import ComplaintListModal from "../modals/mypage/ComplaintListModal";
 
 interface MyPageScreenProps {
   authTokens: AuthTokens | null;
   onShareClick: () => void;
   onSearchClick: () => void;
-  onShowComplaintList: () => void;
+  onBellClick: () => void;
   onLogout: () => void;
+  complaints: Complaint[];
+  onComplaintClick: (complaint: Complaint) => void;
+  onRateComplaint: (complaintId: number) => void;
+  complaintReadStatus: { [key: number]: boolean };
+  complaintRatings: { [key: number]: number };
 }
 
 /**
@@ -35,20 +42,25 @@ export default function MyPageScreen({
   authTokens,
   onShareClick,
   onSearchClick,
-  onShowComplaintList,
+  onBellClick,
   onLogout,
+  complaints,
+  onComplaintClick,
+  onRateComplaint,
+  complaintReadStatus,
+  complaintRatings,
 }: MyPageScreenProps) {
   // Local Modal States
   const [showNotificationSettingsModal, setShowNotificationSettingsModal] = useState(false);
   const [showLoginInfoModal, setShowLoginInfoModal] = useState(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [showComplaintListModal, setShowComplaintListModal] = useState(false);
 
-  // Notification Settings State
-  const [notificationSettings, setNotificationSettings] = useState({
-    complaintStatus: true,
-    competencyAlert: true,
-    announcement: false,
-    marketing: false,
+  // Notification Channels State
+  const [notificationChannels, setNotificationChannels] = useState({
+    pwa: true,
+    kakao: false,
+    email: true,
   });
 
   return (
@@ -56,6 +68,7 @@ export default function MyPageScreen({
       <Header
         onShareClick={onShareClick}
         onSearchClick={onSearchClick}
+        onBellClick={onBellClick}
         title="마이페이지"
         extraPadding="pb-16"
       />
@@ -98,17 +111,17 @@ export default function MyPageScreen({
         >
           <div className="flex items-center gap-3">
             <Download className="w-5 h-5 text-gray-400" />
-            <span>민원 내역 다운로드</span>
+            <span>민원 이력 다운로드</span>
           </div>
           <ChevronRight className="w-5 h-5 text-gray-400" />
         </button>
         <button
-          onClick={onShowComplaintList}
+          onClick={() => setShowComplaintListModal(true)}
           className="w-full p-4 flex items-center justify-between border-b border-gray-100 hover:bg-gray-50 transition-all"
         >
           <div className="flex items-center gap-3">
             <FileText className="w-5 h-5 text-gray-400" />
-            <span>작성 한 민원 전체보기</span>
+            <span>내가 쓴 민원 전체보기</span>
           </div>
           <ChevronRight className="w-5 h-5 text-gray-400" />
         </button>
@@ -137,8 +150,8 @@ export default function MyPageScreen({
       <NotificationSettingsModal
         isOpen={showNotificationSettingsModal}
         onClose={() => setShowNotificationSettingsModal(false)}
-        settings={notificationSettings}
-        onSettingsChange={setNotificationSettings}
+        channels={notificationChannels}
+        onChannelsChange={setNotificationChannels}
       />
 
       <LoginInfoModal
@@ -150,6 +163,16 @@ export default function MyPageScreen({
       <DownloadModal
         isOpen={showDownloadModal}
         onClose={() => setShowDownloadModal(false)}
+      />
+
+      <ComplaintListModal
+        isOpen={showComplaintListModal}
+        onClose={() => setShowComplaintListModal(false)}
+        complaints={complaints}
+        onComplaintClick={onComplaintClick}
+        onRateComplaint={onRateComplaint}
+        complaintReadStatus={complaintReadStatus}
+        complaintRatings={complaintRatings}
       />
     </div>
   );
