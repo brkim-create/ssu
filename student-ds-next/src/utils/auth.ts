@@ -3,7 +3,7 @@
 export interface AuthTokens {
   accessToken: string;
   refreshToken: string;
-  userType: "student" | "professor";
+  userType: "student" | "professor" | "admin";
   rememberMe: boolean;
   userName?: string;
   userId?: string;
@@ -100,6 +100,45 @@ export const mockSSOLogin = async (
       userType,
       rememberMe: false,
       userName: userType === "student" ? "김민준" : "이영희 교수",
+      userId: username,
+    },
+  };
+};
+
+/**
+ * Mock Admin 로그인
+ */
+export const mockAdminLogin = async (
+  username: string,
+  password: string
+): Promise<{ success: boolean; tokens?: AuthTokens; error?: string }> => {
+  await new Promise((resolve) => setTimeout(resolve, 800));
+
+  if (!username || !password) {
+    return { success: false, error: "아이디와 비밀번호를 입력해주세요." };
+  }
+
+  if (password.length < 4) {
+    return { success: false, error: "비밀번호는 4자 이상이어야 합니다." };
+  }
+
+  const mockPayload = {
+    sub: username,
+    userType: "admin",
+    exp: Math.floor(Date.now() / 1000) + 3600 * 24 * 7,
+  };
+
+  const mockAccessToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(JSON.stringify(mockPayload))}.mock_signature`;
+  const mockRefreshToken = `refresh.${btoa(JSON.stringify({ ...mockPayload, exp: mockPayload.exp * 2 }))}.mock_signature`;
+
+  return {
+    success: true,
+    tokens: {
+      accessToken: mockAccessToken,
+      refreshToken: mockRefreshToken,
+      userType: "admin",
+      rememberMe: false,
+      userName: "관리자",
       userId: username,
     },
   };

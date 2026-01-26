@@ -4,8 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Activity, Inbox, BarChart3, Users, ChevronDown } from "lucide-react";
+import { Activity, Inbox, BarChart3, Users, ChevronDown, LogOut } from "lucide-react";
 import { useRole } from "@/contexts/RoleContext";
+import { clearAuthTokens } from "@/utils/auth";
 
 // 메뉴 아이템 정의
 const menuItems = [
@@ -44,6 +45,12 @@ export default function AdminSidebar() {
     setUserRole(role);
     setShowRoleDropdown(false);
     router.push("/admin");
+  };
+
+  // 로그아웃 핸들러
+  const handleLogout = () => {
+    clearAuthTokens();
+    router.push("/admin/login");
   };
 
   return (
@@ -131,6 +138,15 @@ export default function AdminSidebar() {
             ))}
           </div>
         )}
+
+        {/* 로그아웃 버튼 */}
+        <button
+          onClick={handleLogout}
+          className="w-full mt-2 flex items-center gap-2 px-2 py-1.5 rounded text-sm text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
+        >
+          <LogOut className="w-4 h-4" />
+          <span>로그아웃</span>
+        </button>
       </div>
     </div>
   );
