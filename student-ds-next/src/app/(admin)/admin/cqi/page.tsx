@@ -18,17 +18,14 @@ import {
   type Ticket,
 } from "@/data/mockData";
 import { getStatusBadgeClass, chatColors } from "@shared/theme";
+import { useRole } from "@/contexts/RoleContext";
 
-// Role constants
-const ROLE_SUPER_ADMIN = "\uC288\uD37C\uAD00\uB9AC\uC790";
-const ROLE_GENERAL = "\uC77C\uBC18\uB2F4\uB2F9\uC790";
-const STATUS_RECEIVED = "\uC811\uC218";
-const STATUS_PROCESSING = "\uCC98\uB9AC\uC911";
-const STATUS_COMPLETED = "\uC644\uB8CC";
-const STATUS_REJECTED = "\uBC18\uB824\uB428";
-const CATEGORY_FACILITY = "\uC2DC\uC124";
-
-const userRole: string = ROLE_SUPER_ADMIN;
+// Status constants
+const STATUS_RECEIVED = "접수";
+const STATUS_PROCESSING = "처리중";
+const STATUS_COMPLETED = "완료";
+const STATUS_REJECTED = "반려됨";
+const CATEGORY_FACILITY = "시설";
 
 /**
  * Admin CQI/Tickets Page
@@ -36,6 +33,7 @@ const userRole: string = ROLE_SUPER_ADMIN;
  * URL: /admin/cqi
  */
 export default function AdminCQIPage() {
+  const { userRole, ROLE_SUPER_ADMIN, ROLE_GENERAL } = useRole();
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -59,19 +57,58 @@ export default function AdminCQIPage() {
           { key: STATUS_COMPLETED, label: "\uC644\uB8CC" },
         ];
 
+  // 역할 기반 티켓 필터링
   const filteredTickets = useMemo(() => {
-    if (statusFilter === "all") return ticketsData;
-    return ticketsData.filter((t) => t.status === statusFilter);
-  }, [statusFilter]);
+    if (userRole === ROLE_GENERAL) {
+      // 일반담당자: 처리중+완료만 볼 수 있음
+      if (statusFilter === "all") {
+        return ticketsData.filter(
+          (t) => t.status === STATUS_PROCESSING || t.status === STATUS_COMPLETED
+        );
+      }
+      if (statusFilter === STATUS_RECEIVED) {
+        // 일반담당자의 "접수" = 슈퍼관리자의 "처리중" (배정된 티켓)
+        return ticketsData.filter((t) => t.status === STATUS_PROCESSING);
+      }
+      if (statusFilter === STATUS_COMPLETED) {
+        return ticketsData.filter((t) => t.status === STATUS_COMPLETED);
+      }
+    } else {
+      // 슈퍼관리자: 반려됨 제외
+      if (statusFilter === "all") {
+        return ticketsData.filter((t) => t.status !== STATUS_REJECTED);
+      }
+      return ticketsData.filter((t) => t.status === statusFilter);
+    }
+    return ticketsData;
+  }, [statusFilter, userRole, ROLE_GENERAL]);
 
+  // 역할 기반 상태 카운트
   const statusCounts = useMemo(() => {
+    if (userRole === ROLE_GENERAL) {
+      const processingCount = ticketsData.filter(
+        (t) => t.status === STATUS_PROCESSING
+      ).length;
+      const completedCount = ticketsData.filter(
+        (t) => t.status === STATUS_COMPLETED
+      ).length;
+      return {
+        all: processingCount + completedCount,
+        [STATUS_RECEIVED]: processingCount, // 일반담당자 기준 "접수" = 처리중
+        [STATUS_COMPLETED]: completedCount,
+      };
+    }
+    // 슈퍼관리자: 반려됨 제외한 카운트
+    const receivedCount = ticketsData.filter((t) => t.status === STATUS_RECEIVED).length;
+    const processingCount = ticketsData.filter((t) => t.status === STATUS_PROCESSING).length;
+    const completedCount = ticketsData.filter((t) => t.status === STATUS_COMPLETED).length;
     return {
-      all: ticketsData.length,
-      [STATUS_RECEIVED]: ticketsData.filter((t) => t.status === STATUS_RECEIVED).length,
-      [STATUS_PROCESSING]: ticketsData.filter((t) => t.status === STATUS_PROCESSING).length,
-      [STATUS_COMPLETED]: ticketsData.filter((t) => t.status === STATUS_COMPLETED).length,
+      all: receivedCount + processingCount + completedCount,
+      [STATUS_RECEIVED]: receivedCount,
+      [STATUS_PROCESSING]: processingCount,
+      [STATUS_COMPLETED]: completedCount,
     };
-  }, []);
+  }, [userRole, ROLE_GENERAL]);
 
   const totalPages = Math.ceil(filteredTickets.length / itemsPerPage);
   const paginatedTickets = filteredTickets.slice(
