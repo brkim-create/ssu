@@ -51,7 +51,7 @@ export default function ProfessorDashboardPage() {
   return (
     <div className="pb-4">
       {/* 공통 헤더 */}
-      <CommonHeader title="교과목 역량 대시보드" subtitle="개설 과목 학생 역량 성취도 분석">
+      <CommonHeader title="교과목 역량 관리" subtitle="담당 과목 학생 역량 성취도 분석">
         {/* 과목 선택 드롭다운 */}
         <div className="mt-4">
           <select
@@ -110,7 +110,7 @@ export default function ProfessorDashboardPage() {
             <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
               <User className="w-5 h-5 text-gray-600" />
             </div>
-            <h3 className="font-bold text-gray-800">학생별 종합역량 진단</h3>
+            <h3 className="font-bold text-gray-800">학생별 종합현황 레이더</h3>
           </div>
           <select
             value={selectedRadarStudent.id}
@@ -177,6 +177,23 @@ export default function ProfessorDashboardPage() {
             </div>
           </div>
         )}
+
+        {/* 학생 분석 코멘트 */}
+        <div className="mt-3 p-3 bg-[rgb(241,245,249)] rounded-xl">
+          <p className="text-sm text-[rgb(51,65,85)]">
+            💡 <strong>{selectedRadarStudent.name} 학생 분석:</strong> {
+              radarViewMode === 'STAR'
+                ? (() => {
+                    const scores = { S: selectedRadarStudent.S, T: selectedRadarStudent.T, A: selectedRadarStudent.A, R: selectedRadarStudent.R };
+                    const maxKey = Object.keys(scores).reduce((a, b) => scores[a as keyof typeof scores] > scores[b as keyof typeof scores] ? a : b);
+                    const minKey = Object.keys(scores).reduce((a, b) => scores[a as keyof typeof scores] < scores[b as keyof typeof scores] ? a : b);
+                    const labels: Record<string, string> = { S: '창의', T: '실무', A: '인성', R: '소통' };
+                    return `${labels[maxKey]} 역량이 가장 우수하며, ${labels[minKey]} 역량 개선이 필요합니다.`;
+                  })()
+                : '하위역량 중 강점과 보완점을 파악하여 맞춤형 학습 계획을 수립하세요.'
+            }
+          </p>
+        </div>
       </div>
 
       {/* 평가 도구별 분석 */}
