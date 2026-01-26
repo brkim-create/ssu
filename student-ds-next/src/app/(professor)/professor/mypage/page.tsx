@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Share2, Search, Bell, Settings, User, ChevronRight, LogOut, X } from "lucide-react";
 import SearchModal from "../../_components/modals/SearchModal";
+import NotificationSettingsModal from "../../_components/modals/NotificationSettingsModal";
 
 // mockData imports from shared
 import { professorProfile } from "@shared/mockData/data/professor";
@@ -109,41 +110,10 @@ export default function ProfessorMyPage() {
       </button>
 
       {/* 알림 설정 모달 */}
-      {showNotificationSettingsModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-sm rounded-2xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-lg">알림 설정</h3>
-              <button
-                onClick={() => setShowNotificationSettingsModal(false)}
-                className="p-1 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <X className="w-5 h-5 text-gray-400" />
-              </button>
-            </div>
-            <div className="space-y-4">
-              <label className="flex items-center justify-between">
-                <span className="text-gray-700">PWA 푸시 알림</span>
-                <input type="checkbox" defaultChecked className="w-5 h-5 accent-pink-500" />
-              </label>
-              <label className="flex items-center justify-between">
-                <span className="text-gray-700">카카오톡 알림</span>
-                <input type="checkbox" className="w-5 h-5 accent-pink-500" />
-              </label>
-              <label className="flex items-center justify-between">
-                <span className="text-gray-700">이메일 알림</span>
-                <input type="checkbox" defaultChecked className="w-5 h-5 accent-pink-500" />
-              </label>
-            </div>
-            <button
-              onClick={() => setShowNotificationSettingsModal(false)}
-              className="w-full mt-6 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-bold"
-            >
-              저장
-            </button>
-          </div>
-        </div>
-      )}
+      <NotificationSettingsModal
+        isOpen={showNotificationSettingsModal}
+        onClose={() => setShowNotificationSettingsModal(false)}
+      />
 
       {/* 로그인 정보 모달 */}
       {showLoginInfoModal && (
