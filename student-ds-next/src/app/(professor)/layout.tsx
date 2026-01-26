@@ -14,11 +14,11 @@ interface ProfessorLayoutProps {
  * App.tsx 508~517라인 기반 - onClick 방식에서 Link 방식으로 변환
  */
 const tabs = [
-  { id: "dashboard", href: "/professor", icon: Home, label: "홈", disabled: false },
-  { id: "course", href: "/professor/course", icon: BookOpen, label: "과목", disabled: true },
-  { id: "students", href: "/professor/students", icon: Users, label: "학생", disabled: false },
-  { id: "report", href: "/professor/report", icon: FileText, label: "리포트", disabled: true },
-  { id: "mypage", href: "/professor/mypage", icon: User, label: "MY", disabled: false },
+  { id: "dashboard", href: "/professor", icon: Home, label: "홈", dimmed: false },
+  { id: "course", href: "/professor/course", icon: BookOpen, label: "과목", dimmed: true },
+  { id: "students", href: "/professor/students", icon: Users, label: "학생", dimmed: false },
+  { id: "report", href: "/professor/report", icon: FileText, label: "리포트", dimmed: true },
+  { id: "mypage", href: "/professor/mypage", icon: User, label: "MY", dimmed: false },
 ];
 
 /**
@@ -119,9 +119,7 @@ function BottomNavigation({ pathname }: BottomNavigationProps) {
               href={tab.href}
               className={`flex flex-col items-center py-2 px-3 relative transition-colors ${
                 isActive ? "text-pink-500" : "text-gray-400 hover:text-gray-600"
-              } ${tab.disabled ? "opacity-40 pointer-events-none" : ""}`}
-              aria-disabled={tab.disabled}
-              tabIndex={tab.disabled ? -1 : undefined}
+              } ${tab.dimmed ? "opacity-40" : ""}`}
             >
               <Icon className="w-6 h-6" />
               <span className="text-xs mt-1">{tab.label}</span>

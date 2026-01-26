@@ -11,6 +11,7 @@ import NotificationSettingsModal from "../../_components/modals/NotificationSett
 
 // mockData imports from shared
 import { professorProfile, loginHistory } from "@shared/mockData/data/professor";
+import { clearAuthTokens } from "@/utils/auth";
 
 /**
  * MyPage Screen
@@ -30,10 +31,8 @@ export default function ProfessorMyPage() {
 
   // 로그아웃 핸들러
   const handleLogout = () => {
-    // TODO: 실제 로그아웃 로직 구현
-    // localStorage.clear();
-    // router.replace("/login");
-    alert("로그아웃 기능은 준비 중입니다.");
+    clearAuthTokens();
+    router.push("/login");
   };
 
   return (
@@ -115,9 +114,9 @@ export default function ProfessorMyPage() {
       {/* 로그아웃 버튼 */}
       <button
         onClick={handleLogout}
-        className="mx-4 mt-4 w-[calc(100%-2rem)] py-3 text-gray-500 text-sm flex items-center justify-center gap-2 hover:text-gray-700 transition-colors"
+        className="mx-4 mt-4 w-[calc(100%-2rem)] py-3 text-red-500 hover:text-red-600 transition-all flex items-center justify-center gap-2"
       >
-        <LogOut className="w-4 h-4" />
+        <LogOut className="w-5 h-5" />
         로그아웃
       </button>
 
