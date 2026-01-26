@@ -22,6 +22,14 @@ import type {
   AssigneeOption,
 } from '../types';
 
+// 티켓 상태 상수
+export const TICKET_STATUS = {
+  RECEIVED: '접수',
+  PROCESSING: '처리중',
+  COMPLETED: '완료',
+  REJECTED: '반려됨',
+} as const;
+
 // 민원 티켓 데이터
 export const ticketsData: Ticket[] = [
   {
@@ -75,6 +83,11 @@ export const ticketsData: Ticket[] = [
     draftReply: null, rejectedReason: '대여 절차와 신청 양식 링크를 추가해주세요.',
   },
 ];
+
+// 미처리 티켓 수 (접수 + 처리중 상태)
+export const pendingTicketCount = ticketsData.filter(
+  (t) => t.status === TICKET_STATUS.RECEIVED || t.status === TICKET_STATUS.PROCESSING
+).length;
 
 // 템플릿 데이터
 export const templatesData: Template[] = [

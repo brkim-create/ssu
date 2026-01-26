@@ -106,4 +106,5 @@ export {
   dashboardStats,
   complaintStats,
   assigneeOptions,
+  pendingTicketCount,
 } from '@shared/mockData/data/admin';
