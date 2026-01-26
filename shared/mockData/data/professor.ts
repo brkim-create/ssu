@@ -19,6 +19,7 @@ import type {
   ProfessorProfile,
   CourseStatistics,
   LoginHistory,
+  EvaluationCriteria,
 } from '../types';
 
 // 교과목 역량 성취도 히스토그램 데이터
@@ -192,6 +193,14 @@ export const courseStatistics: CourseStatistics = {
   averageScore: 74.3,
   medianScore: 76,
 };
+
+// 평가 기준 데이터
+export const evaluationCriteria: EvaluationCriteria[] = [
+  { name: '중간고사', weight: 30, color: 'bg-blue-500' },
+  { name: '기말고사', weight: 30, color: 'bg-green-500' },
+  { name: '과제', weight: 25, color: 'bg-orange-500' },
+  { name: '출석', weight: 15, color: 'bg-purple-500' },
+];
 
 // STAR 역량 평균 데이터
 export const starAvgData = {

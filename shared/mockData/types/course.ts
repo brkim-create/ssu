@@ -114,3 +114,10 @@ export interface CourseStatistics {
   averageScore: number;
   medianScore: number;
 }
+
+// 평가 기준 (professor-ds)
+export interface EvaluationCriteria {
+  name: string;
+  weight: number;
+  color: string;
+}
