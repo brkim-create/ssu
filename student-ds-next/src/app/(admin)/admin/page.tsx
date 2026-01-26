@@ -498,7 +498,11 @@ export default function AdminDashboardPage() {
           </div>
           <div className="mt-4 p-3 bg-blue-50 rounded-lg">
             <p className="text-xs text-blue-800">
-              {"\uD83D\uDCA1 T \uC5ED\uB7C9\uC774 33.5%\uB85C \uAC00\uC7A5 \uB192\uC740 \uBE44\uC728\uC744 \uCC28\uC9C0\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4. \uADE0\uD615 \uC788\uB294 \uC5ED\uB7C9 \uD3C9\uAC00\uB97C \uC704\uD574 \uC870\uC815\uC774 \uD544\uC694\uD569\uB2C8\uB2E4."}
+              {(() => {
+                const sorted = [...curriculumIssues.competencyDistribution].sort((a, b) => b.percentage - a.percentage);
+                const highest = sorted[0];
+                return `💡 ${highest.competency} 역량이 ${highest.percentage}%로 가장 높은 비율을 차지하고 있습니다. 균형 있는 역량 평가를 위해 조정이 필요합니다.`;
+              })()}
             </p>
           </div>
         </div>
