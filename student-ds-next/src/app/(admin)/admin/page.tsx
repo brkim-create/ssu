@@ -127,54 +127,33 @@ export default function AdminDashboardPage() {
     const d = collegeHeatmapData.find((x) => x.college === selectedDepartment);
     if (!d) return [];
 
-    // 선택 학과 PO 계산
-    const deptPO = {
-      창의적문제해결: (d.기획 + d.실행) / 2,
-      융복합적사고: (d.화합 + d.통섭) / 2,
-      전문지식: (d.전공지식 + d.전공기술) / 2,
-      미래혁신: (d.정보화 + d.신기술활용) / 2,
-      리더십: (d.공감 + d.판단) / 2,
-      공동체의식: (d.사명감 + d.조직이해) / 2,
-      자기계발: (d.도전성 + d.자기학습) / 2,
-      의사소통: (d.경청 + d.협상) / 2,
-      글로컬시민: (d.외국어 + d.세계시민) / 2,
+    type HeatmapKey = keyof typeof d;
+
+    // 소수점 1자리 반올림 헬퍼
+    const round1 = (v: number) => Math.round(v * 10) / 10;
+
+    // 전체 평균 계산 헬퍼 (field1, field2의 평균을 전체 학과에 대해 계산)
+    const calculatePOAverage = (field1: HeatmapKey, field2: HeatmapKey | null) => {
+      const values = collegeHeatmapData.map((dept) =>
+        field2 ? (dept[field1] as number + (dept[field2] as number)) / 2 : (dept[field1] as number)
+      );
+      return round1(values.reduce((a, b) => a + b, 0) / values.length);
     };
 
-    // 전체 평균 PO 계산
-    const allPO = collegeHeatmapData.map((item) => ({
-      창의적문제해결: (item.기획 + item.실행) / 2,
-      융복합적사고: (item.화합 + item.통섭) / 2,
-      전문지식: (item.전공지식 + item.전공기술) / 2,
-      미래혁신: (item.정보화 + item.신기술활용) / 2,
-      리더십: (item.공감 + item.판단) / 2,
-      공동체의식: (item.사명감 + item.조직이해) / 2,
-      자기계발: (item.도전성 + item.자기학습) / 2,
-      의사소통: (item.경청 + item.협상) / 2,
-      글로컬시민: (item.외국어 + item.세계시민) / 2,
-    }));
-
-    const avgPO = {
-      창의적문제해결: allPO.reduce((s, c) => s + c.창의적문제해결, 0) / allPO.length,
-      융복합적사고: allPO.reduce((s, c) => s + c.융복합적사고, 0) / allPO.length,
-      전문지식: allPO.reduce((s, c) => s + c.전문지식, 0) / allPO.length,
-      미래혁신: allPO.reduce((s, c) => s + c.미래혁신, 0) / allPO.length,
-      리더십: allPO.reduce((s, c) => s + c.리더십, 0) / allPO.length,
-      공동체의식: allPO.reduce((s, c) => s + c.공동체의식, 0) / allPO.length,
-      자기계발: allPO.reduce((s, c) => s + c.자기계발, 0) / allPO.length,
-      의사소통: allPO.reduce((s, c) => s + c.의사소통, 0) / allPO.length,
-      글로컬시민: allPO.reduce((s, c) => s + c.글로컬시민, 0) / allPO.length,
-    };
+    // 선택 학과 PO 계산 헬퍼
+    const calcDeptPO = (field1: HeatmapKey, field2: HeatmapKey | null) =>
+      round1(field2 ? ((d[field1] as number) + (d[field2] as number)) / 2 : (d[field1] as number));
 
     return [
-      { competency: "\uCC3D\uC758\uC801\uBB38\uC81C\uD574\uACB0", 선택학과: deptPO.창의적문제해결, 전체평균: avgPO.창의적문제해결 },
-      { competency: "\uC735\uBCF5\uD569\uC0AC\uACE0", 선택학과: deptPO.융복합적사고, 전체평균: avgPO.융복합적사고 },
-      { competency: "\uC804\uBB38\uC9C0\uC2DD", 선택학과: deptPO.전문지식, 전체평균: avgPO.전문지식 },
-      { competency: "\uBBF8\uB798\uD601\uC2E0", 선택학과: deptPO.미래혁신, 전체평균: avgPO.미래혁신 },
-      { competency: "\uB9AC\uB354\uC2ED", 선택학과: deptPO.리더십, 전체평균: avgPO.리더십 },
-      { competency: "\uACF5\uB3D9\uCCB4\uC758\uC2DD", 선택학과: deptPO.공동체의식, 전체평균: avgPO.공동체의식 },
-      { competency: "\uC790\uAE30\uACC4\uBC1C", 선택학과: deptPO.자기계발, 전체평균: avgPO.자기계발 },
-      { competency: "\uC758\uC0AC\uC18C\uD1B5", 선택학과: deptPO.의사소통, 전체평균: avgPO.의사소통 },
-      { competency: "\uAE00\uB85C\uCEEC\uC2DC\uBBFC", 선택학과: deptPO.글로컬시민, 전체평균: avgPO.글로컬시민 },
+      { competency: "창의적 문제해결", 선택학과: calcDeptPO('기획', '실행'), 전체평균: calculatePOAverage('기획', '실행') },
+      { competency: "융복합적 사고", 선택학과: calcDeptPO('화합', '통섭'), 전체평균: calculatePOAverage('화합', '통섭') },
+      { competency: "전문지식", 선택학과: calcDeptPO('전공지식', '전공기술'), 전체평균: calculatePOAverage('전공지식', '전공기술') },
+      { competency: "미래혁신", 선택학과: calcDeptPO('정보화', '신기술활용'), 전체평균: calculatePOAverage('정보화', '신기술활용') },
+      { competency: "리더십", 선택학과: calcDeptPO('공감', '판단'), 전체평균: calculatePOAverage('공감', '판단') },
+      { competency: "공동체 의식", 선택학과: calcDeptPO('사명감', '조직이해'), 전체평균: calculatePOAverage('사명감', '조직이해') },
+      { competency: "자기계발", 선택학과: calcDeptPO('도전성', '자기학습'), 전체평균: calculatePOAverage('도전성', '자기학습') },
+      { competency: "의사소통", 선택학과: calcDeptPO('경청', '협상'), 전체평균: calculatePOAverage('경청', '협상') },
+      { competency: "글로컬 시민", 선택학과: calcDeptPO('외국어', '세계시민'), 전체평균: calculatePOAverage('외국어', '세계시민') },
     ];
   };
 
