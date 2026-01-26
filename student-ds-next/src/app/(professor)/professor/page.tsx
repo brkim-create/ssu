@@ -190,7 +190,14 @@ export default function ProfessorDashboardPage() {
                     const labels: Record<string, string> = { S: '창의', T: '실무', A: '인성', R: '소통' };
                     return `${labels[maxKey]} 역량이 가장 우수하며, ${labels[minKey]} 역량 개선이 필요합니다.`;
                   })()
-                : '하위역량 중 강점과 보완점을 파악하여 맞춤형 학습 계획을 수립하세요.'
+                : (() => {
+                    if (!selectedRadarStudent.PO) return '하위역량 데이터가 없습니다.';
+                    const poScores = selectedRadarStudent.PO;
+                    const poKeys = Object.keys(poScores) as (keyof typeof poScores)[];
+                    const maxKey = poKeys.reduce((a, b) => poScores[a] > poScores[b] ? a : b);
+                    const minKey = poKeys.reduce((a, b) => poScores[a] < poScores[b] ? a : b);
+                    return `${maxKey} 역량이 가장 우수하며, ${minKey} 역량 개선이 필요합니다.`;
+                  })()
             }
           </p>
         </div>
