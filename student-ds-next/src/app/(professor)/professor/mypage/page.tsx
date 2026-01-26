@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Share2, Search, Bell, Settings, User, ChevronRight, LogOut, X } from "lucide-react";
+import SearchModal from "../../_components/modals/SearchModal";
 
 // mockData imports from shared
 import { professorProfile } from "@shared/mockData/data/professor";
@@ -18,6 +19,7 @@ import { professorProfile } from "@shared/mockData/data/professor";
  */
 export default function ProfessorMyPage() {
   const router = useRouter();
+  const [showSearchModal, setShowSearchModal] = useState(false);
   const [showNotificationSettingsModal, setShowNotificationSettingsModal] = useState(false);
   const [showLoginInfoModal, setShowLoginInfoModal] = useState(false);
 
@@ -41,7 +43,11 @@ export default function ProfessorMyPage() {
             <button className="p-2 hover:bg-white/20 rounded-lg transition-all" aria-label="공유">
               <Share2 className="w-6 h-6" />
             </button>
-            <button className="p-2 hover:bg-white/20 rounded-lg transition-all" aria-label="검색">
+            <button
+              onClick={() => setShowSearchModal(true)}
+              className="p-2 hover:bg-white/20 rounded-lg transition-all"
+              aria-label="검색"
+            >
               <Search className="w-6 h-6" />
             </button>
             <button className="p-2 hover:bg-white/20 rounded-lg transition-all relative" aria-label="알림">
@@ -175,6 +181,9 @@ export default function ProfessorMyPage() {
           </div>
         </div>
       )}
+
+      {/* 검색 모달 */}
+      <SearchModal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} />
     </div>
   );
 }
