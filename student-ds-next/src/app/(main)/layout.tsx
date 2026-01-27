@@ -5,16 +5,20 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Home, FileText, Bell, User } from "lucide-react";
 import { checkAutoLogin } from "@/utils/auth";
+import { notifications } from "@/data/mockData";
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
+// 읽지 않은 알림 수 계산
+const unreadNotificationCount = notifications.filter((n) => !n.read).length;
+
 // Navigation Tab 설정
 const tabs = [
   { id: "home", href: "/", icon: Home, label: "홈" },
   { id: "complaint", href: "/complaints", icon: FileText, label: "민원" },
-  { id: "notification", href: "/notification", icon: Bell, label: "알림", badge: 2 },
+  { id: "notification", href: "/notification", icon: Bell, label: "알림", badge: unreadNotificationCount },
   { id: "mypage", href: "/mypage", icon: User, label: "MY" },
 ];
 

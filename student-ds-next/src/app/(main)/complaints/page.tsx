@@ -51,8 +51,6 @@ export default function ComplaintsPage() {
 
   // 평가 모달 상태
   const [showRatingModal, setShowRatingModal] = useState(false);
-  const [complaintReadStatus, setComplaintReadStatus] = useState<Record<number, boolean>>({});
-  const [complaintRatedStatus, setComplaintRatedStatus] = useState<Record<number, boolean>>({});
   const [complaintRatings, setComplaintRatings] = useState<Record<number, number>>({});
   const [ratingComplaintId, setRatingComplaintId] = useState<number | null>(null);
   const [selectedRating, setSelectedRating] = useState(0);
@@ -95,7 +93,6 @@ export default function ComplaintsPage() {
   // 만족도 평가 제출
   const handleRatingSubmit = () => {
     if (ratingComplaintId && selectedRating > 0) {
-      setComplaintRatedStatus({ ...complaintRatedStatus, [ratingComplaintId]: true });
       setComplaintRatings({ ...complaintRatings, [ratingComplaintId]: selectedRating });
       setShowRatingModal(false);
       setRatingComplaintId(null);
