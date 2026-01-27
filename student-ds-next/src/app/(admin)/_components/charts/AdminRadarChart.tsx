@@ -9,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { competencyColors } from "@shared/theme";
 
 interface RadarDataItem {
   competency: string;
@@ -61,8 +62,8 @@ export default function AdminRadarChart({ data }: AdminRadarChartProps) {
         <Radar
           name="선택학과"
           dataKey="선택학과"
-          stroke="#C13584"
-          fill="#C13584"
+          stroke={competencyColors.A}
+          fill={competencyColors.A}
           fillOpacity={0.3}
           strokeWidth={2}
         />

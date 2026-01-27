@@ -9,13 +9,13 @@ import { ChartBar, ChartLine, User, FileText, TrendingUp, TriangleAlert, Downloa
 // mockData imports from shared
 import {
   currentSemester,
-  histogramData,
+  histogramDataByCourse,
   assessmentData,
   concernStudents,
   performanceReport,
   courses,
   studentList,
-  courseStatistics,
+  courseStatisticsByCourse,
 } from "@shared/mockData/data/professor";
 import { competencyColors } from "@shared/theme";
 import { getStudentRadarSTAR, getStudentRadarPO } from "@/utils/studentRadarUtils";
@@ -37,7 +37,6 @@ const currentCourses = courses.filter((c) => c.semester === currentSemester);
 export default function ProfessorDashboardPage() {
   // 상태 관리
   const [selectedCourse, setSelectedCourse] = useState(currentCourses[0]);
-  const [selectedCompetency, setSelectedCompetency] = useState("전체");
   const [selectedConcernCompetency, setSelectedConcernCompetency] = useState("역량 미달");
   const [radarViewMode, setRadarViewMode] = useState<"STAR" | "PO">("STAR");
   const [selectedRadarStudent, setSelectedRadarStudent] = useState(studentList[0]);
@@ -80,25 +79,14 @@ export default function ProfessorDashboardPage() {
             </div>
             <h3 className="font-bold text-gray-800">교과목 역량 성취도</h3>
           </div>
-          <select
-            value={selectedCompetency}
-            onChange={(e) => setSelectedCompetency(e.target.value)}
-            className="text-sm p-2 border border-gray-200 rounded-lg"
-          >
-            <option value="전체">전체</option>
-            <option value="S">S (창의)</option>
-            <option value="T">T (실무)</option>
-            <option value="A">A (인성)</option>
-            <option value="R">R (소통)</option>
-          </select>
         </div>
         <p className="text-xs text-gray-500 mb-4">점수 구간별 학생 수 분포</p>
         <div className="h-[250px]">
-          <HistogramChart data={histogramData} />
+          <HistogramChart data={histogramDataByCourse[selectedCourse.id] || []} />
         </div>
         <div className="mt-3 p-3 bg-slate-50 rounded-xl">
           <p className="text-sm text-slate-700">
-            <strong>평균 점수:</strong> {courseStatistics.averageScore}점 | <strong>중앙값:</strong> {courseStatistics.medianScore}점
+            <strong>평균 점수:</strong> {courseStatisticsByCourse[selectedCourse.id]?.averageScore ?? '-'}점 | <strong>중앙값:</strong> {courseStatisticsByCourse[selectedCourse.id]?.medianScore ?? '-'}점
           </p>
         </div>
       </div>

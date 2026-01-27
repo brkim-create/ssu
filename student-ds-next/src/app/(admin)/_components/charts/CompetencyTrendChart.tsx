@@ -9,6 +9,7 @@ import {
   CartesianGrid,
   Tooltip,
 } from "recharts";
+import { competencyColors } from "@shared/theme";
 
 interface CompetencyTrendItem {
   year: string;
@@ -36,10 +37,10 @@ export default function CompetencyTrendChart({ data }: Props) {
             color: "#111827",
           }}
         />
-        <Line type="monotone" dataKey="S" stroke="#E94E3C" strokeWidth={2} name="Self-directed" />
-        <Line type="monotone" dataKey="T" stroke="#F7941D" strokeWidth={2} name="Teamwork" />
-        <Line type="monotone" dataKey="A" stroke="#C13584" strokeWidth={2} name="Analytical" />
-        <Line type="monotone" dataKey="R" stroke="#5B51D8" strokeWidth={2} name="Relational" />
+        <Line type="monotone" dataKey="S" stroke={competencyColors.S} strokeWidth={2} name="Self-directed" />
+        <Line type="monotone" dataKey="T" stroke={competencyColors.T} strokeWidth={2} name="Teamwork" />
+        <Line type="monotone" dataKey="A" stroke={competencyColors.A} strokeWidth={2} name="Analytical" />
+        <Line type="monotone" dataKey="R" stroke={competencyColors.R} strokeWidth={2} name="Relational" />
       </LineChart>
     </ResponsiveContainer>
   );

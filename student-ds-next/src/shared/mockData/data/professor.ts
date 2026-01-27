@@ -22,7 +22,7 @@ import type {
   EvaluationCriteria,
 } from '../types';
 
-// 교과목 역량 성취도 히스토그램 데이터
+// 교과목 역량 성취도 히스토그램 데이터 (기본값)
 export const histogramData: HistogramDataItem[] = [
   { range: '0-20', students: 2 },
   { range: '21-40', students: 5 },
@@ -30,6 +30,31 @@ export const histogramData: HistogramDataItem[] = [
   { range: '61-80', students: 28 },
   { range: '81-100', students: 18 },
 ];
+
+// 과목별 히스토그램 데이터
+export const histogramDataByCourse: Record<number, HistogramDataItem[]> = {
+  1: [ // 자료구조
+    { range: '0-20', students: 2 },
+    { range: '21-40', students: 5 },
+    { range: '41-60', students: 12 },
+    { range: '61-80', students: 28 },
+    { range: '81-100', students: 18 },
+  ],
+  2: [ // 알고리즘
+    { range: '0-20', students: 1 },
+    { range: '21-40', students: 3 },
+    { range: '41-60', students: 8 },
+    { range: '61-80', students: 25 },
+    { range: '81-100', students: 21 },
+  ],
+  3: [ // 소프트웨어공학
+    { range: '0-20', students: 0 },
+    { range: '21-40', students: 2 },
+    { range: '41-60', students: 6 },
+    { range: '61-80', students: 20 },
+    { range: '81-100', students: 14 },
+  ],
+};
 
 // 평가 도구별 분석 데이터
 export const assessmentData: AssessmentDataItem[] = [
@@ -188,10 +213,17 @@ export const loginHistory: LoginHistory[] = [
   { date: '2025.01.21', time: '18:42', device: 'Chrome (Android)' },
 ];
 
-// 과목 통계 데이터
+// 과목 통계 데이터 (기본값)
 export const courseStatistics: CourseStatistics = {
   averageScore: 74.3,
   medianScore: 76,
+};
+
+// 과목별 통계 데이터
+export const courseStatisticsByCourse: Record<number, CourseStatistics> = {
+  1: { averageScore: 74.3, medianScore: 76 },   // 자료구조
+  2: { averageScore: 78.5, medianScore: 80 },   // 알고리즘
+  3: { averageScore: 81.2, medianScore: 83 },   // 소프트웨어공학
 };
 
 // 평가 기준 데이터

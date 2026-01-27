@@ -25,13 +25,13 @@ interface HistogramChartProps {
 export default function HistogramChart({ data }: HistogramChartProps) {
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={data} margin={{ left: 0, right: 10, top: 10, bottom: 10 }}>
+      <BarChart data={data} margin={{ left: 0, right: 10, top: 20, bottom: 10 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
         <XAxis dataKey="range" tick={{ fontSize: 12 }} />
         <YAxis tick={{ fontSize: 12 }} width={35} />
         <Tooltip />
         <Bar dataKey="students" fill="#F7941D" radius={[8, 8, 0, 0]}>
-          <LabelList dataKey="students" position="inside" style={{ fontSize: 13, fill: "#ffffff", fontWeight: "bold" }} />
+          <LabelList dataKey="students" position="top" style={{ fontSize: 12, fill: "#374151", fontWeight: "bold" }} />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
