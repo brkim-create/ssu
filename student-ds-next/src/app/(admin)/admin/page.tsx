@@ -293,7 +293,7 @@ export default function AdminDashboardPage() {
               <div className="flex items-center gap-1">
                 <div
                   className="w-2.5 h-2.5 rounded-sm"
-                  style={{ backgroundColor: "#C13584" }}
+                  style={{ backgroundColor: competencyColors.A }}
                 ></div>
                 <span className="text-gray-600">선택학과</span>
               </div>
@@ -592,36 +592,36 @@ export default function AdminDashboardPage() {
               <div className="flex items-center gap-2">
                 <div
                   className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: "#E94E3C" }}
+                  style={{ backgroundColor: competencyColors.S }}
                 ></div>
-                <span className="text-xs" style={{ color: "#E94E3C" }}>
+                <span className="text-xs" style={{ color: competencyColors.S }}>
                   Self-directed
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <div
                   className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: "#F7941D" }}
+                  style={{ backgroundColor: competencyColors.T }}
                 ></div>
-                <span className="text-xs" style={{ color: "#F7941D" }}>
+                <span className="text-xs" style={{ color: competencyColors.T }}>
                   Teamwork
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <div
                   className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: "#C13584" }}
+                  style={{ backgroundColor: competencyColors.A }}
                 ></div>
-                <span className="text-xs" style={{ color: "#C13584" }}>
+                <span className="text-xs" style={{ color: competencyColors.A }}>
                   Analytical
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <div
                   className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: "#5B51D8" }}
+                  style={{ backgroundColor: competencyColors.R }}
                 ></div>
-                <span className="text-xs" style={{ color: "#5B51D8" }}>
+                <span className="text-xs" style={{ color: competencyColors.R }}>
                   Relational
                 </span>
               </div>
@@ -668,14 +668,14 @@ export default function AdminDashboardPage() {
             {curriculumIssues.competencyDistribution.map((comp, idx) => {
               const getCompetencyColor = (competency: string) => {
                 if (competency.includes("Self-directed") || competency === "S")
-                  return "#E94E3C";
+                  return competencyColors.S;
                 if (competency.includes("Teamwork") || competency === "T")
-                  return "#F7941D";
+                  return competencyColors.T;
                 if (competency.includes("Analytical") || competency === "A")
-                  return "#C13584";
+                  return competencyColors.A;
                 if (competency.includes("Relational") || competency === "R")
-                  return "#5B51D8";
-                return "#E94E3C";
+                  return competencyColors.R;
+                return competencyColors.S;
               };
 
               return (
