@@ -91,6 +91,7 @@ export interface CQIStatusItem {
 
 // 주차별 강의 (professor-ds)
 export interface WeeklyLecture {
+  courseId: number;
   week: number;
   date: string;
   day: string;
