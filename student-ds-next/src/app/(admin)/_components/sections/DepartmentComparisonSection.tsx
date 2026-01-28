@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { competencyColors } from "@shared/theme";
 import { collegeHeatmapData, cqiStatusData } from "@/data/mockData";
+import SectionHeader from "../common/SectionHeader";
 
 // recharts SSR 문제 방지를 위한 dynamic import
 const AdminRadarChart = dynamic(
@@ -163,33 +164,29 @@ export default function DepartmentComparisonSection() {
     ];
   };
 
+  const legendContent = (
+    <div className="flex items-center gap-2 text-xs">
+      <div className="flex items-center gap-1">
+        <div
+          className="w-2.5 h-2.5 rounded-sm"
+          style={{ backgroundColor: competencyColors.A }}
+        ></div>
+        <span className="text-gray-600">선택학과</span>
+      </div>
+      <div className="flex items-center gap-1">
+        <div className="w-2.5 h-2.5 rounded-sm bg-gray-400"></div>
+        <span className="text-gray-600">전체평균</span>
+      </div>
+    </div>
+  );
+
   return (
     <div className="bg-white rounded-lg shadow p-3 border border-gray-200">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-            <Award className="w-4 h-4 text-gray-600" />
-          </div>
-          <h3 className="font-bold text-sm text-gray-900">
-            학과별 S-T-A-R 역량 비교
-          </h3>
-        </div>
-
-        {/* 범례 */}
-        <div className="flex items-center gap-2 text-xs">
-          <div className="flex items-center gap-1">
-            <div
-              className="w-2.5 h-2.5 rounded-sm"
-              style={{ backgroundColor: competencyColors.A }}
-            ></div>
-            <span className="text-gray-600">선택학과</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-2.5 h-2.5 rounded-sm bg-gray-400"></div>
-            <span className="text-gray-600">전체평균</span>
-          </div>
-        </div>
-      </div>
+      <SectionHeader
+        icon={<Award className="w-4 h-4 text-gray-600" />}
+        title="학과별 S-T-A-R 역량 비교"
+        rightContent={legendContent}
+      />
 
       {/* 학과 선택기 */}
       <div className="mb-4 relative">
@@ -274,14 +271,10 @@ export default function DepartmentComparisonSection() {
 
       {/* CQI 운영 현황 */}
       <div className="mt-4 pt-4 border-t border-gray-200">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-            <BookOpen className="w-4 h-4 text-gray-600" />
-          </div>
-          <h4 className="font-bold text-sm text-gray-900">
-            CQI 운영 현황
-          </h4>
-        </div>
+        <SectionHeader
+          icon={<BookOpen className="w-4 h-4 text-gray-600" />}
+          title="CQI 운영 현황"
+        />
         {(() => {
           const selectedCQI = cqiStatusData.find(
             (item) => item.dept === selectedDepartment,

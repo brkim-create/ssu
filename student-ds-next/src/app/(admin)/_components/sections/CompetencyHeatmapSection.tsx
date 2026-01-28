@@ -9,6 +9,7 @@ import {
   heatmapLegend,
 } from "@shared/theme";
 import { collegeHeatmapData } from "@/data/mockData";
+import SectionHeader from "../common/SectionHeader";
 
 /**
  * CompetencyHeatmapSection - 과별 역량 강/약점 히트맵
@@ -16,39 +17,35 @@ import { collegeHeatmapData } from "@/data/mockData";
  * admin/page.tsx에서 분리된 섹션 컴포넌트
  */
 export default function CompetencyHeatmapSection() {
+  const legendContent = (
+    <div className="flex items-center gap-1">
+      <span className="text-xs text-gray-600 mr-2">색상범례:</span>
+      <div className="flex items-center gap-0.5">
+        {heatmapLegend.map((item, idx) => (
+          <div
+            key={idx}
+            className={`px-1.5 h-4 flex items-center justify-center text-[10px] ${
+              idx === heatmapLegend.length - 1
+                ? "text-gray-900 font-medium"
+                : "text-white"
+            }`}
+            style={{ backgroundColor: item.color }}
+          >
+            {item.range}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
-      <div className="flex items-center gap-2 mb-3 justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-            <Activity className="w-4 h-4 text-gray-600" />
-          </div>
-          <h3 className="font-bold text-sm text-gray-900">
-            과별 역량 강/약점 히트맵
-          </h3>
-          <span className="text-xs text-gray-600">
-            | 각 과의 S-T-A-R 역량 분포
-          </span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="text-xs text-gray-600 mr-2">색상범례:</span>
-          <div className="flex items-center gap-0.5">
-            {heatmapLegend.map((item, idx) => (
-              <div
-                key={idx}
-                className={`px-1.5 h-4 flex items-center justify-center text-[10px] ${
-                  idx === heatmapLegend.length - 1
-                    ? "text-gray-900 font-medium"
-                    : "text-white"
-                }`}
-                style={{ backgroundColor: item.color }}
-              >
-                {item.range}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <SectionHeader
+        icon={<Activity className="w-4 h-4 text-gray-600" />}
+        title="과별 역량 강/약점 히트맵"
+        subtitle="각 과의 S-T-A-R 역량 분포"
+        rightContent={legendContent}
+      />
       <div className="overflow-x-auto">
         <table className="w-full text-xs border-collapse table-fixed">
           <thead>

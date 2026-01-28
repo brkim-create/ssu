@@ -39,6 +39,7 @@ const CertificationHistogramChart = dynamic(
 // Section components
 import CompetencyHeatmapSection from "../_components/sections/CompetencyHeatmapSection";
 import DepartmentComparisonSection from "../_components/sections/DepartmentComparisonSection";
+import SectionHeader from "../_components/common/SectionHeader";
 
 // 아이콘 맵
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -135,34 +136,21 @@ export default function AdminDashboardPage() {
         <div className="flex flex-col gap-4">
           {/* 학년별 역량 성장 추이 */}
           <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-gray-600" />
-              </div>
-              <h3 className="font-bold text-sm">
-                {"\uD559\uB144\uBCC4 \uC5ED\uB7C9 \uC131\uC7A5 \uCD94\uC774"}
-              </h3>
-              <span className="text-xs text-gray-500">
-                | 1{"\uD559\uB144"} → 4
-                {
-                  "\uD559\uB144 \uC9C4\uAE09\uC5D0 \uB530\uB978 \uC5ED\uB7C9 \uC0C1\uC2B9"
-                }
-              </span>
-            </div>
+            <SectionHeader
+              icon={<TrendingUp className="w-4 h-4 text-gray-600" />}
+              title="학년별 역량 성장 추이"
+              subtitle="1학년 → 4학년 진급에 따른 역량 상승"
+            />
             <AdminLineChart data={gradeGrowthData} />
           </div>
 
           {/* 교육과정 적절성 */}
           <div className="bg-white rounded-lg shadow p-4 border border-gray-200 flex-1">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                <AlertTriangle className="w-4 h-4 text-gray-600" />
-              </div>
-              <h3 className="font-bold text-sm">교육과정 적절성</h3>
-              <span className="text-xs text-gray-500">
-                | 미매핑 교과목 현황
-              </span>
-            </div>
+            <SectionHeader
+              icon={<AlertTriangle className="w-4 h-4 text-gray-600" />}
+              title="교육과정 적절성"
+              subtitle="미매핑 교과목 현황"
+            />
             <div className="pt-2">
               <div className="grid grid-cols-[150px_1fr] gap-4">
                 {/* 좌측: 미매핑 교과목 수 카드 */}
@@ -235,17 +223,11 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-3 gap-4">
         {/* 대학 역량 지표 - Line Chart */}
         <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-4 h-4 text-gray-600" />
-            </div>
-            <h3 className="font-bold text-sm text-gray-900">
-              S-T-A-R {"\uC5ED\uB7C9 \uC5F0\uB3C4\uBCC4 \uCD94\uC774"}
-            </h3>
-            <span className="text-xs text-gray-600">
-              | {"\uB300\uD559 \uC804\uCCB4 \uD559\uC0DD \uD3C9\uADE0\uAC12"}
-            </span>
-          </div>
+          <SectionHeader
+            icon={<TrendingUp className="w-4 h-4 text-gray-600" />}
+            title="S-T-A-R 역량 연도별 추이"
+            subtitle="대학 전체 학생 평균값"
+          />
           <div
             className="flex flex-col items-center gap-3"
             style={{ width: "100%" }}
@@ -299,15 +281,11 @@ export default function AdminDashboardPage() {
 
         {/* 역량 인증 현황 */}
         <div className="bg-white rounded-lg shadow p-3 border border-gray-200">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-              <Award className="w-4 h-4 text-gray-600" />
-            </div>
-            <h3 className="font-bold text-sm text-gray-900">역량 인증 현황</h3>
-            <span className="text-xs text-gray-600">
-              | 점수 구간별 학생 수 분포
-            </span>
-          </div>
+          <SectionHeader
+            icon={<Award className="w-4 h-4 text-gray-600" />}
+            title="역량 인증 현황"
+            subtitle="점수 구간별 학생 수 분포"
+          />
           <div style={{ width: "100%", height: "230px" }}>
             <CertificationHistogramChart data={certificationHistogramData} />
           </div>
@@ -321,17 +299,11 @@ export default function AdminDashboardPage() {
 
         {/* 역량별 평가 분포 */}
         <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-              <BarChart3 className="w-4 h-4 text-gray-600" />
-            </div>
-            <h3 className="font-bold text-sm text-gray-900">
-              {"\uC5ED\uB7C9\uBCC4 \uD3C9\uAC00 \uBD84\uD3EC"}
-            </h3>
-            <span className="text-xs text-gray-600">
-              | {"\uD3C9\uAC00 \uC4F8\uB9BC \uD604\uC0C1 \uC9C4\uB2E8"}
-            </span>
-          </div>
+          <SectionHeader
+            icon={<BarChart3 className="w-4 h-4 text-gray-600" />}
+            title="역량별 평가 분포"
+            subtitle="평가 쏠림 현상 진단"
+          />
           <div className="space-y-3 mt-4">
             {curriculumIssues.competencyDistribution.map((comp, idx) => {
               const getCompetencyColor = (competency: string) => {
