@@ -180,10 +180,12 @@ export default function ComplaintsPage() {
                 <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
                   <IconComponent className="w-6 h-6 text-gray-500" />
                 </div>
-                <p className="font-bold text-gray-800 mb-1">{cat.name}</p>
-                <p className="text-xs text-gray-500">
-                  {cat.items.length}개 세부항목
-                </p>
+                <p className={`font-bold text-gray-800${cat.name !== "학생 장학" && cat.name !== "수업 및 학사" ? " mb-1" : ""}`}>{cat.name}</p>
+                {cat.name !== "학생 장학" && cat.name !== "수업 및 학사" && (
+                  <p className="text-xs text-gray-500">
+                    {cat.items.length}개 세부항목
+                  </p>
+                )}
               </button>
             );
           })}
