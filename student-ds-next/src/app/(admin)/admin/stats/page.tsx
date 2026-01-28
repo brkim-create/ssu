@@ -53,7 +53,6 @@ export default function AdminStatsPage() {
           <div
             className="flex flex-wrap gap-x-4 gap-y-3 items-center px-4"
             style={{
-              height: "140px",
               minHeight: "140px",
               alignContent: "center",
             }}

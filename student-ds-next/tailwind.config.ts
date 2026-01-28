@@ -5,6 +5,7 @@ const config: Config = {
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/shared/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   // 동적 클래스명을 위한 safelist (키워드 분석 등에서 사용)
   safelist: [

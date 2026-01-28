@@ -11,6 +11,10 @@ import { studentList, currentSemester, courses } from "@shared/mockData/data/pro
 // 현재 학기 과목
 const currentCourses = courses.filter((c) => c.semester === currentSemester);
 
+// 과목별 학생 필터링 함수
+const getStudentsByCourse = (courseId: number) =>
+  studentList.filter((s) => s.courseIds?.includes(courseId));
+
 /**
  * Student Management Page
  *
@@ -21,6 +25,9 @@ const currentCourses = courses.filter((c) => c.semester === currentSemester);
  */
 export default function ProfessorStudentsPage() {
   const [selectedCourse, setSelectedCourse] = useState(currentCourses[0]);
+
+  // 선택된 과목의 수강생 목록
+  const filteredStudentList = getStudentsByCourse(selectedCourse.id);
   const [showStudentDetailModal, setShowStudentDetailModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<StudentData | null>(null);
 
@@ -61,7 +68,7 @@ export default function ProfessorStudentsPage() {
 
       {/* 학생 목록 */}
       <div className="mx-4 mt-4 space-y-3">
-        {studentList.map((student) => (
+        {filteredStudentList.map((student) => (
           <div
             key={student.id}
             className="bg-white rounded-2xl shadow-lg p-4 cursor-pointer hover:shadow-xl transition-all"

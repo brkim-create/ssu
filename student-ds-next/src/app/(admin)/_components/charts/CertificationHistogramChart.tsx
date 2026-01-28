@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
   LabelList,
 } from "recharts";
+import { competencyColors } from "@shared/theme";
 
 interface CertificationHistogramChartProps {
   data: Array<{
@@ -33,7 +34,7 @@ export default function CertificationHistogramChart({ data }: CertificationHisto
           formatter={(value: number) => [`${value}명`, '학생 수']}
           labelFormatter={(label) => `점수 구간: ${label}점`}
         />
-        <Bar dataKey="students" fill="#C13584" radius={[6, 6, 0, 0]}>
+        <Bar dataKey="students" fill={competencyColors.A} radius={[6, 6, 0, 0]}>
           <LabelList
             dataKey="students"
             position="top"

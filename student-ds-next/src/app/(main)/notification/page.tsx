@@ -1,21 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Bell } from "lucide-react";
 import Header from "@/components/common/Header";
 import SearchModal from "@/components/modals/global/SearchModal";
+import ShareModal from "@/components/modals/global/ShareModal";
 import { notifications } from "@/data/mockData";
 
 /**
  * NotificationPage - 알림 페이지
  */
 export default function NotificationPage() {
+  const router = useRouter();
   const [showSearchModal, setShowSearchModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // Header 아이콘 핸들러
-  const handleShareClick = () => console.log("Share clicked");
+  const handleShareClick = () => setShowShareModal(true);
   const handleSearchClick = () => setShowSearchModal(true);
-  const handleBellClick = () => console.log("Bell clicked");
+  const handleBellClick = () => router.push("/notification");
 
   return (
     <div className="pb-4">
@@ -57,6 +61,12 @@ export default function NotificationPage() {
       <SearchModal
         isOpen={showSearchModal}
         onClose={() => setShowSearchModal(false)}
+      />
+
+      {/* 공유 모달 */}
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
       />
     </div>
   );

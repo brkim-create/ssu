@@ -9,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { competencyColors } from "@shared/theme";
 
 interface RadarDataItem {
   competency: string;
@@ -18,6 +19,7 @@ interface RadarDataItem {
 
 interface AdminRadarChartProps {
   data: RadarDataItem[];
+  selectedDepartmentName?: string;
 }
 
 /**
@@ -25,7 +27,7 @@ interface AdminRadarChartProps {
  *
  * SSR 문제 방지를 위해 별도 컴포넌트로 분리
  */
-export default function AdminRadarChart({ data }: AdminRadarChartProps) {
+export default function AdminRadarChart({ data, selectedDepartmentName }: AdminRadarChartProps) {
   return (
     <ResponsiveContainer width="100%" height={220}>
       <RadarChart
@@ -49,6 +51,12 @@ export default function AdminRadarChart({ data }: AdminRadarChartProps) {
             borderRadius: "6px",
             fontSize: "12px",
           }}
+          formatter={(value: number, name: string) => {
+            const displayName = name === "선택학과" && selectedDepartmentName
+              ? selectedDepartmentName
+              : name;
+            return [value.toFixed(1), displayName];
+          }}
         />
         <Radar
           name="전체평균"
@@ -61,8 +69,8 @@ export default function AdminRadarChart({ data }: AdminRadarChartProps) {
         <Radar
           name="선택학과"
           dataKey="선택학과"
-          stroke="#C13584"
-          fill="#C13584"
+          stroke={competencyColors.A}
+          fill={competencyColors.A}
           fillOpacity={0.3}
           strokeWidth={2}
         />

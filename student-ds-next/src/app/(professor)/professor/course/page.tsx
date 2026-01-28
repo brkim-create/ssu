@@ -5,7 +5,7 @@ import CommonHeader from "../../_components/CommonHeader";
 import { FileText, Target, Clock, MessageCircle, ChevronRight, Calendar, ChartBar } from "lucide-react";
 
 // mockData imports from shared
-import { currentSemester, courses, weeklyLectures, evaluationCriteria } from "@shared/mockData/data/professor";
+import { currentSemester, courses, weeklyLectures, evaluationCriteriaByCourse, evaluationCriteria } from "@shared/mockData/data/professor";
 
 // 현재 학기 과목만 필터링
 const currentCourses = courses.filter((c) => c.semester === currentSemester);
@@ -132,7 +132,7 @@ export default function ProfessorCoursePage() {
         {/* 선택된 주차의 강의 목록 */}
         <div className="space-y-3">
           {weeklyLectures
-            .filter(lecture => lecture.week === selectedWeek)
+            .filter(lecture => lecture.courseId === selectedCourse.id && lecture.week === selectedWeek)
             .map((lecture, idx) => (
               <div key={idx} className="p-4 bg-gray-50 rounded-xl border border-gray-100">
                 <div className="flex items-start justify-between mb-2">
@@ -169,7 +169,7 @@ export default function ProfessorCoursePage() {
           <h3 className="font-bold text-gray-800">평가 기준</h3>
         </div>
         <div className="space-y-3">
-          {evaluationCriteria.map((criteria) => (
+          {(evaluationCriteriaByCourse[selectedCourse.id] || evaluationCriteria).map((criteria) => (
             <div key={criteria.name} className="flex items-center gap-3">
               <span className="text-sm font-medium text-gray-700 w-20">{criteria.name}</span>
               <div className="flex-1 bg-gray-200 rounded-full h-6 relative">

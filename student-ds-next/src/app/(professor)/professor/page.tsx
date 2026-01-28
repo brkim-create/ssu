@@ -9,13 +9,13 @@ import { ChartBar, ChartLine, User, FileText, TrendingUp, TriangleAlert, Downloa
 // mockData imports from shared
 import {
   currentSemester,
-  histogramData,
+  histogramDataByCourse,
   assessmentData,
   concernStudents,
   performanceReport,
   courses,
   studentList,
-  courseStatistics,
+  courseStatisticsByCourse,
 } from "@shared/mockData/data/professor";
 import { competencyColors } from "@shared/theme";
 import { getStudentRadarSTAR, getStudentRadarPO } from "@/utils/studentRadarUtils";
@@ -28,6 +28,10 @@ const AssessmentBarChart = dynamic(() => import("../_components/charts/Assessmen
 // 현재 학기 과목만 필터링
 const currentCourses = courses.filter((c) => c.semester === currentSemester);
 
+// 과목별 학생 필터링 함수
+const getStudentsByCourse = (courseId: number) =>
+  studentList.filter((s) => s.courseIds?.includes(courseId));
+
 /**
  * Professor Dashboard Page
  *
@@ -37,10 +41,12 @@ const currentCourses = courses.filter((c) => c.semester === currentSemester);
 export default function ProfessorDashboardPage() {
   // 상태 관리
   const [selectedCourse, setSelectedCourse] = useState(currentCourses[0]);
-  const [selectedCompetency, setSelectedCompetency] = useState("전체");
   const [selectedConcernCompetency, setSelectedConcernCompetency] = useState("역량 미달");
   const [radarViewMode, setRadarViewMode] = useState<"STAR" | "PO">("STAR");
-  const [selectedRadarStudent, setSelectedRadarStudent] = useState(studentList[0]);
+
+  // 선택된 과목의 수강생 목록
+  const filteredStudentList = getStudentsByCourse(selectedCourse.id);
+  const [selectedRadarStudent, setSelectedRadarStudent] = useState(filteredStudentList[0] || studentList[0]);
 
   // 레이더 차트 데이터 (STAR/PO 모드에 따라 다른 함수 사용)
   const radarData =
@@ -59,6 +65,11 @@ export default function ProfessorDashboardPage() {
             onChange={(e) => {
               const newCourse = currentCourses.find((c) => c.id === Number(e.target.value)) || currentCourses[0];
               setSelectedCourse(newCourse);
+              // 과목 변경 시 해당 과목 수강생 중 첫 번째 학생으로 초기화
+              const newStudents = getStudentsByCourse(newCourse.id);
+              if (newStudents.length > 0) {
+                setSelectedRadarStudent(newStudents[0]);
+              }
             }}
             className="w-full p-3 bg-white/20 text-white rounded-xl border-2 border-white/30 font-medium backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer"
           >
@@ -80,25 +91,14 @@ export default function ProfessorDashboardPage() {
             </div>
             <h3 className="font-bold text-gray-800">교과목 역량 성취도</h3>
           </div>
-          <select
-            value={selectedCompetency}
-            onChange={(e) => setSelectedCompetency(e.target.value)}
-            className="text-sm p-2 border border-gray-200 rounded-lg"
-          >
-            <option value="전체">전체</option>
-            <option value="S">S (창의)</option>
-            <option value="T">T (실무)</option>
-            <option value="A">A (인성)</option>
-            <option value="R">R (소통)</option>
-          </select>
         </div>
         <p className="text-xs text-gray-500 mb-4">점수 구간별 학생 수 분포</p>
         <div className="h-[250px]">
-          <HistogramChart data={histogramData} />
+          <HistogramChart data={histogramDataByCourse[selectedCourse.id] || []} />
         </div>
         <div className="mt-3 p-3 bg-slate-50 rounded-xl">
           <p className="text-sm text-slate-700">
-            <strong>평균 점수:</strong> {courseStatistics.averageScore}점 | <strong>중앙값:</strong> {courseStatistics.medianScore}점
+            <strong>평균 점수:</strong> {courseStatisticsByCourse[selectedCourse.id]?.averageScore ?? '-'}점 | <strong>중앙값:</strong> {courseStatisticsByCourse[selectedCourse.id]?.medianScore ?? '-'}점
           </p>
         </div>
       </div>
@@ -115,12 +115,12 @@ export default function ProfessorDashboardPage() {
           <select
             value={selectedRadarStudent.id}
             onChange={(e) => {
-              const student = studentList.find((s) => s.id === Number(e.target.value));
+              const student = filteredStudentList.find((s) => s.id === Number(e.target.value));
               if (student) setSelectedRadarStudent(student);
             }}
             className="text-sm p-2 border border-gray-200 rounded-lg bg-white"
           >
-            {studentList.map((student) => (
+            {filteredStudentList.map((student) => (
               <option key={student.id} value={student.id}>
                 {student.name}
               </option>
@@ -224,60 +224,74 @@ export default function ProfessorDashboardPage() {
 
       {/* 관심 학생 알림 */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-            <TriangleAlert className="w-5 h-5 text-gray-600" />
-          </div>
-          <h3 className="font-bold text-gray-800">관심 학생 알림</h3>
-          <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-            {concernStudents.filter((s) => s.level === "danger").length}명
-          </span>
-        </div>
+        {(() => {
+          // 선택된 과목의 수강생만 필터링
+          const courseConcernStudents = concernStudents.filter((s) => {
+            const student = studentList.find((st) => st.id === s.id);
+            return student?.courseIds?.includes(selectedCourse.id);
+          });
+          const dangerCount = courseConcernStudents.filter((s) => s.level === "danger").length;
+          const warningCount = courseConcernStudents.filter((s) => s.level === "warning").length;
 
-        <div className="flex gap-2 mb-4">
-          <button
-            onClick={() => setSelectedConcernCompetency("역량 미달")}
-            className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-all ${
-              selectedConcernCompetency === "역량 미달" ? "bg-red-500 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            역량 미달 <span className="ml-1">({concernStudents.filter((s) => s.level === "danger").length})</span>
-          </button>
-          <button
-            onClick={() => setSelectedConcernCompetency("주의 요망")}
-            className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-all ${
-              selectedConcernCompetency === "주의 요망" ? "bg-yellow-500 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            주의 요망 <span className="ml-1">({concernStudents.filter((s) => s.level === "warning").length})</span>
-          </button>
-        </div>
-
-        <div className="space-y-2">
-          {(() => {
-            const filteredStudents =
-              selectedConcernCompetency === "역량 미달"
-                ? concernStudents.filter((s) => s.level === "danger")
-                : concernStudents.filter((s) => s.level === "warning");
-
-            if (filteredStudents.length === 0)
-              return <div className="py-8 text-center text-gray-400 text-sm">해당 학생이 없습니다.</div>;
-
-            return filteredStudents.map((student) => (
-              <div key={student.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                <div className="flex items-center gap-2">
-                  <span style={{ color: competencyColors[student.competency as keyof typeof competencyColors] }} className="font-bold text-lg">
-                    {student.competency}
-                  </span>
-                  <span className="text-gray-800">{student.name}</span>
+          return (
+            <>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                  <TriangleAlert className="w-5 h-5 text-gray-600" />
                 </div>
-                <span className="text-sm text-gray-500">
-                  {student.score}점 / 기준 {student.threshold}점
+                <h3 className="font-bold text-gray-800">관심 학생 알림</h3>
+                <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                  {dangerCount}명
                 </span>
               </div>
-            ));
-          })()}
-        </div>
+
+              <div className="flex gap-2 mb-4">
+                <button
+                  onClick={() => setSelectedConcernCompetency("역량 미달")}
+                  className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-all ${
+                    selectedConcernCompetency === "역량 미달" ? "bg-red-500 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  역량 미달 <span className="ml-1">({dangerCount})</span>
+                </button>
+                <button
+                  onClick={() => setSelectedConcernCompetency("주의 요망")}
+                  className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-all ${
+                    selectedConcernCompetency === "주의 요망" ? "bg-yellow-500 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  주의 요망 <span className="ml-1">({warningCount})</span>
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                {(() => {
+                  const filteredStudents =
+                    selectedConcernCompetency === "역량 미달"
+                      ? courseConcernStudents.filter((s) => s.level === "danger")
+                      : courseConcernStudents.filter((s) => s.level === "warning");
+
+                  if (filteredStudents.length === 0)
+                    return <div className="py-8 text-center text-gray-400 text-sm">해당 학생이 없습니다.</div>;
+
+                  return filteredStudents.map((student) => (
+                    <div key={student.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                      <div className="flex items-center gap-2">
+                        <span style={{ color: competencyColors[student.competency as keyof typeof competencyColors] }} className="font-bold text-lg">
+                          {student.competency}
+                        </span>
+                        <span className="text-gray-800">{student.name}</span>
+                      </div>
+                      <span className="text-sm text-gray-500">
+                        {student.score}점 / 기준 {student.threshold}점
+                      </span>
+                    </div>
+                  ));
+                })()}
+              </div>
+            </>
+          );
+        })()}
       </div>
 
       {/* 성과 분석 리포트 */}

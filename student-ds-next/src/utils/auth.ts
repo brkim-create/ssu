@@ -99,7 +99,7 @@ export const mockSSOLogin = async (
       refreshToken: mockRefreshToken,
       userType,
       rememberMe: false,
-      userName: userType === "student" ? "김민준" : "이영희 교수",
+      userName: userType === "student" ? "김수성" : "이영희 교수",
       userId: username,
     },
   };

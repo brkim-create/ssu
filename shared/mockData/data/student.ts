@@ -46,15 +46,15 @@ export const radarData: RadarDataItem[] = [
 
 // 전공능력(PO) 핵심역량 진단 데이터
 export const radarDataPO: RadarDataItem[] = [
-  { subject: '창의적문제해결', myScore: 87, deptAvg: 74, totalAvg: 70, fullMark: 100 },
-  { subject: '전공실무기술', myScore: 83, deptAvg: 70, totalAvg: 66, fullMark: 100 },
-  { subject: '정보활용능력', myScore: 82, deptAvg: 78, totalAvg: 73, fullMark: 100 },
-  { subject: '글로벌역량', myScore: 75, deptAvg: 73, totalAvg: 68, fullMark: 100 },
-  { subject: '대인관계', myScore: 77, deptAvg: 74, totalAvg: 69, fullMark: 100 },
-  { subject: '자기계발능력', myScore: 90, deptAvg: 82, totalAvg: 77, fullMark: 100 },
-  { subject: '직업윤리', myScore: 94, deptAvg: 78, totalAvg: 73, fullMark: 100 },
-  { subject: '기술융합', myScore: 72, deptAvg: 70, totalAvg: 67, fullMark: 100 },
-  { subject: '의사소통', myScore: 68, deptAvg: 66, totalAvg: 63, fullMark: 100 },
+  { subject: '창의적 문제해결', myScore: 87, deptAvg: 74, totalAvg: 70, fullMark: 100 },
+  { subject: '융복합적 사고', myScore: 83, deptAvg: 70, totalAvg: 66, fullMark: 100 },
+  { subject: '전문지식', myScore: 82, deptAvg: 78, totalAvg: 73, fullMark: 100 },
+  { subject: '미래혁신', myScore: 75, deptAvg: 73, totalAvg: 68, fullMark: 100 },
+  { subject: '리더십', myScore: 77, deptAvg: 74, totalAvg: 69, fullMark: 100 },
+  { subject: '공동체의식', myScore: 90, deptAvg: 82, totalAvg: 77, fullMark: 100 },
+  { subject: '자기계발', myScore: 94, deptAvg: 78, totalAvg: 73, fullMark: 100 },
+  { subject: '의사소통', myScore: 72, deptAvg: 70, totalAvg: 67, fullMark: 100 },
+  { subject: '글로컬 시민', myScore: 68, deptAvg: 66, totalAvg: 63, fullMark: 100 },
 ];
 
 // 표준직무 적합도 데이터
@@ -77,15 +77,15 @@ export const starDetails: Record<string, StarDetail> = {
 
 // 전공능력(PO) 상세 데이터
 export const poDetails: Record<string, PODetail> = {
-  창의적문제해결: { name: '창의적문제해결', score: 87, grade: '우수', category: 'S', skills: ['대안도출', '문제정의', '창의적접근'], color: '#E94E3C' },
-  전공실무기술: { name: '전공실무기술', score: 83, grade: '우수', category: 'S', skills: ['장비운용', '실무적용', '기술활용'], color: '#E94E3C' },
-  정보활용능력: { name: '정보활용능력', score: 82, grade: '우수', category: 'T', skills: ['정보검색', '데이터분석', '문서작성'], color: '#F7941D' },
-  글로벌역량: { name: '글로벌역량', score: 75, grade: '보통', category: 'T', skills: ['외국어', '다문화이해', '글로벌마인드'], color: '#F7941D' },
-  대인관계: { name: '대인관계', score: 77, grade: '보통', category: 'T', skills: ['팀워크', '갈등관리', '협업'], color: '#F7941D' },
-  자기계발능력: { name: '자기계발능력', score: 90, grade: '마스터', category: 'A', skills: ['자율성', '학습능력', '경력개발'], color: '#C13584' },
-  직업윤리: { name: '직업윤리', score: 94, grade: '마스터', category: 'A', skills: ['준법성', '책임감', '직업의식'], color: '#C13584' },
-  기술융합: { name: '기술융합', score: 72, grade: '보통', category: 'R', skills: ['융합사고', '신기술이해', '응용력'], color: '#E94E3C' },
-  의사소통: { name: '의사소통', score: 68, grade: '보통', category: 'R', skills: ['경청', '발표', '문서이해'], color: '#E94E3C' },
+  '창의적 문제해결': { name: '창의적 문제해결', score: 87, grade: '우수', category: 'S', skills: ['대안도출', '문제정의', '창의적접근'], color: '#E94E3C' },
+  '융복합적 사고': { name: '융복합적 사고', score: 83, grade: '우수', category: 'S', skills: ['융합사고', '통합적접근', '다학제이해'], color: '#E94E3C' },
+  '전문지식': { name: '전문지식', score: 82, grade: '우수', category: 'T', skills: ['전공지식', '실무기술', '현장적용'], color: '#F7941D' },
+  '미래혁신': { name: '미래혁신', score: 75, grade: '보통', category: 'T', skills: ['신기술이해', '혁신마인드', '변화적응'], color: '#F7941D' },
+  '리더십': { name: '리더십', score: 77, grade: '보통', category: 'T', skills: ['팀워크', '조직관리', '의사결정'], color: '#F7941D' },
+  '공동체의식': { name: '공동체의식', score: 90, grade: '마스터', category: 'A', skills: ['협동심', '사회적책임', '봉사정신'], color: '#C13584' },
+  '자기계발': { name: '자기계발', score: 94, grade: '마스터', category: 'A', skills: ['자율성', '학습능력', '경력개발'], color: '#C13584' },
+  '의사소통': { name: '의사소통', score: 72, grade: '보통', category: 'R', skills: ['경청', '발표', '문서이해'], color: '#E94E3C' },
+  '글로컬 시민': { name: '글로컬 시민', score: 68, grade: '보통', category: 'R', skills: ['외국어', '다문화이해', '글로벌마인드'], color: '#E94E3C' },
 };
 
 // 스킬별 달성도
