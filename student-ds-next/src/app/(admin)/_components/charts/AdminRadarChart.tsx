@@ -19,6 +19,7 @@ interface RadarDataItem {
 
 interface AdminRadarChartProps {
   data: RadarDataItem[];
+  selectedDepartmentName?: string;
 }
 
 /**
@@ -26,7 +27,7 @@ interface AdminRadarChartProps {
  *
  * SSR 문제 방지를 위해 별도 컴포넌트로 분리
  */
-export default function AdminRadarChart({ data }: AdminRadarChartProps) {
+export default function AdminRadarChart({ data, selectedDepartmentName }: AdminRadarChartProps) {
   return (
     <ResponsiveContainer width="100%" height={220}>
       <RadarChart
@@ -49,6 +50,12 @@ export default function AdminRadarChart({ data }: AdminRadarChartProps) {
             border: "1px solid #d1d5db",
             borderRadius: "6px",
             fontSize: "12px",
+          }}
+          formatter={(value: number, name: string) => {
+            const displayName = name === "선택학과" && selectedDepartmentName
+              ? selectedDepartmentName
+              : name;
+            return [value.toFixed(1), displayName];
           }}
         />
         <Radar

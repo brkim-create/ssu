@@ -369,7 +369,7 @@ export default function AdminDashboardPage() {
                 S-T-A-R {"\uB300\uBD84\uB958 \uC5ED\uB7C9"}
               </h4>
               <div style={{ width: "100%", height: "220px" }}>
-                <AdminRadarChart data={getDepartmentComparisonData()} />
+                <AdminRadarChart data={getDepartmentComparisonData()} selectedDepartmentName={selectedDepartment} />
               </div>
             </div>
 
@@ -379,7 +379,7 @@ export default function AdminDashboardPage() {
                 {"\uD558\uC704\uC5ED\uB7C9"}(PO) 9{"\uAC1C \uD56D\uBAA9"}
               </h4>
               <div style={{ width: "100%", height: "220px" }}>
-                <AdminRadarChart data={getDepartmentPOComparisonData()} />
+                <AdminRadarChart data={getDepartmentPOComparisonData()} selectedDepartmentName={selectedDepartment} />
               </div>
             </div>
           </div>
