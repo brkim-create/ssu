@@ -3,15 +3,29 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Share2, Search, Bell, Settings, User, ChevronRight, LogOut, X, CheckCircle, Clock } from "lucide-react";
+import {
+  Share2,
+  Search,
+  Bell,
+  Settings,
+  User,
+  ChevronRight,
+  LogOut,
+  X,
+  CheckCircle,
+  Clock,
+} from "lucide-react";
 import SearchModal from "../../_components/modals/SearchModal";
 import ShareModal from "../../_components/modals/ShareModal";
 import NotificationModal from "../../_components/modals/NotificationModal";
 import NotificationSettingsModal from "../../_components/modals/NotificationSettingsModal";
 
 // mockData imports from shared
-import { professorProfile, loginHistory } from "@shared/mockData/data/professor";
-import { clearAuthTokens } from "@/utils/auth";
+import {
+  professorProfile,
+  loginHistory,
+} from "@shared/mockData/data/professor";
+import { clearAuthTokens, getAuthTokens } from "@/utils/auth";
 
 /**
  * MyPage Screen
@@ -23,10 +37,12 @@ import { clearAuthTokens } from "@/utils/auth";
  */
 export default function ProfessorMyPage() {
   const router = useRouter();
+  const authTokens = getAuthTokens();
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
-  const [showNotificationSettingsModal, setShowNotificationSettingsModal] = useState(false);
+  const [showNotificationSettingsModal, setShowNotificationSettingsModal] =
+    useState(false);
   const [showLoginInfoModal, setShowLoginInfoModal] = useState(false);
 
   // 로그아웃 핸들러
@@ -41,7 +57,13 @@ export default function ProfessorMyPage() {
       <div className="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 text-white p-4 pb-16">
         <div className="flex items-center justify-between mb-4">
           <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1">
-            <Image src="/logo.png" alt="Logo" width={28} height={28} className="object-contain" />
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={28}
+              height={28}
+              className="object-contain"
+            />
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -81,8 +103,12 @@ export default function ProfessorMyPage() {
           </div>
           <div>
             <p className="font-bold text-lg">{professorProfile.name}</p>
-            <p className="text-gray-500 text-sm">{professorProfile.department}</p>
-            <p className="text-gray-400 text-xs">개설 과목: {professorProfile.courseCount}개</p>
+            <p className="text-gray-500 text-sm">
+              {professorProfile.department}
+            </p>
+            <p className="text-gray-400 text-xs">
+              {authTokens?.userId || professorProfile.employeeId}
+            </p>
           </div>
         </div>
       </div>
@@ -163,36 +189,53 @@ export default function ProfessorMyPage() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between py-2 border-b border-gray-200">
                     <span className="text-sm text-gray-600">이름</span>
-                    <span className="font-medium text-gray-800">{professorProfile.name}</span>
+                    <span className="font-medium text-gray-800">
+                      {professorProfile.name}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-gray-200">
                     <span className="text-sm text-gray-600">교번</span>
-                    <span className="font-medium text-gray-800">{professorProfile.employeeId}</span>
+                    <span className="font-medium text-gray-800">
+                      {professorProfile.employeeId}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-gray-200">
                     <span className="text-sm text-gray-600">학과</span>
-                    <span className="font-medium text-gray-800">{professorProfile.department}</span>
+                    <span className="font-medium text-gray-800">
+                      {professorProfile.department}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-gray-200">
                     <span className="text-sm text-gray-600">직급</span>
-                    <span className="font-medium text-gray-800">{professorProfile.position}</span>
+                    <span className="font-medium text-gray-800">
+                      {professorProfile.position}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between py-2">
                     <span className="text-sm text-gray-600">이메일</span>
-                    <span className="font-medium text-gray-800">{professorProfile.email}</span>
+                    <span className="font-medium text-gray-800">
+                      {professorProfile.email}
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* 로그인 이력 */}
               <div className="bg-gray-50 rounded-xl p-4">
-                <h4 className="font-bold text-gray-800 mb-3">최근 로그인 이력</h4>
+                <h4 className="font-bold text-gray-800 mb-3">
+                  최근 로그인 이력
+                </h4>
                 <div className="space-y-2">
                   {loginHistory.map((history, index) => (
-                    <div key={index} className="flex items-center justify-between py-2 text-sm">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between py-2 text-sm"
+                    >
                       <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4 text-gray-400" />
-                        <span className="text-gray-600">{history.date} {history.time}</span>
+                        <span className="text-gray-600">
+                          {history.date} {history.time}
+                        </span>
                       </div>
                       <span className="text-gray-500">{history.device}</span>
                     </div>
@@ -219,10 +262,16 @@ export default function ProfessorMyPage() {
       )}
 
       {/* 검색 모달 */}
-      <SearchModal isOpen={showSearchModal} onClose={() => setShowSearchModal(false)} />
+      <SearchModal
+        isOpen={showSearchModal}
+        onClose={() => setShowSearchModal(false)}
+      />
 
       {/* 공유 모달 */}
-      <ShareModal isOpen={showShareModal} onClose={() => setShowShareModal(false)} />
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+      />
     </div>
   );
 }
