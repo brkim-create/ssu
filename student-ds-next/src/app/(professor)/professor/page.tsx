@@ -3,8 +3,10 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import CommonHeader from "../_components/CommonHeader";
+import CourseSelector from "../_components/CourseSelector";
 import TeachingMethodDiagnosis from "../_components/TeachingMethodDiagnosis";
 import { ChartBar, ChartLine, User, FileText, TrendingUp, TriangleAlert, Download } from "lucide-react";
+import type { Course } from "@shared/mockData/types/course";
 
 // mockData imports from shared
 import {
@@ -54,32 +56,25 @@ export default function ProfessorDashboardPage() {
       ? getStudentRadarSTAR(selectedRadarStudent)
       : getStudentRadarPO(selectedRadarStudent);
 
+  // 과목 변경 핸들러 (학생 선택도 함께 초기화)
+  const handleCourseChange = (newCourse: Course) => {
+    setSelectedCourse(newCourse);
+    // 과목 변경 시 해당 과목 수강생 중 첫 번째 학생으로 초기화
+    const newStudents = getStudentsByCourse(newCourse.id);
+    if (newStudents.length > 0) {
+      setSelectedRadarStudent(newStudents[0]);
+    }
+  };
+
   return (
     <div className="pb-4">
       {/* 공통 헤더 */}
       <CommonHeader title="교과목 역량 관리" subtitle="담당 과목 학생 역량 성취도 분석">
-        {/* 과목 선택 드롭다운 */}
-        <div className="mt-4">
-          <select
-            value={selectedCourse.id}
-            onChange={(e) => {
-              const newCourse = currentCourses.find((c) => c.id === Number(e.target.value)) || currentCourses[0];
-              setSelectedCourse(newCourse);
-              // 과목 변경 시 해당 과목 수강생 중 첫 번째 학생으로 초기화
-              const newStudents = getStudentsByCourse(newCourse.id);
-              if (newStudents.length > 0) {
-                setSelectedRadarStudent(newStudents[0]);
-              }
-            }}
-            className="w-full p-3 bg-white/20 text-white rounded-xl border-2 border-white/30 font-medium backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer"
-          >
-            {currentCourses.map((course) => (
-              <option key={course.id} value={course.id} className="bg-gray-800 text-white">
-                {course.name} ({course.semester}학기) | {course.students}명 수강
-              </option>
-            ))}
-          </select>
-        </div>
+        <CourseSelector
+          courses={currentCourses}
+          selectedCourse={selectedCourse}
+          onCourseChange={handleCourseChange}
+        />
       </CommonHeader>
 
       {/* 교과목 역량 성취도 히스토그램 */}

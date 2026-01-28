@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import CommonHeader from "../../_components/CommonHeader";
+import CourseSelector from "../../_components/CourseSelector";
 import StudentDetailModal, { StudentData } from "../../_components/modals/StudentDetailModal";
 import { ChevronRight } from "lucide-react";
 
@@ -47,23 +48,11 @@ export default function ProfessorStudentsPage() {
     <div className="pb-4">
       {/* 공통 헤더 */}
       <CommonHeader title="학생 관리" subtitle="수강생 역량 현황 및 지도">
-        {/* 과목 선택 드롭다운 */}
-        <div className="mt-4">
-          <select
-            value={selectedCourse.id}
-            onChange={(e) => {
-              const newCourse = currentCourses.find((c) => c.id === Number(e.target.value)) || currentCourses[0];
-              setSelectedCourse(newCourse);
-            }}
-            className="w-full p-3 bg-white/20 text-white rounded-xl border-2 border-white/30 font-medium backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer"
-          >
-            {currentCourses.map((course) => (
-              <option key={course.id} value={course.id} className="bg-gray-800 text-white">
-                {course.name} ({course.semester}학기) | {course.students}명 수강
-              </option>
-            ))}
-          </select>
-        </div>
+        <CourseSelector
+          courses={currentCourses}
+          selectedCourse={selectedCourse}
+          onCourseChange={setSelectedCourse}
+        />
       </CommonHeader>
 
       {/* 학생 목록 */}

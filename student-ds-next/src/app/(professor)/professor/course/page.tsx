@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import CommonHeader from "../../_components/CommonHeader";
+import CourseSelector from "../../_components/CourseSelector";
 import { FileText, Target, Clock, MessageCircle, ChevronRight, Calendar, ChartBar } from "lucide-react";
 
 // mockData imports from shared
@@ -23,23 +24,11 @@ export default function ProfessorCoursePage() {
   return (
     <div className="pb-4">
       <CommonHeader title="과목 관리" subtitle="담당 과목 상세 관리">
-        {/* 과목 선택 드롭다운 */}
-        <div className="mt-4">
-          <select
-            value={selectedCourse.id}
-            onChange={(e) => {
-              const newCourse = currentCourses.find((c) => c.id === Number(e.target.value)) || currentCourses[0];
-              setSelectedCourse(newCourse);
-            }}
-            className="w-full p-3 bg-white/20 text-white rounded-xl border-2 border-white/30 font-medium backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer"
-          >
-            {currentCourses.map((course) => (
-              <option key={course.id} value={course.id} className="bg-gray-800 text-white">
-                {course.name} ({course.semester}학기) | {course.students}명 수강
-              </option>
-            ))}
-          </select>
-        </div>
+        <CourseSelector
+          courses={currentCourses}
+          selectedCourse={selectedCourse}
+          onCourseChange={setSelectedCourse}
+        />
       </CommonHeader>
 
       {/* 강의 관리 메뉴 */}
