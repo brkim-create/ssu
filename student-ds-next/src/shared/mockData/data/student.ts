@@ -2,6 +2,7 @@
 // Student Dashboard Mock Data
 // ============================================================
 
+import { getGradeFromScore } from '../../theme/grade';
 import type {
   RadarDataItem,
   StarDetail,
@@ -38,10 +39,10 @@ export const currentStudentProfile: StudentProfile = {
 
 // STAR 핵심역량 진단 데이터
 export const radarData: RadarDataItem[] = [
-  { subject: 'S (창의)', myScore: 85, deptAvg: 72, totalAvg: 68, fullMark: 100 },
-  { subject: 'T (실무)', myScore: 78, deptAvg: 75, totalAvg: 70, fullMark: 100 },
-  { subject: 'A (인성)', myScore: 92, deptAvg: 80, totalAvg: 75, fullMark: 100 },
-  { subject: 'R (소통)', myScore: 70, deptAvg: 68, totalAvg: 65, fullMark: 100 },
+  { subject: 'S (창의)', myScore: 92, deptAvg: 72, totalAvg: 68, fullMark: 100 },
+  { subject: 'T (실무)', myScore: 75, deptAvg: 75, totalAvg: 70, fullMark: 100 },
+  { subject: 'A (인성)', myScore: 45, deptAvg: 80, totalAvg: 75, fullMark: 100 },
+  { subject: 'R (소통)', myScore: 15, deptAvg: 68, totalAvg: 65, fullMark: 100 },
 ];
 
 // 전공능력(PO) 핵심역량 진단 데이터
@@ -67,25 +68,32 @@ export const jobFitData: JobFitData = {
   ],
 };
 
-// 역량 상세 데이터
+// 역량 상세 데이터 (점수 기반 등급 자동 계산)
+// 등급 기준: 90+ 마스터, 70+ 우수, 20+ 보통, 20미만 노력요망
+const starScores = { S: 92, T: 75, A: 45, R: 15 };
 export const starDetails: Record<string, StarDetail> = {
-  S: { name: '창의역량', score: 85, grade: '우수', skills: ['창의적사고', '문제해결', '통찰력', '혁신'], color: '#E94E3C' },
-  T: { name: '실무역량', score: 78, grade: '보통', skills: ['전공지식', '실무기술', '현장적응', '정보활용', '분석', '기획'], color: '#F7941D' },
-  A: { name: '인성역량', score: 92, grade: '마스터', skills: ['책임감', '성실성', '윤리의식', '협동심'], color: '#C13584' },
-  R: { name: '소통역량', score: 70, grade: '보통', skills: ['경청', '설득', '조정', '리더십'], color: '#E94E3C' },
+  S: { name: '창의역량', score: starScores.S, grade: getGradeFromScore(starScores.S), skills: ['창의적사고', '문제해결', '통찰력', '혁신'], color: '#E94E3C' },
+  T: { name: '실무역량', score: starScores.T, grade: getGradeFromScore(starScores.T), skills: ['전공지식', '실무기술', '현장적응', '정보활용', '분석', '기획'], color: '#F7941D' },
+  A: { name: '인성역량', score: starScores.A, grade: getGradeFromScore(starScores.A), skills: ['책임감', '성실성', '윤리의식', '협동심'], color: '#C13584' },
+  R: { name: '소통역량', score: starScores.R, grade: getGradeFromScore(starScores.R), skills: ['경청', '설득', '조정', '리더십'], color: '#E94E3C' },
 };
 
-// 전공능력(PO) 상세 데이터
+// 전공능력(PO) 상세 데이터 (점수 기반 등급 자동 계산)
+const poScores = {
+  '창의적 문제해결': 87, '융복합적 사고': 83, '전문지식': 82,
+  '미래혁신': 75, '리더십': 77, '공동체의식': 90,
+  '자기계발': 94, '의사소통': 72, '글로컬 시민': 68,
+};
 export const poDetails: Record<string, PODetail> = {
-  '창의적 문제해결': { name: '창의적 문제해결', score: 87, grade: '우수', category: 'S', skills: ['대안도출', '문제정의', '창의적접근'], color: '#E94E3C' },
-  '융복합적 사고': { name: '융복합적 사고', score: 83, grade: '우수', category: 'S', skills: ['융합사고', '통합적접근', '다학제이해'], color: '#E94E3C' },
-  '전문지식': { name: '전문지식', score: 82, grade: '우수', category: 'T', skills: ['전공지식', '실무기술', '현장적용'], color: '#F7941D' },
-  '미래혁신': { name: '미래혁신', score: 75, grade: '보통', category: 'T', skills: ['신기술이해', '혁신마인드', '변화적응'], color: '#F7941D' },
-  '리더십': { name: '리더십', score: 77, grade: '보통', category: 'T', skills: ['팀워크', '조직관리', '의사결정'], color: '#F7941D' },
-  '공동체의식': { name: '공동체의식', score: 90, grade: '마스터', category: 'A', skills: ['협동심', '사회적책임', '봉사정신'], color: '#C13584' },
-  '자기계발': { name: '자기계발', score: 94, grade: '마스터', category: 'A', skills: ['자율성', '학습능력', '경력개발'], color: '#C13584' },
-  '의사소통': { name: '의사소통', score: 72, grade: '보통', category: 'R', skills: ['경청', '발표', '문서이해'], color: '#E94E3C' },
-  '글로컬 시민': { name: '글로컬 시민', score: 68, grade: '보통', category: 'R', skills: ['외국어', '다문화이해', '글로벌마인드'], color: '#E94E3C' },
+  '창의적 문제해결': { name: '창의적 문제해결', score: poScores['창의적 문제해결'], grade: getGradeFromScore(poScores['창의적 문제해결']), category: 'S', skills: ['대안도출', '문제정의', '창의적접근'], color: '#E94E3C' },
+  '융복합적 사고': { name: '융복합적 사고', score: poScores['융복합적 사고'], grade: getGradeFromScore(poScores['융복합적 사고']), category: 'S', skills: ['융합사고', '통합적접근', '다학제이해'], color: '#E94E3C' },
+  '전문지식': { name: '전문지식', score: poScores['전문지식'], grade: getGradeFromScore(poScores['전문지식']), category: 'T', skills: ['전공지식', '실무기술', '현장적용'], color: '#F7941D' },
+  '미래혁신': { name: '미래혁신', score: poScores['미래혁신'], grade: getGradeFromScore(poScores['미래혁신']), category: 'T', skills: ['신기술이해', '혁신마인드', '변화적응'], color: '#F7941D' },
+  '리더십': { name: '리더십', score: poScores['리더십'], grade: getGradeFromScore(poScores['리더십']), category: 'T', skills: ['팀워크', '조직관리', '의사결정'], color: '#F7941D' },
+  '공동체의식': { name: '공동체의식', score: poScores['공동체의식'], grade: getGradeFromScore(poScores['공동체의식']), category: 'A', skills: ['협동심', '사회적책임', '봉사정신'], color: '#C13584' },
+  '자기계발': { name: '자기계발', score: poScores['자기계발'], grade: getGradeFromScore(poScores['자기계발']), category: 'A', skills: ['자율성', '학습능력', '경력개발'], color: '#C13584' },
+  '의사소통': { name: '의사소통', score: poScores['의사소통'], grade: getGradeFromScore(poScores['의사소통']), category: 'R', skills: ['경청', '발표', '문서이해'], color: '#E94E3C' },
+  '글로컬 시민': { name: '글로컬 시민', score: poScores['글로컬 시민'], grade: getGradeFromScore(poScores['글로컬 시민']), category: 'R', skills: ['외국어', '다문화이해', '글로벌마인드'], color: '#E94E3C' },
 };
 
 // 스킬별 달성도

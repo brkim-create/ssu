@@ -37,7 +37,7 @@ export const getGradeBadgeClass = (grade: string): { bg: string; text: string } 
 // 헬퍼 함수: 점수에 따른 등급 반환
 export const getGradeFromScore = (score: number): string => {
   if (score >= 90) return '마스터';
-  if (score >= 75) return '우수';
-  if (score >= 60) return '보통';
+  if (score >= 70) return '우수';
+  if (score >= 20) return '보통';
   return '노력요망';
 };
