@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Building, GraduationCap, Heart, BookOpen, HelpCircle, CheckCircle, Send, X, Star, MessageCircle, Copy, Download } from "lucide-react";
+import { Plus, Building, GraduationCap, Heart, BookOpen, HelpCircle, CheckCircle, Send, X, MessageCircle, Copy, Download } from "lucide-react";
 import Header from "@/components/common/Header";
 import ChatModal from "@/components/chatbot/ChatModal";
 import FAQModal from "@/components/modals/complaints/FAQModal";
 import WriteComplaintModal from "@/components/modals/complaints/WriteComplaintModal";
 import ComplaintDetailModal from "@/components/modals/complaints/ComplaintDetailModal";
+import RatingModal from "@/components/modals/complaints/RatingModal";
 import ComplaintListModal from "@/components/modals/mypage/ComplaintListModal";
 import DownloadModal from "@/components/modals/mypage/DownloadModal";
 import SearchModal from "@/components/modals/global/SearchModal";
@@ -54,8 +55,6 @@ export default function ComplaintsPage() {
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [complaintRatings, setComplaintRatings] = useState<Record<number, number>>({});
   const [ratingComplaintId, setRatingComplaintId] = useState<number | null>(null);
-  const [selectedRating, setSelectedRating] = useState(0);
-  const [ratingComment, setRatingComment] = useState("");
 
   // 민원 상세 모달 상태
   const [complaintDetailModal, setComplaintDetailModal] = useState<Complaint | null>(null);
@@ -92,13 +91,11 @@ export default function ComplaintsPage() {
   };
 
   // 만족도 평가 제출
-  const handleRatingSubmit = () => {
-    if (ratingComplaintId && selectedRating > 0) {
-      setComplaintRatings({ ...complaintRatings, [ratingComplaintId]: selectedRating });
+  const handleRatingSubmit = (rating: number) => {
+    if (ratingComplaintId && rating > 0) {
+      setComplaintRatings({ ...complaintRatings, [ratingComplaintId]: rating });
       setShowRatingModal(false);
       setRatingComplaintId(null);
-      setSelectedRating(0);
-      setRatingComment("");
       // 민원 목록 모달은 유지 (다른 민원도 평가 가능)
     }
   };
@@ -296,89 +293,14 @@ export default function ComplaintsPage() {
       />
 
       {/* 평가 모달 */}
-      {showRatingModal && (
-        <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-md rounded-2xl p-6">
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="font-bold text-xl mb-2">민원 처리가 완료되었습니다</h3>
-              <p className="text-sm text-gray-500">처리 결과에 대해 평가해주세요</p>
-            </div>
-
-            {/* 별점 */}
-            <div className="mb-6">
-              <p className="text-sm font-medium text-gray-700 mb-3 text-center">만족도를 선택해주세요</p>
-              <div className="flex justify-center gap-2">
-                {[1, 2, 3, 4, 5].map((rating) => (
-                  <button
-                    key={rating}
-                    onClick={() => setSelectedRating(rating)}
-                    className="transition-transform hover:scale-110"
-                  >
-                    <Star
-                      className={`w-10 h-10 ${
-                        rating <= selectedRating
-                          ? "fill-yellow-400 text-yellow-400"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  </button>
-                ))}
-              </div>
-              <div className="text-center mt-2">
-                <span className="text-sm text-gray-500">
-                  {selectedRating === 0 && "선택해주세요"}
-                  {selectedRating === 1 && "매우 불만족"}
-                  {selectedRating === 2 && "불만족"}
-                  {selectedRating === 3 && "보통"}
-                  {selectedRating === 4 && "만족"}
-                  {selectedRating === 5 && "매우 만족"}
-                </span>
-              </div>
-            </div>
-
-            {/* 추가 의견 */}
-            <div className="mb-6">
-              <label className="text-sm font-medium text-gray-700 mb-2 block">추가 의견 (선택)</label>
-              <textarea
-                value={ratingComment}
-                onChange={(e) => setRatingComment(e.target.value)}
-                placeholder="더 좋은 서비스를 위한 의견을 남겨주세요"
-                className="w-full p-3 border border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows={3}
-              />
-            </div>
-
-            {/* 버튼 */}
-            <div className="flex gap-3">
-              <button
-                onClick={() => {
-                  setShowRatingModal(false);
-                  setRatingComplaintId(null);
-                  setSelectedRating(0);
-                  setRatingComment("");
-                }}
-                className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-all"
-              >
-                나중에
-              </button>
-              <button
-                onClick={handleRatingSubmit}
-                disabled={selectedRating === 0}
-                className={`flex-1 py-3 rounded-xl font-medium transition-all ${
-                  selectedRating === 0
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-gradient-to-r from-red-500 to-orange-500 text-white hover:shadow-lg"
-                }`}
-              >
-                평가 제출
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <RatingModal
+        isOpen={showRatingModal}
+        onSubmit={(rating) => handleRatingSubmit(rating)}
+        onCancel={() => {
+          setShowRatingModal(false);
+          setRatingComplaintId(null);
+        }}
+      />
 
       {/* 민원 상세보기 모달 */}
       <ComplaintDetailModal
