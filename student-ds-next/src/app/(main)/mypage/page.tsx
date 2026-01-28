@@ -135,7 +135,11 @@ export default function MyPagePage() {
             <p className="text-gray-500 text-sm">
               {authTokens?.userType === "student"
                 ? `${currentStudentProfile.department} ${currentStudentProfile.grade}`
-                : `${currentStudentProfile.department} 교수`}
+                : authTokens?.userType === "professor"
+                  ? `${currentStudentProfile.department} 교수`
+                  : authTokens?.userType === "admin"
+                    ? "시스템 관리자"
+                    : currentStudentProfile.department}
             </p>
             <p className="text-gray-400 text-xs">
               {authTokens?.userId || currentStudentProfile.studentId}
