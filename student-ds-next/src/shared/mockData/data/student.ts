@@ -72,10 +72,10 @@ export const jobFitData: JobFitData = {
 // 등급 기준: 90+ 마스터, 70+ 우수, 20+ 보통, 20미만 노력요망
 const starScores = { S: 92, T: 75, A: 45, R: 15 };
 export const starDetails: Record<string, StarDetail> = {
-  S: { name: '창의역량', score: starScores.S, grade: getGradeFromScore(starScores.S), skills: ['창의적사고', '문제해결', '통찰력', '혁신'], color: '#E94E3C' },
-  T: { name: '실무역량', score: starScores.T, grade: getGradeFromScore(starScores.T), skills: ['전공지식', '실무기술', '현장적응', '정보활용', '분석', '기획'], color: '#F7941D' },
-  A: { name: '인성역량', score: starScores.A, grade: getGradeFromScore(starScores.A), skills: ['책임감', '성실성', '윤리의식', '협동심'], color: '#C13584' },
-  R: { name: '소통역량', score: starScores.R, grade: getGradeFromScore(starScores.R), skills: ['경청', '설득', '조정', '리더십'], color: '#E94E3C' },
+  S: { name: '창의', score: starScores.S, grade: getGradeFromScore(starScores.S), skills: ['창의적사고', '문제해결', '통찰력', '혁신'], color: '#E94E3C' },
+  T: { name: '실무', score: starScores.T, grade: getGradeFromScore(starScores.T), skills: ['전공지식', '실무기술', '현장적응', '정보활용', '분석', '기획'], color: '#F7941D' },
+  A: { name: '인성', score: starScores.A, grade: getGradeFromScore(starScores.A), skills: ['책임감', '성실성', '윤리의식', '협동심'], color: '#C13584' },
+  R: { name: '소통', score: starScores.R, grade: getGradeFromScore(starScores.R), skills: ['경청', '설득', '조정', '리더십'], color: '#E94E3C' },
 };
 
 // 전공능력(PO) 상세 데이터 (점수 기반 등급 자동 계산)
