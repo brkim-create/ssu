@@ -1,26 +1,20 @@
 "use client";
 
-import { useState } from "react";
 import dynamic from "next/dynamic";
 import {
   Users,
   TrendingUp,
   Award,
   CheckCircle,
-  ChevronDown,
   AlertTriangle,
-  BookOpen,
   BarChart3,
-  Search,
 } from "lucide-react";
 
 // mockData imports
 import {
   dashboardStats,
   gradeGrowthData,
-  collegeHeatmapData,
   curriculumIssues,
-  cqiStatusData,
   competencyTrendData,
   certificationHistogramData,
 } from "@/data/mockData";
@@ -29,10 +23,6 @@ import {
 import { competencyColors } from "@shared/theme";
 
 // recharts SSR 문제 방지를 위한 dynamic import
-const AdminRadarChart = dynamic(
-  () => import("../_components/charts/AdminRadarChart"),
-  { ssr: false },
-);
 const AdminLineChart = dynamic(
   () => import("../_components/charts/AdminLineChart"),
   { ssr: false },
@@ -48,6 +38,7 @@ const CertificationHistogramChart = dynamic(
 
 // Section components
 import CompetencyHeatmapSection from "../_components/sections/CompetencyHeatmapSection";
+import DepartmentComparisonSection from "../_components/sections/DepartmentComparisonSection";
 
 // 아이콘 맵
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -64,141 +55,6 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
  * admin-ds-ui App.tsx DashboardScreen 기반 마이그레이션
  */
 export default function AdminDashboardPage() {
-  const [selectedDepartment, setSelectedDepartment] = useState("AI빅데이터과");
-  const [showDeptDropdown, setShowDeptDropdown] = useState(false);
-  const [deptSearchText, setDeptSearchText] = useState("");
-
-  // 학과 검색 필터링
-  const getFilteredDepartments = () => {
-    if (!deptSearchText) return collegeHeatmapData;
-    return collegeHeatmapData.filter((dept) =>
-      dept.college.toLowerCase().includes(deptSearchText.toLowerCase()),
-    );
-  };
-
-  // STAR 역량 계산 헬퍼
-  const calculateSTARCompetencies = (
-    deptData: (typeof collegeHeatmapData)[0],
-  ) => ({
-    S: (deptData.기획 + deptData.실행 + deptData.화합 + deptData.통섭) / 4,
-    T:
-      (deptData.전공지식 +
-        deptData.전공기술 +
-        deptData.정보화 +
-        deptData.신기술활용 +
-        deptData.공감 +
-        deptData.판단) /
-      6,
-    A: (deptData.사명감 + deptData.조직이해 + deptData.도전성) / 3,
-    R:
-      (deptData.경청 + deptData.협상 + deptData.외국어 + deptData.세계시민) / 4,
-  });
-
-  // 전체 평균 계산
-  const calculateOverallAverage = () => {
-    const all = collegeHeatmapData.map((d) => calculateSTARCompetencies(d));
-    return {
-      S: all.reduce((s, c) => s + c.S, 0) / all.length,
-      T: all.reduce((s, c) => s + c.T, 0) / all.length,
-      A: all.reduce((s, c) => s + c.A, 0) / all.length,
-      R: all.reduce((s, c) => s + c.R, 0) / all.length,
-    };
-  };
-
-  // 학과 비교 데이터 (S-T-A-R 대분류)
-  const getDepartmentComparisonData = () => {
-    const d = collegeHeatmapData.find((x) => x.college === selectedDepartment);
-    if (!d) return [];
-    const s = calculateSTARCompetencies(d);
-    const a = calculateOverallAverage();
-    return [
-      { competency: "Self-directed", 선택학과: s.S, 전체평균: a.S },
-      { competency: "Teamwork", 선택학과: s.T, 전체평균: a.T },
-      { competency: "Analytical", 선택학과: s.A, 전체평균: a.A },
-      { competency: "Relational", 선택학과: s.R, 전체평균: a.R },
-    ];
-  };
-
-  // 하위역량(PO) 9개 항목 비교 데이터
-  const getDepartmentPOComparisonData = () => {
-    const d = collegeHeatmapData.find((x) => x.college === selectedDepartment);
-    if (!d) return [];
-
-    type HeatmapKey = keyof typeof d;
-
-    // 소수점 1자리 반올림 헬퍼
-    const round1 = (v: number) => Math.round(v * 10) / 10;
-
-    // 전체 평균 계산 헬퍼 (field1, field2의 평균을 전체 학과에 대해 계산)
-    const calculatePOAverage = (
-      field1: HeatmapKey,
-      field2: HeatmapKey | null,
-    ) => {
-      const values = collegeHeatmapData.map((dept) =>
-        field2
-          ? ((dept[field1] as number) + (dept[field2] as number)) / 2
-          : (dept[field1] as number),
-      );
-      return round1(values.reduce((a, b) => a + b, 0) / values.length);
-    };
-
-    // 선택 학과 PO 계산 헬퍼
-    const calcDeptPO = (field1: HeatmapKey, field2: HeatmapKey | null) =>
-      round1(
-        field2
-          ? ((d[field1] as number) + (d[field2] as number)) / 2
-          : (d[field1] as number),
-      );
-
-    return [
-      {
-        competency: "창의적 문제해결",
-        선택학과: calcDeptPO("기획", "실행"),
-        전체평균: calculatePOAverage("기획", "실행"),
-      },
-      {
-        competency: "융복합적 사고",
-        선택학과: calcDeptPO("화합", "통섭"),
-        전체평균: calculatePOAverage("화합", "통섭"),
-      },
-      {
-        competency: "전문지식",
-        선택학과: calcDeptPO("전공지식", "전공기술"),
-        전체평균: calculatePOAverage("전공지식", "전공기술"),
-      },
-      {
-        competency: "미래혁신",
-        선택학과: calcDeptPO("정보화", "신기술활용"),
-        전체평균: calculatePOAverage("정보화", "신기술활용"),
-      },
-      {
-        competency: "리더십",
-        선택학과: calcDeptPO("공감", "판단"),
-        전체평균: calculatePOAverage("공감", "판단"),
-      },
-      {
-        competency: "공동체 의식",
-        선택학과: calcDeptPO("사명감", "조직이해"),
-        전체평균: calculatePOAverage("사명감", "조직이해"),
-      },
-      {
-        competency: "자기계발",
-        선택학과: calcDeptPO("도전성", "자기학습"),
-        전체평균: calculatePOAverage("도전성", "자기학습"),
-      },
-      {
-        competency: "의사소통",
-        선택학과: calcDeptPO("경청", "협상"),
-        전체평균: calculatePOAverage("경청", "협상"),
-      },
-      {
-        competency: "글로컬 시민",
-        선택학과: calcDeptPO("외국어", "세계시민"),
-        전체평균: calculatePOAverage("외국어", "세계시민"),
-      },
-    ];
-  };
-
   // 히스토그램 데이터에서 평균/중앙값 계산 (구간 중앙값 기반 근사)
   const calculateHistogramStats = () => {
     const total = certificationHistogramData.reduce(
@@ -273,191 +129,7 @@ export default function AdminDashboardPage() {
       {/* 차트 섹션 */}
       <div className="grid grid-cols-2 gap-4">
         {/* 학과별 역량 비교 + CQI 운영 현황 */}
-        <div className="bg-white rounded-lg shadow p-3 border border-gray-200">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                <Award className="w-4 h-4 text-gray-600" />
-              </div>
-              <h3 className="font-bold text-sm text-gray-900">
-                학과별 S-T-A-R 역량 비교
-              </h3>
-            </div>
-
-            {/* 범례 */}
-            <div className="flex items-center gap-2 text-xs">
-              <div className="flex items-center gap-1">
-                <div
-                  className="w-2.5 h-2.5 rounded-sm"
-                  style={{ backgroundColor: competencyColors.A }}
-                ></div>
-                <span className="text-gray-600">선택학과</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-2.5 h-2.5 rounded-sm bg-gray-400"></div>
-                <span className="text-gray-600">전체평균</span>
-              </div>
-            </div>
-          </div>
-
-          {/* 학과 선택기 */}
-          <div className="mb-4 relative">
-            <button
-              onClick={() => setShowDeptDropdown(!showDeptDropdown)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-left flex items-center justify-between hover:bg-gray-50"
-            >
-              <span className="text-sm text-gray-900">
-                {selectedDepartment}
-              </span>
-              <ChevronDown className="w-4 h-4 text-gray-500" />
-            </button>
-
-            {showDeptDropdown && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-60 overflow-hidden">
-                {/* 검색 입력 */}
-                <div className="p-2 border-b border-gray-200">
-                  <div className="relative">
-                    <Search className="w-4 h-4 absolute left-2 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="학과 검색..."
-                      value={deptSearchText}
-                      onChange={(e) => setDeptSearchText(e.target.value)}
-                      className="w-full pl-8 pr-3 py-1.5 border border-gray-300 rounded text-sm"
-                      onClick={(e) => e.stopPropagation()}
-                    />
-                  </div>
-                </div>
-
-                {/* 학과 목록 */}
-                <div className="max-h-48 overflow-y-auto">
-                  {getFilteredDepartments().map((dept) => (
-                    <button
-                      key={dept.college}
-                      onClick={() => {
-                        setSelectedDepartment(dept.college);
-                        setShowDeptDropdown(false);
-                        setDeptSearchText("");
-                      }}
-                      className={`w-full px-3 py-2 text-left text-sm hover:bg-gray-100 ${
-                        selectedDepartment === dept.college
-                          ? "bg-blue-50 text-blue-700"
-                          : "text-gray-900"
-                      }`}
-                    >
-                      {dept.college}
-                    </button>
-                  ))}
-                  {getFilteredDepartments().length === 0 && (
-                    <div className="px-3 py-2 text-sm text-gray-500 text-center">
-                      검색 결과가 없습니다
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-          {/* 비교 그래프 */}
-          <div className="grid grid-cols-2 gap-4">
-            {/* S-T-A-R 역량 레이더 */}
-            <div>
-              <h4 className="text-xs font-semibold text-gray-700 mb-2 text-center">
-                S-T-A-R {"\uB300\uBD84\uB958 \uC5ED\uB7C9"}
-              </h4>
-              <div style={{ width: "100%", height: "220px" }}>
-                <AdminRadarChart data={getDepartmentComparisonData()} selectedDepartmentName={selectedDepartment} />
-              </div>
-            </div>
-
-            {/* 하위역량(PO) 레이더 */}
-            <div>
-              <h4 className="text-xs font-semibold text-gray-700 mb-2 text-center">
-                {"\uD558\uC704\uC5ED\uB7C9"}(PO) 9{"\uAC1C \uD56D\uBAA9"}
-              </h4>
-              <div style={{ width: "100%", height: "220px" }}>
-                <AdminRadarChart data={getDepartmentPOComparisonData()} selectedDepartmentName={selectedDepartment} />
-              </div>
-            </div>
-          </div>
-
-          {/* CQI 운영 현황 */}
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                <BookOpen className="w-4 h-4 text-gray-600" />
-              </div>
-              <h4 className="font-bold text-sm text-gray-900">
-                CQI {"\uC6B4\uC601 \uD604\uD669"}
-              </h4>
-            </div>
-            {(() => {
-              const selectedCQI = cqiStatusData.find(
-                (item) => item.dept === selectedDepartment,
-              );
-              if (!selectedCQI) {
-                return (
-                  <div className="text-xs text-gray-500 text-center py-3">
-                    {
-                      "\uD574\uB2F9 \uD559\uACFC\uC758 CQI \uB370\uC774\uD130\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4"
-                    }
-                  </div>
-                );
-              }
-              return (
-                <div className="grid grid-cols-4 gap-3">
-                  <div className="bg-gray-50 rounded-lg p-3">
-                    <p className="text-xs text-gray-600 mb-1">
-                      {"\uC804\uCCB4 \uAD50\uACFC\uBAA9"}
-                    </p>
-                    <p className="text-xl font-bold text-gray-900">
-                      {selectedCQI.total}
-                    </p>
-                  </div>
-                  <div className="bg-blue-50 rounded-lg p-3">
-                    <p className="text-xs text-gray-600 mb-1">
-                      {"\uC644\uB8CC"}
-                    </p>
-                    <p className="text-xl font-bold text-blue-700">
-                      {selectedCQI.completed}
-                    </p>
-                  </div>
-                  <div
-                    className={`rounded-lg p-3 ${selectedCQI.rate >= 90 ? "bg-green-50" : "bg-yellow-50"}`}
-                  >
-                    <p className="text-xs text-gray-600 mb-1">
-                      {"\uC644\uB8CC\uC728"}
-                    </p>
-                    <p
-                      className={`text-xl font-bold ${selectedCQI.rate >= 90 ? "text-green-700" : "text-yellow-700"}`}
-                    >
-                      {selectedCQI.rate}%
-                    </p>
-                  </div>
-                  <div
-                    className={`rounded-lg p-3 ${selectedCQI.lowGrade > 0 ? "bg-red-50" : "bg-gray-50"}`}
-                  >
-                    <p className="text-xs text-gray-600 mb-1">
-                      {"\uACBD\uACE0 \uB4F1\uAE09"}
-                    </p>
-                    <div className="flex items-center gap-1">
-                      {selectedCQI.lowGrade > 0 ? (
-                        <>
-                          <AlertTriangle className="w-4 h-4 text-red-600" />
-                          <p className="text-xl font-bold text-red-700">
-                            {selectedCQI.lowGrade}
-                            {"\uAC74"}
-                          </p>
-                        </>
-                      ) : (
-                        <p className="text-xl font-bold text-gray-400">-</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              );
-            })()}
-          </div>
-        </div>
+        <DepartmentComparisonSection />
 
         {/* 오른쪽 컬럼: 학년별 성장 추이 + 교육과정 적절성 */}
         <div className="flex flex-col gap-4">
