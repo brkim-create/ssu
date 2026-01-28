@@ -30,6 +30,7 @@ export interface Student extends StudentCompetency {
   name: string;
   studentId: string;
   dept: string;
+  courseIds?: number[];  // 수강 과목 ID 목록
   PO?: StudentPOScore;  // 하위역량 점수 (선택적)
 }
 

@@ -23,6 +23,7 @@ import {
 import DownloadModal from "@/components/modals/mypage/DownloadModal";
 import ComplaintListModal from "@/components/modals/mypage/ComplaintListModal";
 import SearchModal from "@/components/modals/global/SearchModal";
+import ShareModal from "@/components/modals/global/ShareModal";
 import {
   complaints,
   CURRENT_STUDENT_ID,
@@ -325,35 +326,10 @@ export default function MyPagePage() {
       )}
 
       {/* 공유 모달 */}
-      {showShareModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-md rounded-t-3xl p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-bold text-xl text-gray-800">공유하기</h3>
-              <button onClick={() => setShowShareModal(false)}>
-                <span className="text-2xl text-gray-400">×</span>
-              </button>
-            </div>
-            <div className="grid grid-cols-4 gap-4">
-              {["카카오톡", "문자", "이메일", "링크복사"].map((method) => (
-                <button
-                  key={method}
-                  className="flex flex-col items-center gap-2 p-4 hover:bg-gray-50 rounded-xl"
-                  onClick={() => {
-                    console.log(`Share via ${method}`);
-                    setShowShareModal(false);
-                  }}
-                >
-                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                    <Share2 className="w-5 h-5 text-gray-600" />
-                  </div>
-                  <span className="text-xs text-gray-600">{method}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+      />
 
       {/* 검색 모달 */}
       <SearchModal

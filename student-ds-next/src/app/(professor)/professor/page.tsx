@@ -28,6 +28,10 @@ const AssessmentBarChart = dynamic(() => import("../_components/charts/Assessmen
 // 현재 학기 과목만 필터링
 const currentCourses = courses.filter((c) => c.semester === currentSemester);
 
+// 과목별 학생 필터링 함수
+const getStudentsByCourse = (courseId: number) =>
+  studentList.filter((s) => s.courseIds?.includes(courseId));
+
 /**
  * Professor Dashboard Page
  *
@@ -39,7 +43,10 @@ export default function ProfessorDashboardPage() {
   const [selectedCourse, setSelectedCourse] = useState(currentCourses[0]);
   const [selectedConcernCompetency, setSelectedConcernCompetency] = useState("역량 미달");
   const [radarViewMode, setRadarViewMode] = useState<"STAR" | "PO">("STAR");
-  const [selectedRadarStudent, setSelectedRadarStudent] = useState(studentList[0]);
+
+  // 선택된 과목의 수강생 목록
+  const filteredStudentList = getStudentsByCourse(selectedCourse.id);
+  const [selectedRadarStudent, setSelectedRadarStudent] = useState(filteredStudentList[0] || studentList[0]);
 
   // 레이더 차트 데이터 (STAR/PO 모드에 따라 다른 함수 사용)
   const radarData =
@@ -58,6 +65,11 @@ export default function ProfessorDashboardPage() {
             onChange={(e) => {
               const newCourse = currentCourses.find((c) => c.id === Number(e.target.value)) || currentCourses[0];
               setSelectedCourse(newCourse);
+              // 과목 변경 시 해당 과목 수강생 중 첫 번째 학생으로 초기화
+              const newStudents = getStudentsByCourse(newCourse.id);
+              if (newStudents.length > 0) {
+                setSelectedRadarStudent(newStudents[0]);
+              }
             }}
             className="w-full p-3 bg-white/20 text-white rounded-xl border-2 border-white/30 font-medium backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer"
           >
@@ -103,12 +115,12 @@ export default function ProfessorDashboardPage() {
           <select
             value={selectedRadarStudent.id}
             onChange={(e) => {
-              const student = studentList.find((s) => s.id === Number(e.target.value));
+              const student = filteredStudentList.find((s) => s.id === Number(e.target.value));
               if (student) setSelectedRadarStudent(student);
             }}
             className="text-sm p-2 border border-gray-200 rounded-lg bg-white"
           >
-            {studentList.map((student) => (
+            {filteredStudentList.map((student) => (
               <option key={student.id} value={student.id}>
                 {student.name}
               </option>
