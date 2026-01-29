@@ -17,11 +17,11 @@ import TemplateModal from "./_components/TemplateModal";
 import AssignModal from "./_components/AssignModal";
 
 /**
- * Admin CQI/Tickets Page
+ * Admin Workspace/Tickets Page
  *
- * URL: /admin/cqi
+ * URL: /admin/workspace
  */
-export default function AdminCQIPage() {
+export default function AdminWorkspacePage() {
   const { userRole, ROLE_SUPER_ADMIN, ROLE_GENERAL } = useRole();
 
   // 상태 관리

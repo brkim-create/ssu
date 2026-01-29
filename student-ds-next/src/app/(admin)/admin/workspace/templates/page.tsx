@@ -6,7 +6,7 @@ import { templatesData } from "@/data/mockData";
 /**
  * Templates Page
  *
- * URL: /admin/cqi/templates
+ * URL: /admin/workspace/templates
  * 답변 템플릿 관리 페이지
  */
 export default function TemplatesPage() {

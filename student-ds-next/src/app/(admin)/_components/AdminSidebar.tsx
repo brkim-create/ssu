@@ -12,7 +12,7 @@ import { pendingTicketCount } from "@/data/mockData";
 // 메뉴 아이템 정의
 const menuItems = [
   { href: "/admin", label: "대시보드", icon: Activity },
-  { href: "/admin/cqi", label: "워크스페이스", icon: Inbox, badge: pendingTicketCount },
+  { href: "/admin/workspace", label: "워크스페이스", icon: Inbox, badge: pendingTicketCount },
   { href: "/admin/stats", label: "통계/분석", icon: BarChart3, superAdminOnly: true },
   { href: "/admin/system", label: "시스템 관리", icon: Users, superAdminOnly: true },
 ];

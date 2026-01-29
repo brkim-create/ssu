@@ -8,16 +8,16 @@ import { useRole } from "@/contexts/RoleContext";
 // 페이지별 제목 매핑
 const pageTitles: Record<string, string> = {
   "/admin": "대시보드",
-  "/admin/cqi": "워크스페이스",
+  "/admin/workspace": "워크스페이스",
   "/admin/stats": "통계/분석",
   "/admin/system": "시스템 관리",
 };
 
 // 서브메뉴 정의
 const subMenus: Record<string, { href: string; label: string; superAdminOnly?: boolean }[]> = {
-  "/admin/cqi": [
-    { href: "/admin/cqi", label: "티켓 관리" },
-    { href: "/admin/cqi/templates", label: "답변 템플릿", superAdminOnly: true },
+  "/admin/workspace": [
+    { href: "/admin/workspace", label: "티켓 관리" },
+    { href: "/admin/workspace/templates", label: "답변 템플릿", superAdminOnly: true },
   ],
   "/admin/system": [
     { href: "/admin/system", label: "사용자 관리" },
