@@ -1,7 +1,7 @@
 "use client";
 
 import { X, Bell } from "lucide-react";
-import { notifications } from "@shared/mockData/data/professor";
+import { professorNotifications as notifications } from "@shared/mockData/data/professor";
 
 interface NotificationModalProps {
   isOpen: boolean;

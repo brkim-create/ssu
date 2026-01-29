@@ -56,13 +56,35 @@ export const histogramDataByCourse: Record<number, HistogramDataItem[]> = {
   ],
 };
 
-// 평가 도구별 분석 데이터
+// 평가 도구별 분석 데이터 (기본값)
 export const assessmentData: AssessmentDataItem[] = [
   { name: '중간고사', S: 75, T: 82, A: 78, R: 71 },
   { name: '기말고사', S: 78, T: 85, A: 80, R: 74 },
   { name: '과제', S: 85, T: 88, A: 90, R: 82 },
   { name: '출석', S: 92, T: 90, A: 95, R: 88 },
 ];
+
+// 과목별 평가 도구 분석 데이터
+export const assessmentDataByCourse: Record<number, AssessmentDataItem[]> = {
+  1: [ // 자료구조 - 과제가 가장 높음
+    { name: '중간고사', S: 72, T: 75, A: 70, R: 68 },
+    { name: '기말고사', S: 75, T: 78, A: 73, R: 71 },
+    { name: '과제', S: 92, T: 95, A: 90, R: 88 },
+    { name: '출석', S: 80, T: 82, A: 84, R: 78 },
+  ],
+  2: [ // 알고리즘 - 기말고사가 가장 높음
+    { name: '중간고사', S: 75, T: 73, A: 70, R: 68 },
+    { name: '기말고사', S: 93, T: 91, A: 89, R: 87 },
+    { name: '과제', S: 78, T: 76, A: 74, R: 72 },
+    { name: '출석', S: 82, T: 80, A: 83, R: 79 },
+  ],
+  3: [ // 소프트웨어공학 - 출석이 가장 높음
+    { name: '중간고사', S: 74, T: 76, A: 72, R: 70 },
+    { name: '기말고사', S: 77, T: 79, A: 75, R: 73 },
+    { name: '과제', S: 80, T: 82, A: 78, R: 76 },
+    { name: '출석', S: 94, T: 96, A: 92, R: 90 },
+  ],
+};
 
 // 관심(위험) 학생 데이터
 export const concernStudents: ConcernStudent[] = [
@@ -216,7 +238,7 @@ export const studentList: Student[] = [
 ];
 
 // 알림 데이터
-export const notifications: Notification[] = [
+export const professorNotifications: Notification[] = [
   { id: 1, title: '역량 미달 학생 발견', message: 'T(실무) 역량 미달 학생 3명이 확인되었습니다.', time: '10분 전', read: false },
   { id: 2, title: 'CQI 보고서 제출 기한', message: '2025학년도 1학기 CQI 보고서 제출 기한이 7일 남았습니다.', time: '1시간 전', read: false },
   { id: 3, title: '성적 입력 마감', message: '중간고사 성적 입력이 완료되었습니다.', time: '3시간 전', read: true },
@@ -297,7 +319,7 @@ export const professorProfile: ProfessorProfile = {
 };
 
 // 로그인 이력 데이터
-export const loginHistory: LoginHistory[] = [
+export const professorLoginHistory: LoginHistory[] = [
   { date: '2025.01.23', time: '14:32', device: 'Chrome (Windows)' },
   { date: '2025.01.22', time: '09:15', device: 'Safari (iPhone)' },
   { date: '2025.01.21', time: '18:42', device: 'Chrome (Android)' },
