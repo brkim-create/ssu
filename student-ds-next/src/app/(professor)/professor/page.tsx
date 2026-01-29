@@ -96,7 +96,15 @@ export default function ProfessorDashboardPage() {
         </div>
         <div className="mt-3 p-3 bg-[rgb(241,245,249)] rounded-xl">
           <p className="text-sm text-[rgb(51,65,85)]">
-            💡 <strong>인사이트:</strong> 과제 평가에서 가장 높은 역량 점수를 보입니다.
+            💡 <strong>인사이트:</strong> {(() => {
+              const data = assessmentDataByCourse[selectedCourse.id] || assessmentData;
+              const avgScores = data.map(item => ({
+                name: item.name,
+                avg: (item.S + item.T + item.A + item.R) / 4
+              }));
+              const top = avgScores.reduce((a, b) => a.avg > b.avg ? a : b);
+              return `${top.name} 평가에서 가장 높은 역량 점수를 보입니다.`;
+            })()}
           </p>
         </div>
       </div>
