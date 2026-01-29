@@ -70,7 +70,7 @@ export default function ProfessorDashboardPage() {
         </div>
         <p className="text-xs text-gray-500 mb-4">점수 구간별 학생 수 분포</p>
         <div className="h-[250px]">
-          <HistogramChart data={histogramDataByCourse[selectedCourse.id] || []} />
+          <HistogramChart key={selectedCourse.id} data={histogramDataByCourse[selectedCourse.id] || []} />
         </div>
         <div className="mt-3 p-3 bg-slate-50 rounded-xl">
           <p className="text-sm text-slate-700">
@@ -92,7 +92,7 @@ export default function ProfessorDashboardPage() {
         </div>
         <p className="text-xs text-gray-500 mb-4">각 평가 도구별 역량 점수 비교</p>
         <div className="h-[200px]">
-          <AssessmentBarChart data={assessmentDataByCourse[selectedCourse.id] || assessmentData} />
+          <AssessmentBarChart key={selectedCourse.id} data={assessmentDataByCourse[selectedCourse.id] || assessmentData} />
         </div>
         <div className="mt-3 p-3 bg-[rgb(241,245,249)] rounded-xl">
           <p className="text-sm text-[rgb(51,65,85)]">
