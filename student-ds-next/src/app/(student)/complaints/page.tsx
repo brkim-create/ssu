@@ -3,15 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Building, GraduationCap, Heart, BookOpen, HelpCircle, CheckCircle, Send, X, MessageCircle, Copy, Download } from "lucide-react";
-import Header from "@/components/common/Header";
+import Header from "../_components/common/Header";
 import ChatModal from "./ChatModal";
-import FAQModal from "@/components/modals/complaints/FAQModal";
-import WriteComplaintModal from "@/components/modals/complaints/WriteComplaintModal";
-import ComplaintDetailModal from "@/components/modals/complaints/ComplaintDetailModal";
-import RatingModal from "@/components/modals/complaints/RatingModal";
-import ComplaintListModal from "@/components/modals/mypage/ComplaintListModal";
-import DownloadModal from "@/components/modals/mypage/DownloadModal";
-import SearchModal from "@/components/modals/global/SearchModal";
+import FAQModal from "../_components/modals/complaints/FAQModal";
+import WriteComplaintModal from "../_components/modals/complaints/WriteComplaintModal";
+import ComplaintDetailModal from "../_components/modals/complaints/ComplaintDetailModal";
+import RatingModal from "../_components/modals/complaints/RatingModal";
+import ComplaintListModal from "../_components/modals/mypage/ComplaintListModal";
+import DownloadModal from "../_components/modals/mypage/DownloadModal";
+import SearchModal from "../_components/modals/global/SearchModal";
 import StatsOverview from "./StatsOverview";
 import { complaintCategories, complaints, faqData, ComplaintCategory, Complaint, CURRENT_STUDENT_ID, currentStudentProfile, appConfig } from "@/data/mockData";
 

@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Bell } from "lucide-react";
-import Header from "@/components/common/Header";
-import SearchModal from "@/components/modals/global/SearchModal";
-import ShareModal from "@/components/modals/global/ShareModal";
+import Header from "../_components/common/Header";
+import SearchModal from "../_components/modals/global/SearchModal";
+import ShareModal from "../_components/modals/global/ShareModal";
 import { notifications } from "@/data/mockData";
 
 /**

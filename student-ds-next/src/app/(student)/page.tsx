@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 // Components
-import Header from "@/components/common/Header";
+import Header from "./_components/common/Header";
 import WelcomeCard from "./_components/dashboard/WelcomeCard";
 import CompetencyRadar from "./_components/dashboard/CompetencyRadar";
 import CompetencyGrid from "./_components/dashboard/CompetencyGrid";
@@ -12,10 +12,10 @@ import EvidenceSection from "./_components/dashboard/EvidenceSection";
 import JobFitSection from "./_components/dashboard/JobFitSection";
 
 // Modals
-import SearchModal from "@/components/modals/global/SearchModal";
-import ShareModal from "@/components/modals/global/ShareModal";
-import EvidenceListModal from "@/components/modals/home/EvidenceListModal";
-import CompetencyDetailModal from "@/components/modals/home/CompetencyDetailModal";
+import SearchModal from "./_components/modals/global/SearchModal";
+import ShareModal from "./_components/modals/global/ShareModal";
+import EvidenceListModal from "./_components/modals/home/EvidenceListModal";
+import CompetencyDetailModal from "./_components/modals/home/CompetencyDetailModal";
 
 // Data
 import { evidenceData, currentStudentProfile } from "@/data/mockData";

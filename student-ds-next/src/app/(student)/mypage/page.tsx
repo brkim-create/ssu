@@ -13,14 +13,14 @@ import {
   Share2,
   Search,
 } from "lucide-react";
-import DownloadModal from "@/components/modals/mypage/DownloadModal";
-import ComplaintListModal from "@/components/modals/mypage/ComplaintListModal";
-import LoginInfoModal from "@/components/modals/mypage/LoginInfoModal";
-import NotificationSettingsModal from "@/components/modals/mypage/NotificationSettingsModal";
-import ComplaintDetailModal from "@/components/modals/complaints/ComplaintDetailModal";
-import RatingModal from "@/components/modals/complaints/RatingModal";
-import SearchModal from "@/components/modals/global/SearchModal";
-import ShareModal from "@/components/modals/global/ShareModal";
+import DownloadModal from "../_components/modals/mypage/DownloadModal";
+import ComplaintListModal from "../_components/modals/mypage/ComplaintListModal";
+import LoginInfoModal from "../_components/modals/mypage/LoginInfoModal";
+import NotificationSettingsModal from "../_components/modals/mypage/NotificationSettingsModal";
+import ComplaintDetailModal from "../_components/modals/complaints/ComplaintDetailModal";
+import RatingModal from "../_components/modals/complaints/RatingModal";
+import SearchModal from "../_components/modals/global/SearchModal";
+import ShareModal from "../_components/modals/global/ShareModal";
 import {
   complaints,
   CURRENT_STUDENT_ID,
