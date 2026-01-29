@@ -1,0 +1,185 @@
+"use client";
+
+import { useState } from "react";
+import dynamic from "next/dynamic";
+import CommonHeader from "../_components/CommonHeader";
+import CourseSelector from "../_components/CourseSelector";
+import StudentRadarSection from "../_components/cards/StudentRadarSection";
+import ConcernStudentsCard from "../_components/cards/ConcernStudentsCard";
+import TeachingMethodDiagnosis from "../_components/TeachingMethodDiagnosis";
+import DashboardCard from "../_components/common/DashboardCard";
+import { ChartBar, ChartLine, FileText, TrendingUp, Download } from "lucide-react";
+
+// mockData imports from shared
+import {
+  currentSemester,
+  histogramDataByCourse,
+  assessmentData,
+  assessmentDataByCourse,
+  concernStudents,
+  performanceReport,
+  courses,
+  studentList,
+  courseStatisticsByCourse,
+} from "@shared/mockData/data/professor";
+
+// recharts SSR 문제 방지를 위한 dynamic import
+const HistogramChart = dynamic(() => import("../_components/charts/HistogramChart"), { ssr: false });
+const AssessmentBarChart = dynamic(() => import("../_components/charts/AssessmentBarChart"), { ssr: false });
+
+// 현재 학기 과목만 필터링
+const currentCourses = courses.filter((c) => c.semester === currentSemester);
+
+// 과목별 학생 필터링 함수
+const getStudentsByCourse = (courseId: number) =>
+  studentList.filter((s) => s.courseIds?.includes(courseId));
+
+/**
+ * Professor Dashboard Page
+ *
+ * URL: /professor
+ * App.tsx 89~335라인 (DashboardScreen) 기반 마이그레이션
+ */
+export default function ProfessorDashboardPage() {
+  // 상태 관리
+  const [selectedCourse, setSelectedCourse] = useState(currentCourses[0]);
+
+  // 선택된 과목의 수강생 목록
+  const filteredStudentList = getStudentsByCourse(selectedCourse.id);
+
+  return (
+    <div className="pb-4">
+      {/* 공통 헤더 */}
+      <CommonHeader title="교과목 역량 관리" subtitle="담당 과목 학생 역량 성취도 분석">
+        <CourseSelector
+          courses={currentCourses}
+          selectedCourse={selectedCourse}
+          onCourseChange={setSelectedCourse}
+        />
+      </CommonHeader>
+
+      {/* 교과목 역량 성취도 히스토그램 */}
+      <DashboardCard>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+              <ChartBar className="w-5 h-5 text-gray-600" />
+            </div>
+            <h3 className="font-bold text-gray-800">교과목 역량 성취도</h3>
+          </div>
+        </div>
+        <p className="text-xs text-gray-500 mb-4">점수 구간별 학생 수 분포</p>
+        <div className="h-[250px]">
+          <HistogramChart key={`histogram-${selectedCourse.id}`} data={histogramDataByCourse[selectedCourse.id] || []} />
+        </div>
+        <div className="mt-3 p-3 bg-slate-50 rounded-xl">
+          <p className="text-sm text-slate-700">
+            <strong>평균 점수:</strong> {courseStatisticsByCourse[selectedCourse.id]?.averageScore ?? '-'}점 | <strong>중앙값:</strong> {courseStatisticsByCourse[selectedCourse.id]?.medianScore ?? '-'}점
+          </p>
+        </div>
+      </DashboardCard>
+
+      {/* 학생별 종합역량 레이더 차트 */}
+      <StudentRadarSection key={`radar-${selectedCourse.id}`} students={filteredStudentList} />
+
+      {/* 평가 도구별 분석 */}
+      <DashboardCard>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+            <ChartLine className="w-5 h-5 text-gray-600" />
+          </div>
+          <h3 className="font-bold text-gray-800">평가 도구별 분석</h3>
+        </div>
+        <p className="text-xs text-gray-500 mb-4">각 평가 도구별 역량 점수 비교</p>
+        <div className="h-[200px]">
+          <AssessmentBarChart key={`assessment-${selectedCourse.id}`} data={assessmentDataByCourse[selectedCourse.id] || assessmentData} />
+        </div>
+        <div className="mt-3 p-3 bg-[rgb(241,245,249)] rounded-xl">
+          <p className="text-sm text-[rgb(51,65,85)]">
+            💡 <strong>인사이트:</strong> {(() => {
+              const data = assessmentDataByCourse[selectedCourse.id] || assessmentData;
+              const avgScores = data.map(item => ({
+                name: item.name,
+                avg: (item.S + item.T + item.A + item.R) / 4
+              }));
+              const top = avgScores.reduce((a, b) => a.avg > b.avg ? a : b);
+              return `${top.name} 평가에서 가장 높은 역량 점수를 보입니다.`;
+            })()}
+          </p>
+        </div>
+      </DashboardCard>
+
+      {/* 관심 학생 알림 */}
+      <ConcernStudentsCard
+        key={`concern-${selectedCourse.id}`}
+        concernStudents={concernStudents.filter((s) => {
+          const student = studentList.find((st) => st.id === s.id);
+          return student?.courseIds?.includes(selectedCourse.id);
+        })}
+      />
+
+      {/* 성과 분석 리포트 */}
+      <DashboardCard>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+              <FileText className="w-5 h-5 text-gray-600" />
+            </div>
+            <h3 className="font-bold text-gray-800">성과 분석 리포트</h3>
+          </div>
+          <button className="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-full font-medium">CQI 보고서용</button>
+        </div>
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="bg-gray-50 rounded-xl p-4 text-center">
+            <p className="text-xs text-gray-600 mb-1">목표 달성률</p>
+            <p className="text-3xl font-bold text-gray-700">{performanceReport.achievementRate}%</p>
+            <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
+              <div className="bg-gray-600 h-2 rounded-full" style={{ width: `${performanceReport.achievementRate}%` }} />
+            </div>
+          </div>
+          <div className="bg-gray-50 rounded-xl p-4 text-center">
+            <p className="text-xs text-gray-600 mb-1">전년 대비 향상</p>
+            <div className="flex items-center justify-center gap-1">
+              <TrendingUp className="w-6 h-6 text-gray-700" />
+              <p className="text-3xl font-bold text-gray-700">{performanceReport.yearlyImprovement}%</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 취약 역량 */}
+        <div className="bg-gray-50 rounded-xl p-3">
+          <p className="text-sm font-bold text-gray-800 mb-2">성취도 하위 영역</p>
+          <div className="space-y-2">
+            {performanceReport.weakAreas.map((area, idx) => (
+              <div key={idx} className="flex items-center justify-between">
+                <span className="text-sm text-gray-700">{area.area}</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-24 bg-gray-200 rounded-full h-2">
+                    <div className="bg-orange-500 h-2 rounded-full" style={{ width: `${area.score}%` }} />
+                  </div>
+                  <span className="text-sm font-bold text-gray-800 w-12 text-right">{area.score}점</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 다운로드 버튼 */}
+        <button
+          onClick={() => {
+            alert(
+              "성과 분석 리포트 다운로드\n\n목표 달성률: 87%\n전년 대비 향상도: 5.2%\n\n성취도 하위 영역:\n• R (소통): 73.5점\n• S (창의): 76.2점\n• T (실무): 80.1점\n\nPDF/Excel 형식으로 다운로드됩니다."
+            );
+          }}
+          className="w-full mt-4 py-3 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-xl font-bold flex items-center justify-center gap-2"
+        >
+          <Download className="w-5 h-5" />
+          PDF/Excel 다운로드
+        </button>
+      </DashboardCard>
+
+      {/* 교수법 연계 진단 */}
+      <TeachingMethodDiagnosis />
+    </div>
+  );
+}
