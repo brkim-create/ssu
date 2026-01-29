@@ -56,13 +56,35 @@ export const histogramDataByCourse: Record<number, HistogramDataItem[]> = {
   ],
 };
 
-// 평가 도구별 분석 데이터
+// 평가 도구별 분석 데이터 (기본값)
 export const assessmentData: AssessmentDataItem[] = [
   { name: '중간고사', S: 75, T: 82, A: 78, R: 71 },
   { name: '기말고사', S: 78, T: 85, A: 80, R: 74 },
   { name: '과제', S: 85, T: 88, A: 90, R: 82 },
   { name: '출석', S: 92, T: 90, A: 95, R: 88 },
 ];
+
+// 과목별 평가 도구 분석 데이터
+export const assessmentDataByCourse: Record<number, AssessmentDataItem[]> = {
+  1: [ // 자료구조
+    { name: '중간고사', S: 72, T: 85, A: 76, R: 68 },
+    { name: '기말고사', S: 75, T: 88, A: 78, R: 71 },
+    { name: '과제', S: 82, T: 91, A: 85, R: 78 },
+    { name: '출석', S: 90, T: 92, A: 94, R: 86 },
+  ],
+  2: [ // 알고리즘
+    { name: '중간고사', S: 80, T: 78, A: 75, R: 70 },
+    { name: '기말고사', S: 83, T: 81, A: 77, R: 73 },
+    { name: '과제', S: 88, T: 85, A: 82, R: 80 },
+    { name: '출석', S: 94, T: 88, A: 91, R: 85 },
+  ],
+  3: [ // 소프트웨어공학
+    { name: '중간고사', S: 74, T: 80, A: 82, R: 76 },
+    { name: '기말고사', S: 77, T: 84, A: 85, R: 79 },
+    { name: '과제', S: 84, T: 89, A: 92, R: 86 },
+    { name: '출석', S: 91, T: 93, A: 96, R: 90 },
+  ],
+};
 
 // 관심(위험) 학생 데이터
 export const concernStudents: ConcernStudent[] = [

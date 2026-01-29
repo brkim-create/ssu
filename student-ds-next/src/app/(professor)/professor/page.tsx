@@ -13,6 +13,7 @@ import {
   currentSemester,
   histogramDataByCourse,
   assessmentData,
+  assessmentDataByCourse,
   concernStudents,
   performanceReport,
   courses,
@@ -91,7 +92,7 @@ export default function ProfessorDashboardPage() {
         </div>
         <p className="text-xs text-gray-500 mb-4">각 평가 도구별 역량 점수 비교</p>
         <div className="h-[200px]">
-          <AssessmentBarChart data={assessmentData} />
+          <AssessmentBarChart data={assessmentDataByCourse[selectedCourse.id] || assessmentData} />
         </div>
         <div className="mt-3 p-3 bg-[rgb(241,245,249)] rounded-xl">
           <p className="text-sm text-[rgb(51,65,85)]">
