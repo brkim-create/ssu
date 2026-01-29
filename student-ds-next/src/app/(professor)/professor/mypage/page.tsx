@@ -21,7 +21,7 @@ import ProfessorLoginInfoModal from "../../_components/modals/ProfessorLoginInfo
 // mockData imports from shared
 import {
   professorProfile,
-  loginHistory,
+  professorLoginHistory as loginHistory,
 } from "@shared/mockData/data/professor";
 import { clearAuthTokens, getAuthTokens } from "@/utils/auth";
 

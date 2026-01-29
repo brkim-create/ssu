@@ -170,7 +170,7 @@ export const complaints: Complaint[] = [
 ];
 
 // 알림 데이터
-export const notifications: Notification[] = [
+export const studentNotifications: Notification[] = [
   { id: 1, title: '민원 처리 완료', message: '장학금 신청 기간 문의에 대한 답변이 등록되었습니다.', time: '10분 전', read: false },
   { id: 2, title: '학사 공지사항', message: '2025학년도 1학기 수강신청 안내', time: '1시간 전', read: false },
   { id: 3, title: '민원 접수 확인', message: '강의실 에어컨 고장 민원이 접수되었습니다.', time: '3시간 전', read: true },
@@ -280,7 +280,7 @@ export const searchData: SearchData = {
 };
 
 // 마이페이지 데이터
-export const loginHistory: LoginHistory[] = [
+export const studentLoginHistory: LoginHistory[] = [
   { date: '2025.01.20', time: '14:32', device: 'Chrome (Windows)' },
   { date: '2025.01.19', time: '09:15', device: 'Safari (iPhone)' },
   { date: '2025.01.18', time: '18:42', device: 'Chrome (Android)' },

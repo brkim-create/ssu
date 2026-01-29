@@ -216,7 +216,7 @@ export const studentList: Student[] = [
 ];
 
 // 알림 데이터
-export const notifications: Notification[] = [
+export const professorNotifications: Notification[] = [
   { id: 1, title: '역량 미달 학생 발견', message: 'T(실무) 역량 미달 학생 3명이 확인되었습니다.', time: '10분 전', read: false },
   { id: 2, title: 'CQI 보고서 제출 기한', message: '2025학년도 1학기 CQI 보고서 제출 기한이 7일 남았습니다.', time: '1시간 전', read: false },
   { id: 3, title: '성적 입력 마감', message: '중간고사 성적 입력이 완료되었습니다.', time: '3시간 전', read: true },
@@ -297,7 +297,7 @@ export const professorProfile: ProfessorProfile = {
 };
 
 // 로그인 이력 데이터
-export const loginHistory: LoginHistory[] = [
+export const professorLoginHistory: LoginHistory[] = [
   { date: '2025.01.23', time: '14:32', device: 'Chrome (Windows)' },
   { date: '2025.01.22', time: '09:15', device: 'Safari (iPhone)' },
   { date: '2025.01.21', time: '18:42', device: 'Chrome (Android)' },
