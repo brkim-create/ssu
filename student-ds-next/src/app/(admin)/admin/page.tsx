@@ -1,24 +1,14 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import {
-  Users,
-  TrendingUp,
-  Award,
-  CheckCircle,
-  BarChart3,
-} from "lucide-react";
+import { Users, TrendingUp, Award, CheckCircle } from "lucide-react";
 
 // mockData imports
 import {
   dashboardStats,
   gradeGrowthData,
-  curriculumIssues,
   certificationHistogramData,
 } from "@/data/mockData";
-
-// theme imports
-import { competencyColors } from "@shared/theme";
 
 // recharts SSR 문제 방지를 위한 dynamic import
 const AdminLineChart = dynamic(
@@ -35,6 +25,7 @@ import CompetencyHeatmapSection from "./_components/sections/CompetencyHeatmapSe
 import DepartmentComparisonSection from "./_components/sections/DepartmentComparisonSection";
 import CurriculumIssuesSection from "./_components/sections/CurriculumIssuesSection";
 import CompetencyTrendSection from "./_components/sections/CompetencyTrendSection";
+import CompetencyDistributionSection from "./_components/sections/CompetencyDistributionSection";
 import SectionHeader from "../_components/common/SectionHeader";
 
 // 아이콘 맵
@@ -169,62 +160,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* 역량별 평가 분포 */}
-        <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
-          <SectionHeader
-            icon={<BarChart3 className="w-4 h-4 text-gray-600" />}
-            title="역량별 평가 분포"
-            subtitle="평가 쏠림 현상 진단"
-          />
-          <div className="space-y-3 mt-4">
-            {curriculumIssues.competencyDistribution.map((comp, idx) => {
-              const getCompetencyColor = (competency: string) => {
-                if (competency.includes("Self-directed") || competency === "S")
-                  return competencyColors.S;
-                if (competency.includes("Teamwork") || competency === "T")
-                  return competencyColors.T;
-                if (competency.includes("Analytical") || competency === "A")
-                  return competencyColors.A;
-                if (competency.includes("Relational") || competency === "R")
-                  return competencyColors.R;
-                return competencyColors.S;
-              };
-
-              return (
-                <div key={idx}>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm font-medium">
-                      {comp.competency} {"\uC5ED\uB7C9"}
-                    </span>
-                    <span className="text-sm text-gray-600">
-                      {comp.count}
-                      {"\uAC1C"} ({comp.percentage}%)
-                    </span>
-                  </div>
-                  <div className="relative w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full"
-                      style={{
-                        width: `${comp.percentage}%`,
-                        backgroundColor: getCompetencyColor(comp.competency),
-                      }}
-                    ></div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-            <p className="text-xs text-blue-800">
-              {(() => {
-                const sorted = [
-                  ...curriculumIssues.competencyDistribution,
-                ].sort((a, b) => b.percentage - a.percentage);
-                const highest = sorted[0];
-                return `💡 ${highest.competency} 역량이 ${highest.percentage}%로 가장 높은 비율을 차지하고 있습니다. 균형 있는 역량 평가를 위해 조정이 필요합니다.`;
-              })()}
-            </p>
-          </div>
-        </div>
+        <CompetencyDistributionSection />
       </div>
 
       {/* 과별 역량 히트맵 */}
