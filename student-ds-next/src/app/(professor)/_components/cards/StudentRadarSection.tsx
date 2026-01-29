@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { User } from "lucide-react";
 import { getStudentRadarSTAR, getStudentRadarPO } from "@/utils/studentRadarUtils";
 import type { Student } from "@shared/mockData/types/user";
+import DashboardCard from "../common/DashboardCard";
 
 const CompetencyRadarChart = dynamic(() => import("../charts/CompetencyRadarChart"), { ssr: false });
 
@@ -29,14 +30,14 @@ export default function StudentRadarSection({ students }: StudentRadarSectionPro
 
   if (!students.length) {
     return (
-      <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
+      <DashboardCard>
         <p className="text-center text-gray-500 py-8">수강생이 없습니다.</p>
-      </div>
+      </DashboardCard>
     );
   }
 
   return (
-    <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
+    <DashboardCard>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -136,6 +137,6 @@ export default function StudentRadarSection({ students }: StudentRadarSectionPro
               })()}
         </p>
       </div>
-    </div>
+    </DashboardCard>
   );
 }

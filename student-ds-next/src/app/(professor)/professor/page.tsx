@@ -7,6 +7,7 @@ import CourseSelector from "../_components/CourseSelector";
 import StudentRadarSection from "../_components/cards/StudentRadarSection";
 import ConcernStudentsCard from "../_components/cards/ConcernStudentsCard";
 import TeachingMethodDiagnosis from "../_components/TeachingMethodDiagnosis";
+import DashboardCard from "../_components/common/DashboardCard";
 import { ChartBar, ChartLine, FileText, TrendingUp, Download } from "lucide-react";
 
 // mockData imports from shared
@@ -58,7 +59,7 @@ export default function ProfessorDashboardPage() {
       </CommonHeader>
 
       {/* 교과목 역량 성취도 히스토그램 */}
-      <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
+      <DashboardCard>
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -69,20 +70,20 @@ export default function ProfessorDashboardPage() {
         </div>
         <p className="text-xs text-gray-500 mb-4">점수 구간별 학생 수 분포</p>
         <div className="h-[250px]">
-          <HistogramChart key={selectedCourse.id} data={histogramDataByCourse[selectedCourse.id] || []} />
+          <HistogramChart key={`histogram-${selectedCourse.id}`} data={histogramDataByCourse[selectedCourse.id] || []} />
         </div>
         <div className="mt-3 p-3 bg-slate-50 rounded-xl">
           <p className="text-sm text-slate-700">
             <strong>평균 점수:</strong> {courseStatisticsByCourse[selectedCourse.id]?.averageScore ?? '-'}점 | <strong>중앙값:</strong> {courseStatisticsByCourse[selectedCourse.id]?.medianScore ?? '-'}점
           </p>
         </div>
-      </div>
+      </DashboardCard>
 
       {/* 학생별 종합역량 레이더 차트 */}
-      <StudentRadarSection key={selectedCourse.id} students={filteredStudentList} />
+      <StudentRadarSection key={`radar-${selectedCourse.id}`} students={filteredStudentList} />
 
       {/* 평가 도구별 분석 */}
-      <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
+      <DashboardCard>
         <div className="flex items-center gap-2 mb-2">
           <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
             <ChartLine className="w-5 h-5 text-gray-600" />
@@ -91,7 +92,7 @@ export default function ProfessorDashboardPage() {
         </div>
         <p className="text-xs text-gray-500 mb-4">각 평가 도구별 역량 점수 비교</p>
         <div className="h-[200px]">
-          <AssessmentBarChart key={selectedCourse.id} data={assessmentDataByCourse[selectedCourse.id] || assessmentData} />
+          <AssessmentBarChart key={`assessment-${selectedCourse.id}`} data={assessmentDataByCourse[selectedCourse.id] || assessmentData} />
         </div>
         <div className="mt-3 p-3 bg-[rgb(241,245,249)] rounded-xl">
           <p className="text-sm text-[rgb(51,65,85)]">
@@ -106,11 +107,11 @@ export default function ProfessorDashboardPage() {
             })()}
           </p>
         </div>
-      </div>
+      </DashboardCard>
 
       {/* 관심 학생 알림 */}
       <ConcernStudentsCard
-        key={selectedCourse.id}
+        key={`concern-${selectedCourse.id}`}
         concernStudents={concernStudents.filter((s) => {
           const student = studentList.find((st) => st.id === s.id);
           return student?.courseIds?.includes(selectedCourse.id);
@@ -118,7 +119,7 @@ export default function ProfessorDashboardPage() {
       />
 
       {/* 성과 분석 리포트 */}
-      <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
+      <DashboardCard>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
@@ -175,7 +176,7 @@ export default function ProfessorDashboardPage() {
           <Download className="w-5 h-5" />
           PDF/Excel 다운로드
         </button>
-      </div>
+      </DashboardCard>
 
       {/* 교수법 연계 진단 */}
       <TeachingMethodDiagnosis />

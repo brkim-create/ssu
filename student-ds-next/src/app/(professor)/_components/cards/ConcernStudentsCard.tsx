@@ -4,6 +4,7 @@ import { useState } from "react";
 import { TriangleAlert } from "lucide-react";
 import { competencyColors } from "@shared/theme";
 import type { ConcernStudent } from "@shared/mockData/types/competency";
+import DashboardCard from "../common/DashboardCard";
 
 interface ConcernStudentsCardProps {
   concernStudents: ConcernStudent[];
@@ -26,7 +27,7 @@ export default function ConcernStudentsCard({ concernStudents }: ConcernStudents
       : concernStudents.filter((s) => s.level === "warning");
 
   return (
-    <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
+    <DashboardCard>
       <div className="flex items-center gap-2 mb-3">
         <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
           <TriangleAlert className="w-5 h-5 text-gray-600" />
@@ -75,6 +76,6 @@ export default function ConcernStudentsCard({ concernStudents }: ConcernStudents
           ))
         )}
       </div>
-    </div>
+    </DashboardCard>
   );
 }
