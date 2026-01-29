@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Building, GraduationCap, Heart, BookOpen, HelpCircle, CheckCircle, Send, X, MessageCircle, Copy, Download } from "lucide-react";
 import Header from "@/components/common/Header";
-import ChatModal from "@/components/chatbot/ChatModal";
+import ChatModal from "./ChatModal";
 import FAQModal from "@/components/modals/complaints/FAQModal";
 import WriteComplaintModal from "@/components/modals/complaints/WriteComplaintModal";
 import ComplaintDetailModal from "@/components/modals/complaints/ComplaintDetailModal";
