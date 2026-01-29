@@ -2,7 +2,7 @@
 
 import { BookOpen, AlertTriangle } from "lucide-react";
 import { cqiStatusData } from "@/data/mockData";
-import SectionHeader from "../common/SectionHeader";
+import SectionHeader from "../../../_components/common/SectionHeader";
 
 interface CQIStatusSectionProps {
   selectedDepartment: string;

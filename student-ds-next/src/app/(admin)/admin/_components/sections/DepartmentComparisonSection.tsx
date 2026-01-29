@@ -5,12 +5,12 @@ import dynamic from "next/dynamic";
 import { Award, ChevronDown, Search } from "lucide-react";
 import { competencyColors } from "@shared/theme";
 import { collegeHeatmapData } from "@/data/mockData";
-import SectionHeader from "../common/SectionHeader";
+import SectionHeader from "../../../_components/common/SectionHeader";
 import CQIStatusSection from "./CQIStatusSection";
 
 // recharts SSR 문제 방지를 위한 dynamic import
 const AdminRadarChart = dynamic(
-  () => import("../charts/AdminRadarChart"),
+  () => import("../../../_components/charts/AdminRadarChart"),
   { ssr: false },
 );
 

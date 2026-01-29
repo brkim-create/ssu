@@ -9,7 +9,7 @@ import {
   heatmapLegend,
 } from "@shared/theme";
 import { collegeHeatmapData } from "@/data/mockData";
-import SectionHeader from "../common/SectionHeader";
+import SectionHeader from "../../../_components/common/SectionHeader";
 
 /**
  * CompetencyHeatmapSection - 과별 역량 강/약점 히트맵

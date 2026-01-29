@@ -37,8 +37,8 @@ const CertificationHistogramChart = dynamic(
 );
 
 // Section components
-import CompetencyHeatmapSection from "../_components/sections/CompetencyHeatmapSection";
-import DepartmentComparisonSection from "../_components/sections/DepartmentComparisonSection";
+import CompetencyHeatmapSection from "./_components/sections/CompetencyHeatmapSection";
+import DepartmentComparisonSection from "./_components/sections/DepartmentComparisonSection";
 import SectionHeader from "../_components/common/SectionHeader";
 
 // 아이콘 맵
