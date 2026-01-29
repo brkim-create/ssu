@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 
 // Components
 import Header from "@/components/common/Header";
-import WelcomeCard from "@/components/dashboard/WelcomeCard";
-import CompetencyRadar from "@/components/dashboard/CompetencyRadar";
-import CompetencyGrid from "@/components/dashboard/CompetencyGrid";
-import EvidenceSection from "@/components/dashboard/EvidenceSection";
-import JobFitSection from "@/components/dashboard/JobFitSection";
+import WelcomeCard from "./_components/dashboard/WelcomeCard";
+import CompetencyRadar from "./_components/dashboard/CompetencyRadar";
+import CompetencyGrid from "./_components/dashboard/CompetencyGrid";
+import EvidenceSection from "./_components/dashboard/EvidenceSection";
+import JobFitSection from "./_components/dashboard/JobFitSection";
 
 // Modals
 import SearchModal from "@/components/modals/global/SearchModal";
