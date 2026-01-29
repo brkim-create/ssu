@@ -5,8 +5,9 @@ import dynamic from "next/dynamic";
 import CommonHeader from "../_components/CommonHeader";
 import CourseSelector from "../_components/CourseSelector";
 import StudentRadarSection from "../_components/cards/StudentRadarSection";
+import ConcernStudentsCard from "../_components/cards/ConcernStudentsCard";
 import TeachingMethodDiagnosis from "../_components/TeachingMethodDiagnosis";
-import { ChartBar, ChartLine, FileText, TrendingUp, TriangleAlert, Download } from "lucide-react";
+import { ChartBar, ChartLine, FileText, TrendingUp, Download } from "lucide-react";
 
 // mockData imports from shared
 import {
@@ -20,7 +21,6 @@ import {
   studentList,
   courseStatisticsByCourse,
 } from "@shared/mockData/data/professor";
-import { competencyColors } from "@shared/theme";
 
 // recharts SSR 문제 방지를 위한 dynamic import
 const HistogramChart = dynamic(() => import("../_components/charts/HistogramChart"), { ssr: false });
@@ -42,7 +42,6 @@ const getStudentsByCourse = (courseId: number) =>
 export default function ProfessorDashboardPage() {
   // 상태 관리
   const [selectedCourse, setSelectedCourse] = useState(currentCourses[0]);
-  const [selectedConcernCompetency, setSelectedConcernCompetency] = useState("역량 미달");
 
   // 선택된 과목의 수강생 목록
   const filteredStudentList = getStudentsByCourse(selectedCourse.id);
@@ -110,76 +109,13 @@ export default function ProfessorDashboardPage() {
       </div>
 
       {/* 관심 학생 알림 */}
-      <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
-        {(() => {
-          // 선택된 과목의 수강생만 필터링
-          const courseConcernStudents = concernStudents.filter((s) => {
-            const student = studentList.find((st) => st.id === s.id);
-            return student?.courseIds?.includes(selectedCourse.id);
-          });
-          const dangerCount = courseConcernStudents.filter((s) => s.level === "danger").length;
-          const warningCount = courseConcernStudents.filter((s) => s.level === "warning").length;
-
-          return (
-            <>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                  <TriangleAlert className="w-5 h-5 text-gray-600" />
-                </div>
-                <h3 className="font-bold text-gray-800">관심 학생 알림</h3>
-                <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                  {dangerCount}명
-                </span>
-              </div>
-
-              <div className="flex gap-2 mb-4">
-                <button
-                  onClick={() => setSelectedConcernCompetency("역량 미달")}
-                  className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-all ${
-                    selectedConcernCompetency === "역량 미달" ? "bg-red-500 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
-                >
-                  역량 미달 <span className="ml-1">({dangerCount})</span>
-                </button>
-                <button
-                  onClick={() => setSelectedConcernCompetency("주의 요망")}
-                  className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-all ${
-                    selectedConcernCompetency === "주의 요망" ? "bg-yellow-500 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
-                >
-                  주의 요망 <span className="ml-1">({warningCount})</span>
-                </button>
-              </div>
-
-              <div className="space-y-2">
-                {(() => {
-                  const filteredStudents =
-                    selectedConcernCompetency === "역량 미달"
-                      ? courseConcernStudents.filter((s) => s.level === "danger")
-                      : courseConcernStudents.filter((s) => s.level === "warning");
-
-                  if (filteredStudents.length === 0)
-                    return <div className="py-8 text-center text-gray-400 text-sm">해당 학생이 없습니다.</div>;
-
-                  return filteredStudents.map((student) => (
-                    <div key={student.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                      <div className="flex items-center gap-2">
-                        <span style={{ color: competencyColors[student.competency as keyof typeof competencyColors] }} className="font-bold text-lg">
-                          {student.competency}
-                        </span>
-                        <span className="text-gray-800">{student.name}</span>
-                      </div>
-                      <span className="text-sm text-gray-500">
-                        {student.score}점 / 기준 {student.threshold}점
-                      </span>
-                    </div>
-                  ));
-                })()}
-              </div>
-            </>
-          );
-        })()}
-      </div>
+      <ConcernStudentsCard
+        key={selectedCourse.id}
+        concernStudents={concernStudents.filter((s) => {
+          const student = studentList.find((st) => st.id === s.id);
+          return student?.courseIds?.includes(selectedCourse.id);
+        })}
+      />
 
       {/* 성과 분석 리포트 */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
