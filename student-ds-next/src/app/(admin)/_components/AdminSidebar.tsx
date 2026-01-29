@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Activity, Inbox, BarChart3, Users, ChevronDown, LogOut } from "lucide-react";
-import { useRole } from "@/contexts/RoleContext";
+import { useRole } from "../_contexts/RoleContext";
 import { clearAuthTokens } from "@/utils/auth";
 import { pendingTicketCount } from "@/data/mockData";
 

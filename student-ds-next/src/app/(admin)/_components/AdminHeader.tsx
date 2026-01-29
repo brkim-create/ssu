@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bell } from "lucide-react";
-import { useRole } from "@/contexts/RoleContext";
+import { useRole } from "../_contexts/RoleContext";
 
 // 페이지별 제목 매핑
 const pageTitles: Record<string, string> = {

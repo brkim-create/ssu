@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import AdminSidebar from "./_components/AdminSidebar";
 import AdminHeader from "./_components/AdminHeader";
-import { RoleProvider } from "@/contexts/RoleContext";
+import { RoleProvider } from "./_contexts/RoleContext";
 import { checkAutoLogin } from "@/utils/auth";
 
 /**

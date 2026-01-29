@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { ticketsData, type Ticket } from "@/data/mockData";
-import { useRole } from "@/contexts/RoleContext";
+import { useRole } from "../../_contexts/RoleContext";
 import {
   STATUS_RECEIVED,
   STATUS_PROCESSING,
