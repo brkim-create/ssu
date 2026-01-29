@@ -14,7 +14,6 @@ import {
   dashboardStats,
   gradeGrowthData,
   curriculumIssues,
-  competencyTrendData,
   certificationHistogramData,
 } from "@/data/mockData";
 
@@ -26,10 +25,6 @@ const AdminLineChart = dynamic(
   () => import("../_components/charts/AdminLineChart"),
   { ssr: false },
 );
-const CompetencyTrendChart = dynamic(
-  () => import("../_components/charts/CompetencyTrendChart"),
-  { ssr: false },
-);
 const CertificationHistogramChart = dynamic(
   () => import("../_components/charts/CertificationHistogramChart"),
   { ssr: false },
@@ -39,6 +34,7 @@ const CertificationHistogramChart = dynamic(
 import CompetencyHeatmapSection from "./_components/sections/CompetencyHeatmapSection";
 import DepartmentComparisonSection from "./_components/sections/DepartmentComparisonSection";
 import CurriculumIssuesSection from "./_components/sections/CurriculumIssuesSection";
+import CompetencyTrendSection from "./_components/sections/CompetencyTrendSection";
 import SectionHeader from "../_components/common/SectionHeader";
 
 // 아이콘 맵
@@ -151,63 +147,8 @@ export default function AdminDashboardPage() {
 
       {/* 역량 추이 및 인증 현황 */}
       <div className="grid grid-cols-3 gap-4">
-        {/* 대학 역량 지표 - Line Chart */}
-        <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
-          <SectionHeader
-            icon={<TrendingUp className="w-4 h-4 text-gray-600" />}
-            title="S-T-A-R 역량 연도별 추이"
-            subtitle="대학 전체 학생 평균값"
-          />
-          <div
-            className="flex flex-col items-center gap-3"
-            style={{ width: "100%" }}
-          >
-            <div
-              className="flex justify-center"
-              style={{ width: "100%", height: "220px" }}
-            >
-              <CompetencyTrendChart data={competencyTrendData} />
-            </div>
-            <div className="flex justify-center gap-4 flex-wrap">
-              <div className="flex items-center gap-2">
-                <div
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: competencyColors.S }}
-                ></div>
-                <span className="text-xs" style={{ color: competencyColors.S }}>
-                  Self-directed
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: competencyColors.T }}
-                ></div>
-                <span className="text-xs" style={{ color: competencyColors.T }}>
-                  Teamwork
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: competencyColors.A }}
-                ></div>
-                <span className="text-xs" style={{ color: competencyColors.A }}>
-                  Analytical
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: competencyColors.R }}
-                ></div>
-                <span className="text-xs" style={{ color: competencyColors.R }}>
-                  Relational
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* S-T-A-R 역량 연도별 추이 */}
+        <CompetencyTrendSection />
 
         {/* 역량 인증 현황 */}
         <div className="bg-white rounded-lg shadow p-3 border border-gray-200">
