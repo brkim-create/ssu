@@ -4,9 +4,9 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import CommonHeader from "../_components/CommonHeader";
 import CourseSelector from "../_components/CourseSelector";
+import StudentRadarSection from "../_components/cards/StudentRadarSection";
 import TeachingMethodDiagnosis from "../_components/TeachingMethodDiagnosis";
-import { ChartBar, ChartLine, User, FileText, TrendingUp, TriangleAlert, Download } from "lucide-react";
-import type { Course } from "@shared/mockData/types/course";
+import { ChartBar, ChartLine, FileText, TrendingUp, TriangleAlert, Download } from "lucide-react";
 
 // mockData imports from shared
 import {
@@ -20,11 +20,9 @@ import {
   courseStatisticsByCourse,
 } from "@shared/mockData/data/professor";
 import { competencyColors } from "@shared/theme";
-import { getStudentRadarSTAR, getStudentRadarPO } from "@/utils/studentRadarUtils";
 
 // recharts SSR 문제 방지를 위한 dynamic import
 const HistogramChart = dynamic(() => import("../_components/charts/HistogramChart"), { ssr: false });
-const CompetencyRadarChart = dynamic(() => import("../_components/charts/CompetencyRadarChart"), { ssr: false });
 const AssessmentBarChart = dynamic(() => import("../_components/charts/AssessmentBarChart"), { ssr: false });
 
 // 현재 학기 과목만 필터링
@@ -44,27 +42,9 @@ export default function ProfessorDashboardPage() {
   // 상태 관리
   const [selectedCourse, setSelectedCourse] = useState(currentCourses[0]);
   const [selectedConcernCompetency, setSelectedConcernCompetency] = useState("역량 미달");
-  const [radarViewMode, setRadarViewMode] = useState<"STAR" | "PO">("STAR");
 
   // 선택된 과목의 수강생 목록
   const filteredStudentList = getStudentsByCourse(selectedCourse.id);
-  const [selectedRadarStudent, setSelectedRadarStudent] = useState(filteredStudentList[0] || studentList[0]);
-
-  // 레이더 차트 데이터 (STAR/PO 모드에 따라 다른 함수 사용)
-  const radarData =
-    radarViewMode === "STAR"
-      ? getStudentRadarSTAR(selectedRadarStudent)
-      : getStudentRadarPO(selectedRadarStudent);
-
-  // 과목 변경 핸들러 (학생 선택도 함께 초기화)
-  const handleCourseChange = (newCourse: Course) => {
-    setSelectedCourse(newCourse);
-    // 과목 변경 시 해당 과목 수강생 중 첫 번째 학생으로 초기화
-    const newStudents = getStudentsByCourse(newCourse.id);
-    if (newStudents.length > 0) {
-      setSelectedRadarStudent(newStudents[0]);
-    }
-  };
 
   return (
     <div className="pb-4">
@@ -73,7 +53,7 @@ export default function ProfessorDashboardPage() {
         <CourseSelector
           courses={currentCourses}
           selectedCourse={selectedCourse}
-          onCourseChange={handleCourseChange}
+          onCourseChange={setSelectedCourse}
         />
       </CommonHeader>
 
@@ -99,104 +79,7 @@ export default function ProfessorDashboardPage() {
       </div>
 
       {/* 학생별 종합역량 레이더 차트 */}
-      <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-              <User className="w-5 h-5 text-gray-600" />
-            </div>
-            <h3 className="font-bold text-gray-800">학생별 종합현황 레이더</h3>
-          </div>
-          <select
-            value={selectedRadarStudent.id}
-            onChange={(e) => {
-              const student = filteredStudentList.find((s) => s.id === Number(e.target.value));
-              if (student) setSelectedRadarStudent(student);
-            }}
-            className="text-sm p-2 border border-gray-200 rounded-lg bg-white"
-          >
-            {filteredStudentList.map((student) => (
-              <option key={student.id} value={student.id}>
-                {student.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* 뷰 모드 버튼 */}
-        <div className="flex gap-2 mb-4">
-          <button
-            onClick={() => setRadarViewMode("STAR")}
-            className={`flex-1 py-2.5 px-4 rounded-xl font-medium text-sm transition-all ${
-              radarViewMode === "STAR"
-                ? "bg-gradient-to-r from-[#E94E3C] to-[#F7941D] text-white shadow-md"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            S·T·A·R 핵심역량
-          </button>
-          <button
-            onClick={() => setRadarViewMode("PO")}
-            className={`flex-1 py-2.5 px-4 rounded-xl font-medium text-sm transition-all ${
-              radarViewMode === "PO"
-                ? "bg-gradient-to-r from-[#E94E3C] to-[#F7941D] text-white shadow-md"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            하위역량(PO)
-          </button>
-        </div>
-
-        <div className="h-[320px]">
-          <CompetencyRadarChart data={radarData} />
-        </div>
-
-        {/* S/T/A/R 역량 카드 (STAR 모드일 때만) */}
-        {radarViewMode === "STAR" && (
-          <div className="grid grid-cols-4 gap-2 mt-4">
-            <div className="bg-red-50 border-2 border-[#E94E3C] rounded-xl p-3 text-center">
-              <div className="text-xs font-medium text-gray-600 mb-1">S·창의</div>
-              <div className="text-xl font-bold text-[#E94E3C]">{selectedRadarStudent.S}</div>
-            </div>
-            <div className="bg-orange-50 border-2 border-[#F7941D] rounded-xl p-3 text-center">
-              <div className="text-xs font-medium text-gray-600 mb-1">T·실무</div>
-              <div className="text-xl font-bold text-[#F7941D]">{selectedRadarStudent.T}</div>
-            </div>
-            <div className="bg-pink-50 border-2 border-[#C13584] rounded-xl p-3 text-center">
-              <div className="text-xs font-medium text-gray-600 mb-1">A·인성</div>
-              <div className="text-xl font-bold text-[#C13584]">{selectedRadarStudent.A}</div>
-            </div>
-            <div className="bg-indigo-50 border-2 border-[#5B51D8] rounded-xl p-3 text-center">
-              <div className="text-xs font-medium text-gray-600 mb-1">R·소통</div>
-              <div className="text-xl font-bold text-[#5B51D8]">{selectedRadarStudent.R}</div>
-            </div>
-          </div>
-        )}
-
-        {/* 학생 분석 코멘트 */}
-        <div className="mt-3 p-3 bg-[rgb(241,245,249)] rounded-xl">
-          <p className="text-sm text-[rgb(51,65,85)]">
-            💡 <strong>{selectedRadarStudent.name} 학생 분석:</strong> {
-              radarViewMode === 'STAR'
-                ? (() => {
-                    const scores = { S: selectedRadarStudent.S, T: selectedRadarStudent.T, A: selectedRadarStudent.A, R: selectedRadarStudent.R };
-                    const maxKey = Object.keys(scores).reduce((a, b) => scores[a as keyof typeof scores] > scores[b as keyof typeof scores] ? a : b);
-                    const minKey = Object.keys(scores).reduce((a, b) => scores[a as keyof typeof scores] < scores[b as keyof typeof scores] ? a : b);
-                    const labels: Record<string, string> = { S: '창의', T: '실무', A: '인성', R: '소통' };
-                    return `${labels[maxKey]} 역량이 가장 우수하며, ${labels[minKey]} 역량 개선이 필요합니다.`;
-                  })()
-                : (() => {
-                    if (!selectedRadarStudent.PO) return '하위역량 데이터가 없습니다.';
-                    const poScores = selectedRadarStudent.PO;
-                    const poKeys = Object.keys(poScores) as (keyof typeof poScores)[];
-                    const maxKey = poKeys.reduce((a, b) => poScores[a] > poScores[b] ? a : b);
-                    const minKey = poKeys.reduce((a, b) => poScores[a] < poScores[b] ? a : b);
-                    return `${maxKey} 역량이 가장 우수하며, ${minKey} 역량 개선이 필요합니다.`;
-                  })()
-            }
-          </p>
-        </div>
-      </div>
+      <StudentRadarSection key={selectedCourse.id} students={filteredStudentList} />
 
       {/* 평가 도구별 분석 */}
       <div className="mx-4 mt-4 bg-white rounded-2xl shadow-lg p-4">
